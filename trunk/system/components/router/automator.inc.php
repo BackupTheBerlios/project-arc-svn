@@ -27,7 +27,7 @@
          public function construct()
             {
             // Pop open the router model
-               $this->system->model('router',&$this);
+               $this->system->model('router',$this);
 
             // Set our default route if none was specified so even it is subject to aliasing
                if(empty($_GET['x']))
@@ -36,7 +36,7 @@
                   }
 
             // Assign potential aliases
-               $this->router->alias(&$_GET['x']);
+               $this->router->alias($_GET['x']);
             }
       }
 ?>

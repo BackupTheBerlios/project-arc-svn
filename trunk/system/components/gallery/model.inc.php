@@ -33,7 +33,7 @@
                $this->system->depend('pixlib','model');
 
             // Load pixlib
-               $this->system->model('pixlib',&$this);
+               $this->system->model('pixlib',$this);
 
             // Load our gallery config once in the constructor
                $this->gallery_config=&$this->system->config('gallery',array('default'));

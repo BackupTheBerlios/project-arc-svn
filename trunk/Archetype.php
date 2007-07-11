@@ -101,7 +101,7 @@
             {
                if(class_exists($class=$component.'_automator'))
                   {
-                     $_['automators'][$component]=new $class(&$_);
+                     $_['automators'][$component]=new $class($_);
                   }
             }
 

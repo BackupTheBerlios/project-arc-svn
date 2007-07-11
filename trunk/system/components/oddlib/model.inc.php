@@ -34,7 +34,7 @@
                   {
                      foreach($input as &$element)
                         {
-                           $this->stripslashes(&$element);
+                           $this->stripslashes($element);
                         }
                   }
                elseif(is_string($input)&&!empty($input))

@@ -42,7 +42,7 @@
             {
                if($this->config=&$this->system->config('database'))
                   {
-                     $this->system->model('SeboDB',&$this);
+                     $this->system->model('SeboDB',$this);
 
                      foreach($this->config as $index=>$value)
                         {

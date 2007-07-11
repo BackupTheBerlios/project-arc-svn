@@ -35,6 +35,10 @@
             {
             }
 
+         public function browser()
+            {
+            }
+
          public function &cookie($name,$value=false)
             {
                $r=false;

@@ -36,7 +36,7 @@
                require(COMPONENTS_LOCATION.'/system/model.inc.php');
 
             // Make a new instance of the system model and put it where it woud normally go in the universal array
-               $this->_['models']['system']=new system_model(&$this->_);
+               $this->_['models']['system']=new system_model($this->_);
 
             // Link to this object for convenience
                $this->system=&$this->_['models']['system'];
@@ -50,12 +50,12 @@
             // But in this one it takes a hate-powered flamethrower
                if(ini_get('magic_quotes_gpc'))
                   {
-                     $this->system->model('oddlib',&$this);
+                     $this->system->model('oddlib',$this);
 
-                     $this->oddlib->stripslashes(&$_GET);
-                     $this->oddlib->stripslashes(&$_POST);
-                     $this->oddlib->stripslashes(&$_COOKIE);
-                     $this->oddlib->stripslashes(&$_FILES);
+                     $this->oddlib->stripslashes($_GET);
+                     $this->oddlib->stripslashes($_POST);
+                     $this->oddlib->stripslashes($_COOKIE);
+                     $this->oddlib->stripslashes($_FILES);
                   }
 
             // Start a session
