@@ -210,6 +210,9 @@
                   {
                      if(is_readable($config_location=CONFIG_LOCATION."/${config}.inc.php"))
                         {
+                        // Create a reference for configs to use
+                           $_=&$this->_;
+
                            require($config_location);
 
                            if(!empty($$config))
