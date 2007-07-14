@@ -21,7 +21,7 @@
    error_reporting(E_ALL);
 
 // Archetype's version definition
-   define('ARCHETYPE_VERSION','2007.5.9');
+   define('ARCHETYPE_VERSION','2007.7.13');
 
 // System location
    if(!defined('SYSTEM_LOCATION'))

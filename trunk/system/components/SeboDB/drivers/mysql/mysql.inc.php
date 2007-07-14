@@ -11,7 +11,7 @@
  * @package SeboDB
  * @subpackage drivers
  * @author Justin Krueger <fuzzywoodlandcreature@gmail.com>
- * @copyright Â© 2007 Justin Krueger.  All rights reserved.
+ * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/sebodb
  * @version 2007.4.1
@@ -22,6 +22,19 @@
  */
    class SeboDB_driver_mysql extends SeboDB_driver
       {
+      /**
+       * Check for the PHP MySQL extension
+       * @access protected
+       * @return void
+       */
+         public function __construct()
+            {
+               if(!function_exists('mysql_connect'))
+                  {
+                     throw new SeboDBDriverException('MySQL driver requires PHP to have the MySQL extension installed functioning');
+                  }
+            }
+
       /**
        * Attempts to open a connection to a MySQL database with the information provided.
        * Requires controller, driver, host, user, pass, name, prefix and optionally allows persistent, post, socket.
