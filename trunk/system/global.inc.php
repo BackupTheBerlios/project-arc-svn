@@ -38,7 +38,7 @@
        * @var mixed
        * @static
        */
-         public static $information=false;
+         public static $info=false;
 
       /**
        * Assigned a reference to $_ (the universal variable) in the constructor
@@ -59,14 +59,14 @@
        * @access public
        * @return void
        */
-         protected function construct(){}
+         public function construct(){}
 
       /**
        * Dummy destructor
        * @access public
        * @return void
        */
-         protected function destruct(){}
+         public function destruct(){}
 
       /**
        * Constructor that runs in every descendant

@@ -14,7 +14,7 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/archetype
- * @version 2007.4.6
+ * @version 2007.7.16
  */
 
 /**
@@ -22,6 +22,9 @@
  */
    class oddlib_model extends Archetype_model
       {
+         public static $info=array('version' =>'2007.7.16',
+                                   'author'  =>'',);
+
       /**
        * Created specifically for wiping out magic_quotes but probably has uses for other things too
        * @access public

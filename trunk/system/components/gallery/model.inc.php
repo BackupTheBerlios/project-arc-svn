@@ -24,10 +24,10 @@
       {
       /**
        * Constructor loads required models and configurations
-       * @access protected
+       * @access public
        * @return void
        */
-         protected function construct()
+         public function construct()
             {
             // We need pixlib
                $this->system->depend('pixlib','model');

@@ -18,5 +18,6 @@
  */
 
 // Connection information for the default data source
-   $english['default']['host']=      'localhost';
+   $english['system']['error']=      'Error';
+   $english['system']['warning']=    'Warning';
 ?>

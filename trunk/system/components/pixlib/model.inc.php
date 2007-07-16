@@ -47,10 +47,10 @@
 
       /**
        * Load GD's information into $this->gd_info if PHP has the extension or throw an exception if it doesn't
-       * @access protected
+       * @access public
        * @return void
        */
-         protected function construct()
+         public function construct()
             {
                if(!function_exists('gd_info'))
                   {

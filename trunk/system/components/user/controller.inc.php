@@ -29,9 +29,6 @@
 
          public function settings()
             {
-               $this->system->model('Smarty',&$this);
-
-               echo($this->Smarty->fetch('user/index.t'));
             }
 
          public function profile($id=false)

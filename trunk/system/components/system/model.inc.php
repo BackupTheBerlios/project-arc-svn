@@ -39,8 +39,10 @@
 
       /**
        * Upon construct, assign a few important things to the object
+       * @access public
+       * @return void
        */
-         protected function construct()
+         public function construct()
             {
             // Assign global view values
                $this->views_config=&$this->config('views');
@@ -89,7 +91,7 @@
                   }
 
             // Assign the model to a parameter inside of the passed object, if one was passed
-               if(!empty($object))
+               if(is_object($object))
                   {
                      $object->$model=&$r;
                   }
@@ -271,7 +273,7 @@
        * @return mixed A reference to either the config specified or the key specified if true, false otherwise
        * @todo Finish
        */
-         public function depend($type=false,$component=false,$key=false,$regex=false)
+         public function depend($type,$component,$key=false,$regex=false)
             {
                // $out=eval("return ${class}::\$information;");
                // Open the type of component by type

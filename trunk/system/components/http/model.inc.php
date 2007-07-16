@@ -22,7 +22,7 @@
  */
    class http_model extends Archetype_model
       {
-         protected function construct()
+         public function construct()
             {
                $this->cookie_config=&$this->system->config('cookie',array('prefix','expire','path','domain','https_only','header_only'));
             }

@@ -24,7 +24,7 @@
       {
       /**
        * Check for the PHP MySQL extension
-       * @access protected
+       * @access public
        * @return void
        */
          public function __construct()
