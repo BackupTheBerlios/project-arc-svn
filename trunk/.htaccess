@@ -13,10 +13,6 @@
  # Enable Apache's Rewrite engine
    RewriteEngine On
 
- # Nobody should be peeking around our file tree
-   RewriteCond %{REQUEST_FILENAME} system
-   RewriteRule .* - [F,L]
-
  # Change all requests to appear as though they're static ( but only if they're not real )
    RewriteCond %{REQUEST_FILENAME} !-f
    RewriteCond %{REQUEST_FILENAME} !-d
