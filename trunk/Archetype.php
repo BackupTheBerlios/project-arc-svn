@@ -14,14 +14,14 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.com/archetype
- * @version 2007.5.9
+ * @version 2007.7.16
  */
 
 // Audible errors because we can't have them ignored
    error_reporting(E_ALL);
 
 // Archetype's version definition
-   define('ARCHETYPE_VERSION','2007.7.13');
+   define('ARCHETYPE_VERSION','2007.7.16');
 
 // System location
    if(!defined('SYSTEM_LOCATION'))
@@ -64,10 +64,7 @@
    require(SYSTEM_LOCATION.'/global.inc.php');
 
 // Scan the filesystem for component directories
-   $_['lists']['components']=scandir(COMPONENTS_LOCATION);
-
-// Trim . and .. off
-   $_['lists']['components']=array_slice($_['lists']['components'],2);
+   $_['lists']['components']=array_slice(scandir(COMPONENTS_LOCATION),2);
 
 // Execute in a sandbox so we can catch exceptions
   try
@@ -75,19 +72,16 @@
       // Loop components and get automator information
          foreach($_['lists']['components'] as $component)
             {
-               if(is_readable($component_location=COMPONENTS_LOCATION.'/'.$component.'/automator.inc.php'))
+               if(is_readable($component_location=COMPONENTS_LOCATION.'/'.$component.'/automator.inc.php')&&!class_exists($class=$component.'_automator'))
                   {
-                     if(!class_exists($class=$component.'_automator'))
+                     $construct=$destruct=0;
+
+                     require($component_location);
+
+                     if(class_exists($class))
                         {
-                           $construct=$destruct=0;
-
-                           require($component_location);
-
-                           if(class_exists($class))
-                              {
-                                 $_['lists']['automators']['construct'][$component]=$construct;
-                                 $_['lists']['automators']['destruct'][$component]=$destruct;
-                              }
+                           $_['lists']['automators']['construct'][$component]=$construct;
+                           $_['lists']['automators']['destruct'][$component]=$destruct;
                         }
                   }
             }
