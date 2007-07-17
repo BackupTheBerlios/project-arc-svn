@@ -57,6 +57,7 @@
             (
                'system'=>false // Default the system model so we have a place to point references before it's instantiated
             ),
+         'controllers'=>array().
          'marks'=>array('archetype_start'=>microtime(true)) // Shouldn't be here, but we need to be able to take an accurate measurement
       );
 
