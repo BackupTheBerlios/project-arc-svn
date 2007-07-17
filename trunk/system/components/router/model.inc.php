@@ -32,7 +32,7 @@
          public function construct()
             {
             // Assign our config to the class so we don't have to fiddle with it a bunch later
-               $this->routes_config=&$this->system->config('routes',array('default'));
+               $this->routes_config=&$this->system->config('routes',array('system'));
             }
 
       /**

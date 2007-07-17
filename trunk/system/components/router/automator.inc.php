@@ -32,7 +32,7 @@
             // Set our default route if none was specified so even it is subject to aliasing
                if(empty($_GET['x']))
                   {
-                     $_GET['x']=$this->router->routes_config['default'];
+                     $_GET['x']=$this->router->routes_config['system']['default'];
                   }
 
             // Assign potential aliases
