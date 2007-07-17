@@ -34,9 +34,11 @@
                   {
                      $_GET['x']=$this->router->routes_config['system']['default'];
                   }
-
-            // Assign potential aliases
-               $this->router->alias($_GET['x']);
+               else
+                  {
+                  // Assign potential aliases
+                     $this->router->alias($_GET['x']);
+                  }
             }
       }
 ?>
