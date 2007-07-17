@@ -27,5 +27,5 @@
 
 // Aliases
    $routes['aliases']['/^router.*$/']=&$routes['forbidden']; // We don't want people directly accessing the router controller
-   $routes['aliases']['/^system.*$/']=&$routes['forbidden']; // Nor the system controller
+   //$routes['aliases']['/^system.*$/']=&$routes['forbidden']; // Nor the system controller
 ?>
