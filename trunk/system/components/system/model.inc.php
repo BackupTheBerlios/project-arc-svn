@@ -14,7 +14,7 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/archetype
- * @version 2007.4.1
+ * @version 2007.7.16
  * @todo Compound layered if/else where possible
  */
 
@@ -66,34 +66,35 @@
                   {
                      if(is_readable($model_location=COMPONENTS_LOCATION."/${model}/model.inc.php"))
                         {
-                           if(!class_exists($model.'_model'))
+                           $class=$model.'_model';
+
+                           if(!class_exists($class))
                               {
                                  require($model_location);
                               }
 
-                           $class=$model.'_model';
-
                            if(class_exists($class))
                               {
                                  $this->_['models'][$model]=new $class($this->_);
-                                 $r=&$this->_['models'][$model];
                               }
                         }
-                     else
+
+                     if(empty($this->_['models'][$model]))
                         {
                            throw new ArchetypeSystemException("Attempted to open non-existent model '${model}'");
                         }
                   }
+
             // Existing model found, return a reference to it
-               else
+               if(!empty($this->_['models'][$model]))
                   {
                      $r=&$this->_['models'][$model];
-                  }
 
-            // Assign the model to a parameter inside of the passed object, if one was passed
-               if(is_object($object))
-                  {
-                     $object->$model=&$r;
+                  // Assign the model to a parameter inside of the passed object, if one was passed
+                     if(is_object($object))
+                        {
+                           $object->$model=&$r;
+                        }
                   }
 
                return $r;
@@ -106,7 +107,7 @@
        * @param array $input Associative array of variables to provide to the view
        * @return mixed Returns a reference to the model on success, false on failure
        */
-         public function view($view,$input=false)
+         public function view($view,&$input=false)
             {
                $r=false;
 
@@ -116,9 +117,14 @@
                      $input=array_merge($input,$this->views_config['global']);
                   }
             // Just link the two because there was no input array
-               else
+               elseif(empty($input))
                   {
                      $input=&$this->views_config['global'];
+                  }
+            // Throw an exception because someone tried feeding it the wrong kind of food
+               else
+                  {
+                     throw new ArchetypeSystemException("Only accepts input in the form of an associative array");
                   }
 
             // Convert $input into a bunch of variables for the view
@@ -130,19 +136,26 @@
                         }
                      else
                         {
-                           throw new ArchetypeSystemException("View input tried overwriting '${$index}' which is not allowed");
+                           throw new ArchetypeSystemException("View input tried overwriting '${$index}'");
                         }
                   }
 
             // Makes supporting subdirectories easy
                $view=explode('/',$view);
 
-            // If the view exists, load it up and catch the output
+            // Get the component from the array
                $component=array_shift($view);
+
+            // If the view exists, load it up and catch the output
                if(is_readable($view_location=COMPONENTS_LOCATION."/${component}/views/".implode('/',$view).'.inc.php'))
                   {
+                  // Start an output buffer so we can catch all output
                      ob_start();
+
+                  // Open the view
                      require($view_location);
+
+                  // Clean the output buffer and safe its contents
                      $r=ob_get_clean();
                   }
                else
@@ -161,36 +174,40 @@
        * @param $args The parameters to feed to the method's call
        * @return mixed String on success, false on failure
        * @todo Add a numeric return system for error codes
-       * @todo Store created objects so if we get another call to the same controller but a different method we don't use more ram
        */
          public function controller($controller,$method='index',$args=array())
             {
                $r=false;
 
-            // Find, load, run controllers
-               if(is_readable($controller_location=COMPONENTS_LOCATION."/${controller}/controller.inc.php"))
+               if(empty($this->_['controllers'][$controller]))
                   {
-                     $class=$controller.'_controller';
-
-                     if(!class_exists($class))
+                     if(is_readable($controller_location=COMPONENTS_LOCATION."/${controller}/controller.inc.php"))
                         {
-                           require($controller_location);
-                        }
-
-                     if(class_exists($class))
-                        {
-                           $object=new $class($this->_);
-
-                           if(method_exists($object,$method)&&is_callable(array(&$object,$method)))
+                           $class=$controller.'_controller';
+      
+                           if(!class_exists($class))
                               {
-                                 call_user_func_array(array(&$object,$method),$args);
-                                 $r=true;
+                                 require($controller_location);
+                              }
+      
+                           if(class_exists($class)&&method_exists($class,$method))
+                              {
+                                 $this->_['controllers'][$controller]=new $class($this->_);
                               }
                         }
+
+                     if(empty($this->_['controllers'][$controller]))
+                        {
+                           throw new ArchetypeSystemException("Attempted to open non-existent controller '${controller}'");
+                        }
                   }
-               else
+
+      
+               if(is_callable(array(&$this->_['controllers'][$controller],$method)))
                   {
-                     throw new ArchetypeSystemException("Attempted to open non-existent controller '${controller}'");
+                     call_user_func_array(array(&$this->_['controllers'][$controller],$method),$args);
+
+                     $r=true;
                   }
 
                return $r;
