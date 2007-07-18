@@ -19,5 +19,5 @@
 
    $benchmark['enable']=true;
    $benchmark['report']=true;
-   $benchmark['force_report']=true;
+   $benchmark['force_report']=false;
 ?>

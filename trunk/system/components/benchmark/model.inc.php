@@ -45,6 +45,7 @@
        * @param string $one One of the two times to measure between
        * @param string $two Optional - if not specified, the current time will be substituted
        * @return mixed False on failure, float on success
+       * @todo Add a parameter that makes the method automatically record the measurement for the automator to report
        */
          public function measure($one,$two=false)
             {
