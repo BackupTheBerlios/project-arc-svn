@@ -25,7 +25,8 @@
    $routes['system']['not_found']='system/not_found';
    $routes['system']['forbidden']='system/forbidden';
 
-// Aliases
+// Aliases / overwrites
    $routes['aliases']['/^router.*$/']=&$routes['system']['forbidden']; // We don't want people directly accessing the router controller
+   $routes['aliases']['/^benchmark.*$/']=&$routes['system']['forbidden']; // Nor the benchmark controller
    $routes['aliases']['/^system.*$/']=&$routes['system']['forbidden']; // Nor the system controller
 ?>
