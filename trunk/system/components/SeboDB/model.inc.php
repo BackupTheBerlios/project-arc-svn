@@ -16,9 +16,6 @@
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/sebodb
  * @version 2007.5.7
-
- * @todo Figure out if PHP does bi-directional (hard) or uni-directional (soft) linking between variables - if bi-directional we need to figure out a different way to shut down LDOs
- * @todo Write a controller specifically for backing up and restoring SQL data
  */
 
 /**
@@ -152,7 +149,7 @@
        * @param mixed $instance An instance of an existing LDO or a string representation of a local LDO
        * @return mixed Returns an LDO on success, false on failure
        */
-         public function destroy($instance)
+         public function destroy(&$instance)
             {
                $r=false;
 
