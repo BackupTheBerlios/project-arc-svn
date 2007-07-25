@@ -48,7 +48,7 @@
             }
 
       /**
-       * Opens a connection to a data source through the driver.
+       * Runs specified query and stores the resulting resource
        * @access public
        * @param string $name Database name
        * @return boolean True if success, false otherwise
@@ -147,10 +147,11 @@
        * Opens a connection to a data source through the driver.
        * @access public
        * @param string $name Database name
+       * @param string $name Database name
+       * @param string $name Database name
        * @return boolean True if success, false otherwise
-       * @todo Make it so it always returns array(array(),array(),array())
        */
-         public function fetch($type=SEBODB_ASSOC,$query=false)
+         public function fetch($type=SEBODB_ASSOC,$query=false,$shrink=true)
             {
                $r=false;
 
@@ -172,7 +173,7 @@
                   }
 
             // If only one record is returned, don't put it inside another array
-               if($results===1)
+               if($shrink&&$results===1)
                   {
                      $r=&$r[0];
                   }
