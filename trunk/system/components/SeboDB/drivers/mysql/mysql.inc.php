@@ -14,7 +14,7 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/sebodb
- * @version 2007.4.1
+ * @version 2007.7.29
  */
 
 /**
@@ -37,12 +37,12 @@
 
       /**
        * Attempts to open a connection to a MySQL database with the information provided.
-       * Requires controller, driver, host, user, pass, name, prefix and optionally allows persistent, post, socket.
+       * Requires controller, driver, host, user, pass, name and optionally allows persistent, port, socket, prefix 
        * @access public
-       * @param array $configuration Array of information required to connect
+       * @param array $config Associative array of information required to connect
        * @return mixed Returns a connection resource on success, false on failure
        */
-         public function open($config)
+         public function open(&$config)
             {
                $r=false;
 
@@ -57,6 +57,12 @@
                      if(empty($config['port']))
                         {
                            $port=&$config['port'];
+                        }
+
+                  // Default a prefix if one isn't specified
+                     if(empty($config['prefix']))
+                        {
+                           $config['prefix']='';
                         }
 
                   // Connect and assign $this->connection
@@ -74,13 +80,12 @@
                         {
                            throw new SeboDBDriverException('Could not connect to "'.$config['host'].'", MySQL says: '.mysql_error());
                         }
-
-                  // Save a reference to our connection so it's easy to transport
-                     $this->connection=&$r;
-
                   // Select the database we'll want to work with
-                     if(is_resource($r))
+                     else
                         {
+                        // Save a reference to our connection so it's easy to transport
+                           $this->connection=&$r;
+
                            if(!mysql_select_db($config['name'],$this->connection))
                               {
                                  throw new SeboDBDriverException('Could not select database "'.$config['name'].'"');
@@ -98,7 +103,7 @@
        * @param resource $connection Connection resource
        * @return bool True if successful false otherwise
        */
-         public function query($sql,$connection)
+         public function query($sql,&$connection)
             {
                $r=false;
 
@@ -113,7 +118,7 @@
                else
                   {
                   // Record the query
-                     $this->history[]=array('query'=>$sql,'execution_time'=>$time-microtime(true));
+                     $this->history[]=array('query'=>$sql,'execution_time'=>microtime(true)-$time);
                   }
 
                return $r;
@@ -125,8 +130,10 @@
        * @param resource $connection Connection resource
        * @return bool Numeric value representing affected rows if successful, false otherwise
        */
-         public function affected($connection)
+         public function affected(&$connection)
             {
+               $r=false;
+
                if(($r=@mysql_affected_rows($connection))===false)
                   {
                      $this->connection_exception();
@@ -141,8 +148,10 @@
        * @param resource $query Query resource
        * @return bool Numeric value representing the amount of rows returned if successful, false otherwise
        */
-         public function results($query)
+         public function results(&$query)
             {
+               $r=false;
+
                if(($r=@mysql_num_rows($query))===false)
                   {
                      $this->query_exception();
@@ -157,8 +166,10 @@
        * @param resource $connection Connection resource
        * @return bool Numeric value of last insert id if successful, false otherwise
        */
-         public function insert_id($connection)
+         public function insert_id(&$connection)
             {
+               $r=false;
+
                if(($r=@mysql_insert_id($connection))===false)
                   {
                      $this->connection_exception();
@@ -174,8 +185,10 @@
        * @param resource $connection Connection resource
        * @return mixed Returns an escaped string on success, false otherwise
        */
-         public function escape($string,$connection)
+         public function escape(&$string,&$connection)
             {
+               $r=false;
+
                if(($r=@mysql_real_escape_string($string,$connection))===false)
                   {
                      $this->connection_exception();
@@ -188,10 +201,10 @@
        * Fetches a row from the query resource provided
        * @access public
        * @param resource $query Query resource
-       * @param integer Use a SEBODB constant to have the function fetch different types of data
+       * @param integer $type Use a SEBODB_ constant to have the function fetch different types of data
        * @return mixed Returns the type of data specified by $type, an associative array by default, if successful, false otherwise
        */
-         public function fetch($query,$type=SEBODB_ASSOC)
+         public function fetch(&$query,$type=SEBODB_ASSOC)
             {
                $r=false;
 
@@ -225,25 +238,33 @@
             }
 
       /**
-       * UNDOCUMENTED
+       * Frees the memory associated with a result
        * @access public
+       * @param resource $query Query resource
+       * @return bool True on success false otherwise
        */
-         public function free($query)
+         public function free(&$query)
             {
+               $r=false;
+
                if(!$r=@mysql_free_result($query))
                   {
-                     $this->connection_exception();
+                     $this->query_exception();
                   }
 
                return $r;
             }
 
       /**
-       * UNDOCUMENTED
+       * Ping a server connection or reconnect if there is no connection
        * @access public
+       * @param resource $connection Connection resource
+       * @return bool True if success false otherwise
        */
-         public function ping($connection)
+         public function ping(&$connection)
             {
+               $r=false;
+
                if(!$r=@mysql_ping($connection))
                   {
                      $this->connection_exception();
@@ -255,11 +276,13 @@
       /**
        * Returns the last error from the driver
        * @access public
-       * @todo Figure out what it returns
        * @param resource $connection Connection resource
+       * @return string Returns the error if there was one or an empty string if there wasn't
        */
-         public function error($connection)
+         public function error(&$connection)
             {
+               $r=false;
+
                if(!$r=@mysql_error($connection))
                   {
                      $this->connection_exception();
@@ -272,10 +295,12 @@
        * Close the connection to the database
        * @access public
        * @param resource $connection Connection resource
-       * @todo Figure out what it returns
+       * @return bool True on success false otherwise
        */
-         public function close($connection)
+         public function close(&$connection)
             {
+               $r=false;
+
                if(!$r=@mysql_close($connection))
                   {
                      $this->connection_exception();
@@ -290,10 +315,10 @@
        * @param array $info Array of information required to connect
        * @return bool True if the config has the correct information in it false otherwise
        */
-         private function check_config($config)
+         private function check_config(&$config)
             {
                $r=true;
-               $required=array('controller','driver','host','user','pass','name','prefix');
+               $required=array('controller','driver','host','user','pass','name');
 
                foreach($required as $value)
                   {
