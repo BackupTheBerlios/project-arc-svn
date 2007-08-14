@@ -30,7 +30,7 @@
 /**
  * Primary class for Archetype.  It should be extended in some form by every other class in the system.
  */
-   class Archetype
+   class A
       {
       /**
        * Stores information for extended classes
@@ -159,15 +159,15 @@
 /**
  * Provide a base class for models
  */
-   class Archetype_model extends Archetype {}
+   class A_model extends A {}
 
 /**
  * Provide a base class for controllers
  */
-   class Archetype_controller extends Archetype {}
+   class A_controller extends A {}
 
 /**
  * Provide a base class for automators
  */
-   class Archetype_automator extends Archetype {}
+   class A_automator extends A {}
 ?>
