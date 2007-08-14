@@ -15,13 +15,12 @@
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/archetype
  * @version 2007.7.16
- * @todo Compound layered if/else where possible
  */
 
 /**
  * Archetype's system model for providing support to other components
  */
-   class system_model extends Archetype_model
+   class system_model extends A_model
       {
       /**
        * Stores the views configuration
@@ -55,7 +54,6 @@
        * @param string $model String name of the model to open
        * @param mixed $object Optional object for the model to be automatically inserted into
        * @return mixed Returns a reference to the model on success, false on failure
-       * @todo Possibly add the ability to specify $model as a numeric array of models to open
        */
          public function &model($model,$object=false)
             {
@@ -173,7 +171,6 @@
        * @param $method The method inside of the controller class to run
        * @param $args The parameters to feed to the method's call
        * @return mixed String on success, false on failure
-       * @todo Add a numeric return system for error codes
        */
          public function controller($controller,$method='index',$args=array())
             {
