@@ -23,7 +23,7 @@
  * .htaccess files enabled users will be able to toy around with these pages ... not that they'll
  * get anywhere.  It just looks less professional.
  */
-   class system_controller extends Archetype_controller
+   class system_controller extends A_controller
       {
          public function error($error)
             {

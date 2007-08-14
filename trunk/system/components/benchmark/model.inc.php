@@ -21,7 +21,7 @@
 /**
  * A simple benchmark utility
  */
-   class benchmark_model extends Archetype_model
+   class benchmark_model extends A_model
       {
       /**
        * Marks a point to be measured later with $this->measure()

@@ -20,7 +20,7 @@
 /**
  * User output class
  */
-   class user_controller extends Archetype_controller
+   class user_controller extends A_controller
       {
          public function index($id=false)
             {

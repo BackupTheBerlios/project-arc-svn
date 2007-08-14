@@ -1,7 +1,7 @@
 <?=$this->system->view('system/global/header')?>
 <div id="content">
    <h1>Project Archetype</h1>
-   <h2><?=$archetype_version?></h2>
+   <h2><?=ARCHETYPE_VERSION?></h2>
    <p>
       Archetype is an advanced, strictly object-oriented MVC framework designed to greatly ease the process of building complex PHP5 applications.
       &nbsp; While this system is in a usable state right now, this is pre-beta software and as such is likely to contain bugs.&nbsp; You are using this software at your own risk.

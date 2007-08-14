@@ -15,13 +15,13 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/sebodb
- * @version 2007.5.7
+ * @version 2007.7.29
  */
 
 /**
  * Define SeboDB's version
  */
-   define('SEBODB_VERSION','2007.4.13');
+   define('SEBODB_VERSION','2007.7.29');
 
 /**
  * Controller location
@@ -53,7 +53,7 @@
 /**
  * Originally the stock SeboDB class, but modified to work nicer inside Archetype.
  */
-   class SeboDB_model extends Archetype_model
+   class SeboDB_model extends A_model
       {
       /**
        * Create a new Linked Data Object(LDO), store a reference to it locally, then return it.

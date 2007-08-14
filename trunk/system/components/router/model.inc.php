@@ -20,7 +20,7 @@
 /**
  * Created to separate the router functionality from the actual router so other components can use it
  */
-   class router_model extends Archetype_model
+   class router_model extends A_model
       {
       /**
        * Store the routes config

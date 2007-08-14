@@ -14,11 +14,11 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/sebodb
- * @version 2007.4.1
+ * @version 2007.7.29
  */
 
 /**
- * Aided SeboDB controller.  Identical to the driver interface except it manages connections and resources automatically.
+ * Aided SeboDB controller.  Basically a raw interface with a few really useful perks
  */
    class SeboDB_controller_aided extends SeboDB_controller
       {
@@ -33,18 +33,19 @@
        * Information intentionally chosen to be sticky gets stored here to be updated when the class destructs
        * @access public
        * @var array
+       * @TODO For the love of God, finish this feature.  It will be so awesome.
        */
          public $sticky=array();
 
       /**
        * Opens a connection to a data source through the driver.
        * @access public
-       * @param array $configuration Array of information required to connect
+       * @param array $config Array of information required to connect
        * @return boolean True if success, false otherwise
        */
-         public function open($configuration)
+         public function open(&$config)
             {
-               return $this->connection=$this->driver->open($configuration);
+               return $this->connection=$this->driver->open($config);
             }
 
       /**
@@ -53,7 +54,7 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function query($sql,$connection=false)
+         public function query($sql,&$connection=false)
             {
             // Automagically resolve the connection if one wasn't specified
                if(empty($connection))
@@ -81,7 +82,7 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function affected($connection=false)
+         public function affected(&$connection=false)
             {
             // Autoresolve the query if one isn't specified
                if(empty($connection))
@@ -98,7 +99,7 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function results($query=false)
+         public function results(&$query=false)
             {
             // Autoresolve the query if one isn't specified
                if(empty($query))
@@ -115,7 +116,7 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function insert_id($connection=false)
+         public function insert_id(&$connection=false)
             {
             // Autoresolve the connection if one isn't specified
                if(empty($connection))
@@ -132,7 +133,7 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function escape($string,$connection=false)
+         public function escape($string,&$connection=false)
             {
             // Automagically resolve the connection if one wasn't specified
                if(empty($connection))
@@ -151,7 +152,7 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function fetch($type=SEBODB_ASSOC,$query=false,$shrink=true)
+         public function fetch($shrink=true,$type=SEBODB_ASSOC,$query=false)
             {
                $r=false;
 
@@ -187,6 +188,16 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
+         public function sticky()
+            {
+            }
+
+      /**
+       * Opens a connection to a data source through the driver.
+       * @access public
+       * @param string $name Database name
+       * @return boolean True if success, false otherwise
+       */
          public function commit_sticky()
             {
             }
@@ -197,7 +208,7 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function free($query=false)
+         public function free(&$query=false)
             {
             // Autoresolve the query if one isn't specified
                if(empty($query))
@@ -214,7 +225,7 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function ping($connection=false)
+         public function ping(&$connection=false)
             {
             // Automagically resolve the connection if one wasn't specified
                if(empty($connection))
@@ -231,7 +242,7 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function error($connection=false)
+         public function error(&$connection=false)
             {
             // Automagically resolve the connection if one wasn't specified
                if(empty($connection))
@@ -249,7 +260,7 @@
        * @return boolean True if success, false otherwise
        * @todo add sticky commit before shutdown
        */
-         public function close($connection=false)
+         public function close(&$connection=false)
             {
             // do sticky stuff
 

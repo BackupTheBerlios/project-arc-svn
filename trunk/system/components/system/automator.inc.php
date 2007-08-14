@@ -23,7 +23,7 @@
 /**
  * System automator component class.  Without this absolutely nothing would work.
  */
-   class system_automator extends Archetype_automator
+   class system_automator extends A_automator
       {
       /**
        * Injects Archetype's system model into storage so other components may take advantage of it and sets up the environment for other components
@@ -70,7 +70,7 @@
          public function destruct()
             {
             // Yank the GET variable x
-               $parameters=explode('/',$_GET['x']);
+               $parameters=explode('/',trim($_GET['x'],'/'));
 
             // Shave off and store the component and method parameters if possible and link arguments to what's left
                $controller=array_shift($parameters);

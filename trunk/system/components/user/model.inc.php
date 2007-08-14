@@ -17,7 +17,7 @@
  * @version 2007.7.15
  */
 
-   class user_model extends Archetype_model
+   class user_model extends A_model
       {
          public $users=array(0=>false);
 

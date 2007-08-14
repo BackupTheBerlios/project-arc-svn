@@ -24,7 +24,7 @@
 /**
  * Make connections automatically based on the configuration file
  */
-   class SeboDB_automator extends Archetype_automator
+   class SeboDB_automator extends A_automator
       {
       /**
        * Stores Archetype's database configuration file so our destructor knows what to look for

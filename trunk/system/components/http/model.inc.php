@@ -39,11 +39,11 @@
             {
                $r=false;
 
-               if(is_string($name)&&!empty($value))
+               if(is_string($name)&&is_string($value))
                   {
                      $r=setcookie($this->cookie_config['prefix'].$name,$value,$this->cookie_config['expire'],$this->cookie_config['path'],$this->cookie_config['domain'],$this->cookie_config['https_only'],$this->cookie_config['header_only']);
                   }
-               elseif(is_string($name))
+               elseif(is_string($name)&&!empty($_COOKIE[$this->cookie_config['prefix'].$name]))
                   {
                      $r=&$_COOKIE[$this->cookie_config['prefix'].$name];
                   }

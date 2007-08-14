@@ -20,7 +20,7 @@
 /**
  * Shouldn't be externally available (blocked by default in the routes config)
  */
-   class system_controller extends Archetype_controller
+   class system_controller extends A_controller
       {
          public function redirect($url)
             {

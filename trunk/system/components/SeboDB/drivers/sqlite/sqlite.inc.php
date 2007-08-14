@@ -15,7 +15,7 @@
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/sebodb
  * @version 2007.4.1
- * @todo Finish the driver (commented parts do not work)
+ * @todo Finish the driver
  */
 
    class SeboDB_sqlite_driver extends SeboDB_driver
@@ -83,12 +83,10 @@
                return $r;
             }
 
-      // FINISH ME FINISH ME FINISH ME
          public function free($query)
             {
             }
 
-      // FINISH ME FINISH ME FINISH ME
          public function ping($connection)
             {
             }

@@ -48,6 +48,7 @@
  * @abstract
  * @todo Better document the driver specification - more specifically, what drivers are required to do and how they are required to act
  * @todo Finish phpDoc tags
+ * @todo Add reference operators to all method declarations for driver / resource parameters
  */
    abstract class SeboDB_driver
       {
@@ -74,7 +75,7 @@
        * @param array $info Associative array containing information required for the connection but pertinent to the selected driver type
        * @return void
        */
-         abstract public function open($config);
+         abstract public function open(&$config);
 
       /**
        * The driver's query() method definition
@@ -83,7 +84,7 @@
        * @param string $name Database name
        * @return void
        */
-         abstract public function query($sql,$connection);
+         abstract public function query($sql,&$connection);
 
       /**
        * The driver's affected() method definition
@@ -92,7 +93,7 @@
        * @param string $name Database name
        * @return void
        */
-         abstract public function affected($query);
+         abstract public function affected(&$query);
 
       /**
        * The driver's results() method definition
@@ -101,7 +102,7 @@
        * @param string $name Database name
        * @return void
        */
-         abstract public function results($query);
+         abstract public function results(&$query);
 
       /**
        * The driver's insert_id() method definition
@@ -110,7 +111,7 @@
        * @param string $name Database name
        * @return void
        */
-         abstract public function insert_id($query);
+         abstract public function insert_id(&$query);
 
       /**
        * The driver's escape() method definition
@@ -119,7 +120,7 @@
        * @param string $name Database name
        * @return void
        */
-         abstract public function escape($string,$connection);
+         abstract public function escape(&$string,&$connection);
 
       /**
        * The driver's fetch() method definition
@@ -128,7 +129,7 @@
        * @param string $name Database name
        * @return void
        */
-         abstract public function fetch($query,$type=0);
+         abstract public function fetch(&$query,$type=0);
 
       /**
        * The driver's free() method definition
@@ -137,7 +138,7 @@
        * @param string $name Database name
        * @return void
        */
-         abstract public function free($query);
+         abstract public function free(&$query);
 
       /**
        * The driver's ping() method definition
@@ -146,7 +147,7 @@
        * @param string $name Database name
        * @return void
        */
-         abstract public function ping($connection);
+         abstract public function ping(&$connection);
 
       /**
        * The driver's error() method definition
@@ -155,7 +156,7 @@
        * @param string $name Database name
        * @return void
        */
-         abstract public function error($connection);
+         abstract public function error(&$connection);
 
       /**
        * The driver's close() method definition
@@ -164,7 +165,7 @@
        * @param string $name Database name
        * @return void
        */
-         abstract public function close($connection);
+         abstract public function close(&$connection);
 
       /**
        * If the connection isn't properly closed by the time the object is being removed from memory, automatically do it
@@ -215,7 +216,7 @@
        * @param object $driver Instance of an active driver
        * @return void
        */
-         public function __construct($driver)
+         public function __construct(&$driver)
             {
                $this->driver=&$driver;
             }
