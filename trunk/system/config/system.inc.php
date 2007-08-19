@@ -20,6 +20,4 @@
    $system['ob_handler']='ob_gzhandler';
    $system['exception_handler']=false;
    $system['debug']=true;
-   $system['hash_salt']='';
-   $system['hash_algorithm']=4829034;
 ?>
