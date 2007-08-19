@@ -55,7 +55,7 @@
        * @param mixed $object Optional object for the model to be automatically inserted into
        * @return mixed Returns a reference to the model on success, false on failure
        */
-         public function &model($model,$object=false)
+         public function &model($model,&$object=false)
             {
                $r=false;
 
@@ -217,7 +217,7 @@
        * @param $require Optionally checks the config for the keys provided in this array
        * @return mixed A reference to either the config specified or the key specified if true, false otherwise
        */
-         public function &config($config,$require=false)
+         public function &config($config,&$object=false,$require=false)
             {
                $r=false;
 
@@ -234,8 +234,6 @@
                            if(!empty($$config))
                               {
                                  $this->_['config'][$config]=&$$config;
-
-                                 $r=&$this->_['config'][$config];
                               }
                         }
                      else
@@ -243,10 +241,17 @@
                            throw new ArchetypeSystemException('Attempted to open non-existent configuration "'.$config.'"');
                         }
                   }
+
             // Config is loaded, just return a reference
-               else
+               if(!empty($this->_['config'][$config]))
                   {
                      $r=&$this->_['config'][$config];
+
+                  // Assign the model to a parameter inside of the passed object, if one was passed
+                     if(is_object($object))
+                        {
+                           $object->config[$config]=&$r;
+                        }
                   }
 
             // Check if the config meets the requirements

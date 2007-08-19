@@ -27,34 +27,27 @@
    class SeboDB_automator extends A_automator
       {
       /**
-       * Stores Archetype's database configuration file so our destructor knows what to look for
-       * @access public
-       * @var array
-       */
-         public $config=array();
-
-      /**
        * Constructor.  Open our configuration, auto-generate (potentially) a bunch of data sources.
        * @access public
        * @return void
        */
          public function construct()
             {
-               if($this->config=&$this->system->config('database'))
+               if($this->system->config('database',$this))
                   {
                      $this->system->model('SeboDB',$this);
 
-                     foreach($this->config as $index=>$value)
+                     foreach($this->config['database'] as $index=>$value)
                         {
-                           if(!empty($this->config[$index]['link']))
+                           if(!empty($this->config['SeboDB'][$index]['link']))
                               {
-                                 $link_name=&$this->config[$index]['link'];
-                                 $this->SeboDB->create($this->config[$index]['controller'],$this->SeboDB->$link_name->driver,$index);
+                                 $link_name=&$this->config['SeboDB'][$index]['link'];
+                                 $this->SeboDB->create($this->config['database'][$index]['controller'],$this->SeboDB->$link_name->driver,$index);
                               }
                            else
                               {
-                                 $this->SeboDB->create($this->config[$index]['controller'],$this->config[$index]['driver'],$index);
-                                 $this->SeboDB->$index->open($this->config[$index]);
+                                 $this->SeboDB->create($this->config['database'][$index]['controller'],$this->config['database'][$index]['driver'],$index);
+                                 $this->SeboDB->$index->open($this->config['database'][$index]);
                               }
                         }
                   }
@@ -67,9 +60,9 @@
        */
          public function destruct()
             {
-               if(!empty($this->config))
+               if(!empty($this->config['SeboDB']))
                   {
-                     foreach($this->config as $index=>$value)
+                     foreach($this->config['SeboDB'] as $index=>$value)
                         {
                            if(!empty($this->SeboDB->$index->connection))
                               {

@@ -20,11 +20,11 @@
 /**
  * Makes interaction with HTTP easier and symmetric
  */
-   class http_model extends Archetype_model
+   class http_model extends A_model
       {
          public function construct()
             {
-               $this->cookie_config=&$this->system->config('cookie',array('prefix','expire','path','domain','https_only','header_only'));
+               $this->system->config('cookie',$this,array('prefix','expire','path','domain','https_only','header_only'));
             }
 
          public function location()
@@ -41,11 +41,11 @@
 
                if(is_string($name)&&is_string($value))
                   {
-                     $r=setcookie($this->cookie_config['prefix'].$name,$value,$this->cookie_config['expire'],$this->cookie_config['path'],$this->cookie_config['domain'],$this->cookie_config['https_only'],$this->cookie_config['header_only']);
+                     $r=setcookie($this->config['cookie']['prefix'].$name,$value,$this->config['cookie']['expire'],$this->config['cookie']['path'],$this->config['cookie']['domain'],$this->config['cookie']['https_only'],$this->config['cookie']['header_only']);
                   }
-               elseif(is_string($name)&&!empty($_COOKIE[$this->cookie_config['prefix'].$name]))
+               elseif(is_string($name)&&!is_string($value)&&!empty($_COOKIE[$this->config['cookie']['prefix'].$name]))
                   {
-                     $r=&$_COOKIE[$this->cookie_config['prefix'].$name];
+                     $r=&$_COOKIE[$this->config['cookie']['prefix'].$name];
                   }
 
                return $r;

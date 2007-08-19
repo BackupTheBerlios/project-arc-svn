@@ -23,29 +23,28 @@
    class router_model extends A_model
       {
       /**
-       * Store the routes config
+       * Construct
        * @access public
-       * @var array
+       * @return void
        */
-         public $routes_config;
-
          public function construct()
             {
             // Assign our config to the class so we don't have to fiddle with it a bunch later
-               $this->routes_config=&$this->system->config('routes',array('system'));
+               $this->system->config('routes',$this);
             }
 
       /**
        * Modifies the referenced $input string according to aliases in the routes config
        * @param string $input Reference to a string you want to filter
        * @access public
+       * @return void
        */
          public function alias(&$input)
             {
             // If there's aliases to be assigned, do it
-               if(!empty($this->routes_config['aliases']))
+               if(!empty($this->config['routes']['aliases']))
                   {
-                     foreach($this->routes_config['aliases'] as $index=>&$value)
+                     foreach($this->config['routes']['aliases'] as $index=>&$value)
                         {
                            if(!empty($index)&&!empty($value)&&(!$input=@preg_replace($index,$value,$input)))
                               {

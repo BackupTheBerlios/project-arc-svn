@@ -36,7 +36,7 @@
                $this->system->model('pixlib',$this);
 
             // Load our gallery config once in the constructor
-               $this->gallery_config=&$this->system->config('gallery',array('default'));
+               $this->system->config('gallery',$this,array('default'));
             }
 
       /**
@@ -47,13 +47,13 @@
        */
          private function _thumbnail($pixmap,$config='default')
             {
-               $r=$this->gallery_config[$config]['thumbnail_location'].'/'.$pixmap;
+               $r=$this->config['gallery'][$config]['thumbnail_location'].'/'.$pixmap;
 
                if(!is_readable($r))
                   {
                   // No need to check if it's a real image, pixlib will do all that
                      $this->pixlib->open($pixmap);
-                     $this->pixlib->scale($this->gallery_config[$config]['thumbnail_dimensions']);
+                     $this->pixlib->scale($this->config['gallery'][$config]['thumbnail_dimensions']);
                      $this->pixlib->save($r);
                      $this->pixlib->close();
                   }
@@ -88,7 +88,7 @@
                               {
                                  preg_match('/^.*\.(.+)$/',$value,$match);
 
-                                 if(in_array($match[1],$this->gallery_config[$config]['filetypes']))
+                                 if(in_array($match[1],$this->config['gallery'][$config]['filetypes']))
                                     {
                                        $r['pixmaps'][]=array('thumbnail'=>$this->_thumbnail($directory.'/'.$value,$config),'full'=>$directory.'/'.$value);
                                     }

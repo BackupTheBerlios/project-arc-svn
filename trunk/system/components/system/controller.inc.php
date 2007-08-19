@@ -51,6 +51,7 @@
 
          public function welcome()
             {
+               $this->system->model('http',$this);
                echo($this->system->view('system/welcome'));
             }
       }

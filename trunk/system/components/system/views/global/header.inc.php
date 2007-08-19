@@ -8,3 +8,4 @@
    <body>
       <div id="master">
          <div id="slave">
+            <div id="logo"></div>

@@ -10,7 +10,7 @@
                         echo('Compiled in '.sprintf('%.3f',$this->benchmark->measure('archetype_start','archetype_end')).' seconds<br />');
                      }
 ?>
-                  Copyright &copy; 2007 Justin Krueger.  All rights reserved.
+                  Copyright &copy; 2007 <a href="http://fuzzywoodlandcreature.net/">Justin Krueger</a>.  All rights reserved.
                </span>
             </div>
          </div>

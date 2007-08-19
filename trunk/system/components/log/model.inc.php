@@ -15,6 +15,7 @@
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/archetype
  * @version 2007.4.1
+ * @TODO Put the log config loader in a constructor
  */
 
    define('LOG_LEVEL_NOTICE',0);

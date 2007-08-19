@@ -23,19 +23,30 @@
 
          public function construct()
             {
-               $this->system->depend('model','SeboDB');
-               $this->system->depend('model','http');
+               $this->system->config('user',$this,array('hash'));
             }
 
-         public function create()
+         public function create_user()
             {
             }
 
-         public function modify()
+         public function modify_user()
             {
             }
 
-         public function delete()
+         public function delete_user()
+            {
+            }
+
+         public function create_group()
+            {
+            }
+
+         public function modify_group()
+            {
+            }
+
+         public function delete_group()
             {
             }
 
@@ -47,11 +58,15 @@
             {
             }
 
-         public function close()
+         public function halfstamp()
             {
             }
 
-         public function password_hash()
+         public function unstamp()
+            {
+            }
+
+         public function close()
             {
             }
       }
