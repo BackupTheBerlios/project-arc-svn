@@ -113,9 +113,9 @@
    catch(Exception $x)
       {
       // Allow components to set a new exception handler
-         if(!empty($_['config']['archetype']['exception_handler']))
+         if(!empty($_['config']['system']['exception_handler']))
             {
-               call_user_func($_['config']['archetype']['exception_handler'],$x);
+               call_user_func($_['config']['system']['exception_handler'],$x);
             }
       // But default to trigger_error()
          else

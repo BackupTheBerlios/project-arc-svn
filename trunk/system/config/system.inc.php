@@ -18,5 +18,6 @@
  */
 
    $system['ob_handler']='ob_gzhandler';
-   $system['debug']=     true;
+   $system['exception_handler']=false;
+   $system['debug']=true;
 ?>
