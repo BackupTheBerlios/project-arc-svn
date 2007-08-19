@@ -12,15 +12,16 @@
 
    body
       {
+         color:#555;
          background:#FFF;
          font-family:arial,verdana,sans-serif;
-         font-size:10px;
-         color:#555;
+         font-size:12px;
          margin:1.5em;
       }
 
    h1
       {
+         color:#FCFCFC;
          text-align:center;
          font-size:20px;
          font-weight:bold;
@@ -29,6 +30,7 @@
 
    h2
       {
+         color:#FCFCFC;
          text-align:center;
          font-size:10px;
          font-weight:normal;
@@ -37,6 +39,7 @@
 
    p
       {
+         color:#FCFCFC;
          line-height:1.5em;
          margin:1.5em 0 1.5em 0;
       }
@@ -46,22 +49,22 @@
          display:block;
          margin:.2em .8em .2em .8em;
          background:#FFF url('../pixmaps/tile.png') top left repeat;
-         border:1px dashed #EAEAEA;
+         border:1px solid #444;
          padding:.5em;
-         color:#666;
+         color:#CACACA;
       }
 
    a
       {
          font-weight:bold;
          text-decoration:none;
-         color:#467;
+         color:#b0d51f;
       }
    a:hover,
    a:focus
       {
          font-weight:bold;
-         color:#7b0;
+         color:#dbe9a1;
       }
 
 /* N A M E L E S S  E X T E N S I O N  C L A S S E S */
@@ -173,8 +176,8 @@
 
    #content
       {
-         background:#FFF url('../pixmaps/gradient.png') top left repeat-x;
-         border:1px solid #F4F4F4;;
+         background:#0b0b0b url('../pixmaps/gradient.png') top left repeat-x;
+         border:1px solid #000;;
          width:549px;
          padding:1.2em;
          margin:0 auto 0 auto;
@@ -184,5 +187,13 @@
       {
          display:block;
          margin:2em 0 0 0;
-         color:#D7D7D7;
+         color:#444;
+      }
+
+   #logo
+      {
+         background:#FFF url('../pixmaps/logo.gif') top left repeat-x;
+         margin:10px auto 20px auto;
+         width:125px;
+         height:94px;
       }
