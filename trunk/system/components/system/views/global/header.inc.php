@@ -8,4 +8,4 @@
    <body>
       <div id="master">
          <div id="slave">
-            <div id="logo"></div>
+            <a id="logo" href="<?=$webroot?>"></a>

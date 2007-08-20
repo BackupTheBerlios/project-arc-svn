@@ -75,13 +75,16 @@
    ul.form>li
       {
          display:block;
-         margin:0;
          padding:0;
       }
    ul.form
       {
-         color:#666;
-         width:60%;
+         width:50%;
+         margin:auto;
+      }
+   ul.form>li
+      {
+         margin:1em 0 1em 0;
       }
    ul.form textarea
       {
@@ -90,6 +93,8 @@
       }
    ul.form span
       {
+         color:#FFF;
+         font-weight:bold;
          display:block;
          text-transform:capitalize;
       }
@@ -97,24 +102,24 @@
    ul.form input[type='password'],
    ul.form textarea
       {
+         background:#FFF url('../pixmaps/tile.png') top left repeat;
+         border:1px solid #444;
+         letter-spacing:.2em;
          line-height:1.5em;
-         margin:.2em .8em .8em .8em;
-         width:60%;
-         color:#666;
+         width:100%;
+         color:#FFF;
          font-size:10px;
-         background:#FFF url('../pixmaps/input_shadow.png') top left no-repeat;
          padding:.3em;
-         border:1px solid #F4F4F4;;
       }
    ul.form input[type='submit'],
    ul.form input[type='reset'],
    ul.form input[type='button']
       {
-         color:#666;
+         color:#FFF;
          font-size:10px;
-         background:#FFF;
-         padding:.3em;
-         border:1px solid #F4F4F4;;
+         border:1px solid #444;
+         background:#333;
+         padding:.6em;
       }
    ul.form input[disabled='disabled']
       {
@@ -124,7 +129,7 @@
    ul.form input:focus,
    ul.form textarea:focus
       {
-         border-left:1px solid #7b0;
+         border:1px solid #dbe9a1;
       }
 
 /* N A M E D  E X T E N S I O N  C L A S S E S */
@@ -177,7 +182,7 @@
    #content
       {
          background:#0b0b0b url('../pixmaps/gradient.png') top left repeat-x;
-         border:1px solid #000;;
+         border:0;
          width:549px;
          padding:1.2em;
          margin:0 auto 0 auto;
@@ -192,6 +197,7 @@
 
    #logo
       {
+         display:block;
          background:#FFF url('../pixmaps/logo.gif') top left repeat-x;
          margin:10px auto 20px auto;
          width:125px;
