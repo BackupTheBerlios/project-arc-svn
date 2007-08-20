@@ -32,6 +32,26 @@
        */
          public function construct()
             {
+               $this->system->model('user',$this);
+               $this->system->model('http',$this);
+
+               $this->http->cookie('shit','balls');
+
+               if(!empty($_SESSION['email'])&&!empty($_SESSION['password_hash']))
+                  {
+                     $email=$_SESSION['email'];
+                     $password_hash=$_SESSION['password_hash'];
+                  }
+               else
+                  {
+                     $email=$this->http->cookie('email');
+                     $password_hash=$this->http->cookie('password_hash');
+                  }
+
+               if(!empty($email)&&!empty($password_hash)&&$this->user->open($email,$password_hash,true))
+                  {
+                     //$this->user->unstamp();
+                  }
             }
       }
 ?>

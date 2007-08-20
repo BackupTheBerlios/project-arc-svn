@@ -1,20 +1,11 @@
-<div class="container center">
-   <span>User / Index</span>
-   <p class="left">
-      Welcome to the user extension's index method.
-
-      <br />
-      <br />
-
-      This page's template (view) can be found here:
-      <span class="box">
-         ./system/templates/user/index.tpl
-      </span>
-
-      <br />
-      This page's output extension (controller) can be found here:
-      <span class="box">
-         ./extensions/user/user.output.inc.php
-      </span>
+<?=$this->system->view('system/global/header')?>
+<div id="content">
+   <h1>User Home</h1>
+   <p>
+      <a href="<?=$webroot?>user/logout/<?=session_id()?>/">Logout</a><br />
+      <a href="<?=$webroot?>user/profile/<?=$user['id']?>/">View Profile</a><br />
+      <a href="<?=$webroot?>user/profile/">Edit Profile</a><br />
+      <a href="<?=$webroot?>user/settings/">Settings</a><br />
    </p>
 </div>
+<?=$this->system->view('system/global/footer')?>

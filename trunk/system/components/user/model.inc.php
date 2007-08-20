@@ -17,57 +17,253 @@
  * @version 2007.7.15
  */
 
+/**
+ * Define the USER_EXISTS error
+ */
+   define('E_USER_EXISTS',10);
+
+/**
+ * Simple interaction with the user layer
+ */
    class user_model extends A_model
       {
+      /**
+       * Store opened user accounts
+       * @access public
+       * @var array
+       */
          public $users=array(0=>false);
 
+      /**
+       * Construct - open configs and models
+       * @access public
+       * @return void
+       */
          public function construct()
             {
-               $this->system->config('user',$this,array('hash'));
+               $this->system->config('user',$this,array('hash_salt'));
+
+               $this->system->model('SeboDB',$this);
+               $this->system->model('http',$this);
             }
 
-         public function create_user()
+      /**
+       * Creates user accounts
+       * @access public
+       * @param string $email User email to be associated with the created account
+       * @param string $password Password to be associated with created account
+       * @param array $profile Optionally describe profile contents while creating account
+       * @return mixed True on success, on failure it can return E_USER_EXISTS if the specified email is in use or false if failure
+       */
+         public function create($email,$password,$profile=array())
             {
+               $r=false;
+
+               $d=&$this->SeboDB->default;
+
+               $d->query('SELECT null FROM ^users WHERE email="'.$d->escape($email).'"');
+               if($d->results()===0)
+                  {
+                     $profile['email']=&$email;
+                     $profile['password_hash']=$this->hash($password);
+
+                     $fields=$values=array();
+
+                     foreach($profile as $key=>$value)
+                        {
+                           $fields[]=$d->escape($key);
+                           $values[]=$d->escape($value);
+                        }
+
+                     if($d->query('INSERT INTO ^users ('.implode(',',$fields).') VALUES ("'.implode('","',$values).'")'))
+                        {
+                           $r=true;
+                        }
+                  }
+               else
+                  {
+                     $r=E_USER_EXISTS;
+                  }
+
+               return $r;
             }
 
-         public function modify_user()
+      /**
+       * Modifies user accounts
+       * @access public
+       * @param string $email Email associated with the account to modify
+       * @param string $fields Associative array (column=>value) of fields to modify in the user table
+       * @return bool True on success false on failure
+       */
+         public function modify($email,$fields=array())
             {
+               $r=false;
+
+               $d=&$this->SeboDB->default;
+
+               $d->query('SELECT null FROM ^users WHERE id="'.(int)$id.'"');
+               if($d->results()&&!empty($fields))
+                  {
+                     $set=array();
+                     foreach($fields as $key=>$value)
+                        {
+                           $set[]=$d->escape($key).'="'.$d->escape($value).'"';
+                        }
+
+                     if($d->query('UPDATE ^users SET '.implode(',',$set).' WHERE id="'.(int)$id.'"'))
+                        {
+                           $r=true;
+                        }
+                  }
+
+               return $r;
             }
 
-         public function delete_user()
+      /**
+       * Deletes user accounts
+       * @access public
+       * @param string $email Email associated with the account to delete
+       * @return bool True on success false on failure
+       */
+         public function delete($email)
             {
+               $r=false;
+
+               $d=&$this->SeboDB->default;
+
+               $d->query('SELECT null FROM ^users WHERE id="'.(int)$id.'"');
+               if($d->results())
+                  {
+                     $d->query('DELETE FROM ^users WHERE id="'.(int)$id.'"');
+
+                     $r=true;
+                  }
+
+               return $r;
             }
 
-         public function create_group()
+      /**
+       * Opens user accounts and stores them in $this->users
+       * @access public
+       * @param string $email User email associated with the account to open
+       * @param string $password_hash Password hash stored in the account
+       * @param bool $current Whether or not to link the user account to $this->users[0], which sets it as the current user
+       * @return mixed An array containing the user account on success false on failure
+       */
+         public function open($email,$password_hash=false,$current=false)
             {
+               $r=false;
+
+               $d=&$this->SeboDB->default;
+
+               $password_clause='';
+               if(!empty($password_hash))
+                  {
+                     $password_clause='AND password_hash="'.$d->escape($password_hash).'"';
+                  }
+
+               $d->query('SELECT * FROM ^users WHERE email="'.$d->escape($email).'" '.$password_clause.' LIMIT 1');
+               if($d->results())
+                  {
+                     $r=$d->fetch();
+
+                     $this->users[$r['id']]=&$r;
+
+                     if($current)
+                        {
+                           $this->users[0]=&$r;
+                        }
+                  }
+
+               return $r;
             }
 
-         public function modify_group()
-            {
-            }
-
-         public function delete_group()
-            {
-            }
-
-         public function open()
-            {
-            }
-
+      /**
+       * Stamps cookies with user information
+       * @access public
+       * @return bool True on success false on failure
+       */
          public function stamp()
             {
+               $r=false;
+
+               if(!empty($this->users[0]))
+                  {
+                     $this->http->cookie('email',$this->users[0]['email']);
+                     $this->http->cookie('password_hash',$this->users[0]['password_hash']);
+
+                     $r=true;
+                  }
+
+               return $r;
             }
 
+      /**
+       * Stamps session with user information
+       * @access public
+       * @return bool True on success false on failure
+       */
          public function halfstamp()
             {
+               $r=false;
+
+               if(!empty($this->users[0]))
+                  {
+                     $_SESSION['email']=$this->users[0]['email'];
+                     $_SESSION['password_hash']=$this->users[0]['password_hash'];
+
+                     $r=true;
+                  }
+
+               return $r;
             }
 
+      /**
+       * Unstamps session and cookies that are storing user information
+       * @access public
+       * @return bool Always returns true
+       */
          public function unstamp()
             {
+               $r=true;
+
+               unset($_SESSION['email']);
+               unset($_SESSION['password_hash']);
+
+               $this->http->cookie('email','');
+               $this->http->cookie('password_hash','');
+
+               $this->users[0]=false;
+
+               return $r;
             }
 
-         public function close()
+      /**
+       * Used to hash passwords for storage security
+       * @access public
+       * @return string Always returns hashed string
+       */
+         public function hash($string)
             {
+               $s=&$this->config['user']['hash_salt'];
+               return sha1($s.md5($string.sha1($s)));
+            }
+
+      /**
+       * Checks if a user is set as active
+       * @access public
+       * @return mixed Returns a reference to the user if they're active, false otherwise
+       */
+         public function &active()
+            {
+               $r=false;
+
+               if(!empty($this->users[0]))
+                  {
+                     $r=&$this->users[0];
+                  }
+
+               return $r;
             }
       }
 ?>

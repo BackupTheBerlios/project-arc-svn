@@ -18,4 +18,7 @@
  */
 
    $user['hash_salt']='3j.^r9%#'; // Don't change this after any users exist
+   $user['login_enabled']=true;
+   $user['register_enabled']=true;
+   $user['validate_enabled']=false;
 ?>
