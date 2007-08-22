@@ -17,8 +17,18 @@
  * @version 2007.8.19
  */
 
-   $user['hash_salt']='3j.^r9%#'; // Don't change this after any users exist
+// Salt by which user passwords will be encrypted - do not change once users exist
+   $user['hash_salt']='3j.^r9%#';
+
+// Enable / disable user login
    $user['login_enabled']=true;
-   $user['register_enabled']=true;
-   $user['validate_enabled']=false;
+
+// Enable / disable user registration
+   $user['registration_enabled']=true;
+
+// Not implemented
+   $user['validation_enabled']=false;
+
+// Not implemented
+   $user['captcha_enabled']=false;
 ?>

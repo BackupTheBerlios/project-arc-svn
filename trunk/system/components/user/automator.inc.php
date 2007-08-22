@@ -35,8 +35,6 @@
                $this->system->model('user',$this);
                $this->system->model('http',$this);
 
-               $this->http->cookie('shit','balls');
-
                if(!empty($_SESSION['email'])&&!empty($_SESSION['password_hash']))
                   {
                      $email=$_SESSION['email'];
