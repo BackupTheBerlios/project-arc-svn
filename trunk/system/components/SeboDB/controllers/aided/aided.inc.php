@@ -40,8 +40,8 @@
       /**
        * Opens a connection to a data source through the driver.
        * @access public
-       * @param array $config Array of information required to connect
-       * @return boolean True if success, false otherwise
+       * @param array $config Reference to an Array of information required to connect
+       * @return mixed Returns a reference to the connection on success and false on failure
        */
          public function open(&$config)
             {
@@ -51,8 +51,9 @@
       /**
        * Runs specified query and stores the resulting resource
        * @access public
-       * @param string $name Database name
-       * @return boolean True if success, false otherwise
+       * @param string $sql SQL code to run
+       * @param string $connection Optionally reference a specific connection to use
+       * @return mixed Returns a reference to the query resource on success and false on failure
        */
          public function query($sql,&$connection=false)
             {
@@ -77,7 +78,7 @@
             }
 
       /**
-       * Opens a connection to a data source through the driver.
+       * Returns the amount of rows affected by a query
        * @access public
        * @param string $name Database name
        * @return boolean True if success, false otherwise
@@ -94,9 +95,9 @@
             }
 
       /**
-       * Returns the number of results from the last query
+       * Returns the number of results from a query
        * @access public
-       * @param string $name Database name
+       * @param resource $query Optionally provide the query resource to use
        * @return boolean True if success, false otherwise
        */
          public function results(&$query=false)
@@ -111,7 +112,7 @@
             }
 
       /**
-       * Opens a connection to a data source through the driver.
+       * ID of last insert
        * @access public
        * @param string $name Database name
        * @return boolean True if success, false otherwise
@@ -128,20 +129,45 @@
             }
 
       /**
-       * Opens a connection to a data source through the driver.
+       * Escape a string to be inserted into SQL, making it secure
        * @access public
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function escape($string,&$connection=false)
+         public function escape(&$input,&$connection=false)
             {
+               $r=false;
+
             // Automagically resolve the connection if one wasn't specified
                if(empty($connection))
                   {
                      $connection=$this->driver->connection;
                   }
 
-               return $this->driver->escape($string,$connection);
+            // If it's an array, loop it
+               if(is_array($input)&&!empty($input))
+                  {
+                     $r=true;
+
+                     foreach($input as &$element)
+                        {
+                           if(is_array($element))
+                              {
+                                 $this->escape($element);
+                              }
+                           else
+                              {
+                                 $element=$this->escape($element);
+                              }
+                        }
+                  }
+            // If it's a string, trim it
+               elseif(is_string($input)&&!empty($input))
+                  {
+                     $r=$this->driver->escape($input,$connection);
+                  }
+
+               return $r;
             }
 
       /**
