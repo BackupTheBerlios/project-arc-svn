@@ -18,6 +18,8 @@
             <span>Password *</span>
             <input type="password" name="password" />
          </li>
+      </ul>
+      <ul class="form">
          <li>
             <span>First Name</span>
             <input type="text" name="first_name" value="<?=$values['first_name']?>" />

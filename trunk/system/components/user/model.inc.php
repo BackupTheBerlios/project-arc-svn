@@ -88,18 +88,17 @@
       /**
        * Modifies user accounts
        * @access public
-       * @param string $email Email associated with the account to modify
+       * @param mixed $account String email or int id
        * @param string $fields Associative array (column=>value) of fields to modify in the user table
        * @return bool True on success false on failure
        */
-         public function modify($email,$fields=array())
+         public function modify($account,$fields=array())
             {
                $r=false;
 
                $d=&$this->SeboDB->default;
 
-               $d->query('SELECT null FROM ^users WHERE id="'.(int)$id.'"');
-               if($d->results()&&!empty($fields))
+               if($user=&$this->open($account)&&!empty($fields))
                   {
                      $set=array();
                      foreach($fields as $key=>$value)
@@ -107,8 +106,19 @@
                            $set[]=$d->escape($key).'="'.$d->escape($value).'"';
                         }
 
-                     if($d->query('UPDATE ^users SET '.implode(',',$set).' WHERE id="'.(int)$id.'"'))
+                     if($d->query('UPDATE ^users SET '.implode(',',$set).' WHERE id="'.(int)$user['id'].'"'))
                         {
+                           foreach($fields as $key=>$value)
+                              {
+                                 $user[$key]=$value;
+                              }
+
+                        // Re-stamp if they modified critical account information
+                           if(!empty($fields['email'])||!empty($fields['password_hash']))
+                              {
+                                 $this->restamp();
+                              }
+
                            $r=true;
                         }
                   }
@@ -122,14 +132,13 @@
        * @param string $email Email associated with the account to delete
        * @return bool True on success false on failure
        */
-         public function delete($email)
+         public function delete($account)
             {
                $r=false;
 
                $d=&$this->SeboDB->default;
 
-               $d->query('SELECT null FROM ^users WHERE id="'.(int)$id.'"');
-               if($d->results())
+               if($user=&$this->open($account))
                   {
                      $d->query('DELETE FROM ^users WHERE id="'.(int)$id.'"');
 
@@ -142,33 +151,52 @@
       /**
        * Opens user accounts and stores them in $this->users
        * @access public
-       * @param string $email User email associated with the account to open
-       * @param string $password_hash Password hash stored in the account
+       * @param mixed $account String email or int user id
+       * @param string $password_hash Optional password hash stored in the account
        * @param bool $current Whether or not to link the user account to $this->users[0], which sets it as the current user
        * @return mixed An array containing the user account on success false on failure
        */
-         public function open($email,$password_hash=false,$current=false)
+         public function &open($account,$password_hash=false,$current=false)
             {
                $r=false;
 
-               $d=&$this->SeboDB->default;
-
-               $password_clause='';
-               if(!empty($password_hash))
+               if(!empty($this->users[$account]))
                   {
-                     $password_clause='AND password_hash="'.$d->escape($password_hash).'"';
+                     $r=&$this->users[$account];
                   }
-
-               $d->query('SELECT * FROM ^users WHERE email="'.$d->escape($email).'" '.$password_clause.' LIMIT 1');
-               if($d->results())
+               else
                   {
-                     $r=$d->fetch();
+                     $d=&$this->SeboDB->default;
 
-                     $this->users[$r['id']]=&$r;
-
-                     if($current)
+                     $password_clause='';
+                     if(!empty($password_hash))
                         {
-                           $this->users[0]=&$r;
+                           $password_clause='AND password_hash="'.$d->escape($password_hash).'"';
+                        }
+
+                     if(is_string($account))
+                        {
+                           $field='email';
+                           $value=$account;
+                        }
+                     else
+                        {
+                           $field='id';
+                           $value=(int)$account;
+                        }
+
+                     $d->query('SELECT * FROM ^users WHERE '.$field.'="'.$d->escape($account).'" '.$password_clause.' LIMIT 1');
+                     if($d->results())
+                        {
+                           $r=$d->fetch();
+
+                           $this->users[$r['id']]=&$r;
+                           $this->users[$r['email']]=&$r;
+
+                           if($current)
+                              {
+                                 $this->users[0]=&$r;
+                              }
                         }
                   }
 
@@ -210,6 +238,27 @@
                      $_SESSION['password_hash']=$this->users[0]['password_hash'];
 
                      $r=true;
+                  }
+
+               return $r;
+            }
+
+      /**
+       * Re-Stamps the session or cookie information storage, depending on which is being used
+       * @access public
+       * @return bool True on success false on failure
+       */
+         public function restamp()
+            {
+               $r=false;
+
+               if(!empty($_SESSION['email'])&&!empty($_SESSION['password_hash']))
+                  {
+                     $r=$this->halfstamp();
+                  }
+               else
+                  {
+                     $r=$this->stamp();
                   }
 
                return $r;
@@ -261,10 +310,6 @@
                   }
 
                return $r;
-            }
-
-         public function online_users()
-            {
             }
       }
 ?>

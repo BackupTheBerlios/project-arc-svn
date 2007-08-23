@@ -62,6 +62,97 @@
          public function profile($id=false)
             {
                $view='user/login';$input=array();
+
+               if(empty($id))
+                  {
+                     if(!($user=&$this->user->active()))
+                        {
+                           $view='user/login';
+                        }
+                     else
+                        {
+                           $view='user/edit_profile';
+
+                           $require=array('email');
+                           $accept=array('email','password','first_name','last_name');
+
+                           if(!empty($_POST))
+                              {
+                                 foreach($_POST as $key=>$value)
+                                    {
+                                       if(!in_array($key,$accept))
+                                          {
+                                             unset($_POST[$key]);
+                                          }
+                                       elseif(empty($_POST[$key]))
+                                          {
+                                             unset($_POST[$key]);
+                                          }
+                                       else
+                                          {
+                                             $input['values'][$key]=$value;
+                                          }
+                                    }
+
+                                 $missing=array();
+                                 foreach($require as $field)
+                                    {
+                                       if(empty($_POST[$field]))
+                                          {
+                                             $missing[]=$field;
+                                             $halt=true;
+                                          }
+                                    }
+
+                                 if(!empty($missing))
+                                    {
+                                       $s='';
+                                       if(count($missing)>1)
+                                          {
+                                             $s='s';
+                                          }
+            
+                                       $input['message']="Please fill required field${s}: '".implode("', '",$missing)."'";
+                                    }
+                                 else
+                                    {
+                                    // A few last changes
+                                       if(!empty($_POST['password']))
+                                          {
+                                             $_POST['password_hash']=$this->user->hash($_POST['password']);
+                                             unset($_POST['password']);
+                                          }
+
+                                       if($this->user->modify($user['id'],$_POST))
+                                          {
+                                             $input['message']='Saved';
+                                          }
+                                       else
+                                          {
+                                             $input['message']='An unknown error has occurred';
+                                          }
+                                    }
+                              }
+
+                           foreach($accept as $field)
+                              {
+                                 $value='';
+                                 if(!empty($user[$field]))
+                                    {
+                                       $value=$user[$field];
+                                    }
+
+                                 if(empty($input['values'][$field]))
+                                    {
+                                       $input['values'][$field]=$value;
+                                    }
+                              }
+                        }
+                  }
+               else
+                  {
+                  }
+
                echo($this->system->view($view,$input));
             }
          
@@ -117,6 +208,11 @@
                                     {
                                        unset($_POST[$key]);
                                     }
+                              // Don't try to assign stuff without value
+                                 elseif(empty($_POST[$key]))
+                                    {
+                                       unset($_POST[$key]);
+                                    }
                               // Put everything else in $input['values'] so the forms can remember their value
                                  else
                                     {
@@ -131,12 +227,11 @@
                                  if(empty($_POST[$field]))
                                     {
                                        $missing[]=$field;
-                                       $halt=true;
                                     }
                               }
       
                         // Spit out missing fields if there are any
-                           if(!empty($halt))
+                           if(!empty($missing))
                               {
                                  $s='';
                                  if(count($missing)>1)
@@ -149,10 +244,10 @@
                         // Or finish up by creating the user
                            else
                               {
-                                 $email=$_POST['email'];
+                                 $email=&$_POST['email'];
                                  unset($_POST['email']);
 
-                                 $password=$_POST['password'];
+                                 $password=&$_POST['password'];
                                  unset($_POST['password']);
 
                                  $status=$this->user->create($email,$password,$_POST);
@@ -202,7 +297,11 @@
                   }
                elseif(!empty($_POST))
                   {
-                     if(!empty($_POST['email'])&&!empty($_POST['password']))
+                     if(empty($_POST['email'])||empty($_POST['password']))
+                        {
+                           $input['message']="Please fill out the form properly";
+                        }
+                     else
                         {
                            if($this->user->open($_POST['email'],$this->user->hash($_POST['password']),true))
                               {
@@ -216,10 +315,6 @@
                               {
                                  $input['message']='Invalid login credentials';
                               }
-                        }
-                     else
-                        {
-                           $input['message']="Please fill out the form properly";
                         }
                   }
 
