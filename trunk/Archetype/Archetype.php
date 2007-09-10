@@ -26,7 +26,7 @@
 // System location
    if(!defined('SYSTEM_LOCATION'))
       {
-         define('SYSTEM_LOCATION','./system/'); // Always have a / on both sides of a directory since it doesn't hurt to have extras but it does to not have enough
+         define('SYSTEM_LOCATION','./Archetype/'); // Always have a / on both sides of a directory since it doesn't hurt to have extras but it does to not have enough
       }
 // Config location
    if(!defined('CONFIG_LOCATION'))
@@ -62,7 +62,7 @@
       );
 
 // Open up our system class definitions
-   require(SYSTEM_LOCATION.'/global.inc.php');
+   require('global.inc.php');
 
 // Scan the filesystem for component directories
    $_['lists']['components']=array_slice(scandir(COMPONENTS_LOCATION),2);
