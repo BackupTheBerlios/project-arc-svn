@@ -7,13 +7,11 @@
 #  Rewrites Apache's URLs to be search-engine friendly cleaner looking
 #  before they ever reach Archetype and helps secure the filesystem a bit.
 
-#  Copyright Â© 2007 Sebo Corporation.  All rights reserved.
+#  Copyright © 2007 Sebo Corporation.  All rights reserved.
 
 <IfModule mod_rewrite.c>
- # Enable Apache's Rewrite engine
    RewriteEngine On
 
- # Change all requests to appear as though they're static ( but only if they're not real )
    RewriteCond %{REQUEST_FILENAME} !-f
    RewriteCond %{REQUEST_FILENAME} !-d
    RewriteRule ^(.+)$ ./index.php?x=$1 [L]
