@@ -51,6 +51,7 @@
        * @param string $password Password to be associated with created account
        * @param array $profile Optionally describe profile contents while creating account
        * @return mixed True on success, on failure it can return E_USER_EXISTS if the specified email is in use or false if failure
+       * @todo make it use $this->open() instead of its own SQL to figure out if the user exists or not
        */
          public function create($email,$password,$profile=array())
             {
@@ -96,10 +97,10 @@
             {
                $r=false;
 
-               $d=&$this->SeboDB->default;
-
                if($user=&$this->open($account)&&!empty($fields))
                   {
+                     $d=&$this->SeboDB->default;
+
                      $set=array();
                      foreach($fields as $key=>$value)
                         {

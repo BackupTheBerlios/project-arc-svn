@@ -29,8 +29,8 @@
             <input type="text" name="last_name" value="<?=$values['last_name']?>" />
          </li>
          <li>
-            <input type="submit" value="Login" />
-            <input type="reset" value="Clear" />
+            <input type="submit" value="Register" />
+            <input type="reset" value="Reset" />
          </li>
       </ul>
    </form>
