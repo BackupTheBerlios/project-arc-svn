@@ -24,7 +24,7 @@
       {
          public function construct()
             {
-               $this->system->config('cookie',$this,array('prefix','expire','path','domain','https_only','header_only'));
+               $this->system->settings('cookie',$this,array('prefix','expire','path','domain','https_only','header_only'));
             }
 
          public function location()
@@ -41,11 +41,11 @@
 
                if(is_string($name)&&is_string($value))
                   {
-                     $r=setcookie($this->config['cookie']['prefix'].$name,$value,$this->config['cookie']['expire'],$this->config['cookie']['path'],$this->config['cookie']['domain'],$this->config['cookie']['https_only'],$this->config['cookie']['header_only']);
+                     $r=setcookie($this->settings['cookie']['prefix'].$name,$value,$this->settings['cookie']['expire'],$this->settings['cookie']['path'],$this->settings['cookie']['domain'],$this->settings['cookie']['https_only'],$this->settings['cookie']['header_only']);
                   }
-               elseif(is_string($name)&&!is_string($value)&&!empty($_COOKIE[$this->config['cookie']['prefix'].$name]))
+               elseif(is_string($name)&&!is_string($value)&&!empty($_COOKIE[$this->settings['cookie']['prefix'].$name]))
                   {
-                     $r=&$_COOKIE[$this->config['cookie']['prefix'].$name];
+                     $r=&$_COOKIE[$this->settings['cookie']['prefix'].$name];
                   }
 
                return $r;

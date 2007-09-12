@@ -15,17 +15,16 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/archetype
- * @version 2007.4.1
+ * @version 2007.9.10
  */
 
-   $construct=900;
-   $destruct=-900;
-
 /**
- * Make connections automatically based on the configuration file
+ * Make connections automatically based on the database settings
  */
    class SeboDB_automator extends A_automator
       {
+         public static $construct=900;
+         public static $destruct=-900;
       /**
        * Constructor.  Open our configuration, auto-generate (potentially) a bunch of data sources.
        * @access public
@@ -33,21 +32,21 @@
        */
          public function construct()
             {
-               if($this->system->config('database',$this))
+               if($this->system->settings('database',$this))
                   {
                      $this->system->model('SeboDB',$this);
 
-                     foreach($this->config['database'] as $index=>$value)
+                     foreach($this->settings['database'] as $index=>$value)
                         {
-                           if(!empty($this->config['SeboDB'][$index]['link']))
+                           if(!empty($this->settings['SeboDB'][$index]['link']))
                               {
-                                 $link_name=&$this->config['SeboDB'][$index]['link'];
-                                 $this->SeboDB->create($this->config['database'][$index]['controller'],$this->SeboDB->$link_name->driver,$index);
+                                 $link_name=&$this->settings['SeboDB'][$index]['link'];
+                                 $this->SeboDB->create($this->settings['database'][$index]['controller'],$this->SeboDB->$link_name->driver,$index);
                               }
                            else
                               {
-                                 $this->SeboDB->create($this->config['database'][$index]['controller'],$this->config['database'][$index]['driver'],$index);
-                                 $this->SeboDB->$index->open($this->config['database'][$index]);
+                                 $this->SeboDB->create($this->settings['database'][$index]['controller'],$this->settings['database'][$index]['driver'],$index);
+                                 $this->SeboDB->$index->open($this->settings['database'][$index]);
                               }
                         }
                   }
@@ -60,9 +59,9 @@
        */
          public function destruct()
             {
-               if(!empty($this->config['SeboDB']))
+               if(!empty($this->settings['SeboDB']))
                   {
-                     foreach($this->config['SeboDB'] as $index=>$value)
+                     foreach($this->settings['SeboDB'] as $index=>$value)
                         {
                            if(!empty($this->SeboDB->$index->connection))
                               {

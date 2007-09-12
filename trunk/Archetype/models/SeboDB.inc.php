@@ -15,40 +15,40 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/sebodb
- * @version 2007.7.29
+ * @version 2007.9.10
  */
 
 /**
  * Define SeboDB's version
  */
-   define('SEBODB_VERSION','2007.7.29');
+   define('SEBODB_VERSION','2007.9.10');
 
 /**
  * Controller location
  */
-   if(!defined('SEBODB_CONTROLLERS'))
+   if(!defined('SEBODB_CONTROLLERS_LOCATION'))
       {
-         define('SEBODB_CONTROLLERS',COMPONENTS_LOCATION.'/SeboDB/controllers/');
+         define('SEBODB_CONTROLLERS_LOCATION',SYSTEM_LOCATION.'SeboDB/controllers/');
       }
 /**
  * Driver location
  */
-   if(!defined('SEBODB_DRIVERS'))
+   if(!defined('SEBODB_DRIVERS_LOCATION'))
       {
-         define('SEBODB_DRIVERS',COMPONENTS_LOCATION.'/SeboDB/drivers/');
+         define('SEBODB_DRIVERS_LOCATION',SYSTEM_LOCATION.'SeboDB/drivers/');
       }
 /**
  * Global file location
  */
-   if(!defined('SEBODB_GLOBAL'))
+   if(!defined('SEBODB_GLOBAL_LOCATION'))
       {
-         define('SEBODB_GLOBAL',COMPONENTS_LOCATION.'/SeboDB/SeboDB.global.inc.php');
+         define('SEBODB_GLOBAL_LOCATION',SYSTEM_LOCATION.'SeboDB/SeboDB.global.inc.php');
       }
 
 /**
  * Require SeboDB's core classes
  */
-   require(SEBODB_GLOBAL);
+   require(SEBODB_GLOBAL_LOCATION);
 
 /**
  * Originally the stock SeboDB class, but modified to work nicer inside Archetype.
@@ -69,7 +69,7 @@
                $r=false;
 
             // Make sure our controller class exists
-               if(is_readable($controller_file=SEBODB_CONTROLLERS.$controller.'/'.$controller.'.inc.php'))
+               if(is_readable($controller_file=SEBODB_CONTROLLERS_LOCATION.$controller.'/'.$controller.'.inc.php'))
                   {
                      $controller_name='SeboDB_controller_'.$controller;
 
@@ -80,7 +80,7 @@
                   }
 
             // Make sure our driver class exists then create an instance of it
-               if(is_string($driver)&&is_readable($driver_file=SEBODB_DRIVERS.$driver.'/'.$driver.'.inc.php'))
+               if(is_string($driver)&&is_readable($driver_file=SEBODB_DRIVERS_LOCATION.$driver.'/'.$driver.'.inc.php'))
                   {
                      $driver_name='SeboDB_driver_'.$driver;
 
@@ -122,7 +122,7 @@
                $r=false;
 
             // Make sure our controller class exists
-               if(is_readable($controller_file=SEBODB_CONTROLLERS.$controller.'/'.$controller.'.inc.php'))
+               if(is_readable($controller_file=SEBODB_CONTROLLERS_LOCATION.$controller.'/'.$controller.'.inc.php'))
                   {
                      if(!class_exists($controller))
                         {

@@ -14,98 +14,110 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.com/archetype
- * @version 2007.7.16
+ * @version 2007.9.10
  */
 
-// Audible errors because we can't have them ignored
+// Audible errors because we can't have them ignored for development purposes (feel free to silence a production application if you're sure it's safe)
    error_reporting(E_ALL);
 
-// Archetype's version definition
-   define('ARCHETYPE_VERSION','2007.7.16');
+/**
+ * Archetype's version
+ */define('ARCHETYPE_VERSION','2007.9.10');
 
-// System location
-   if(!defined('SYSTEM_LOCATION'))
-      {
-         define('SYSTEM_LOCATION','./Archetype/'); // Always have a / on both sides of a directory since it doesn't hurt to have extras but it does to not have enough
-      }
-// Config location
-   if(!defined('CONFIG_LOCATION'))
-      {
-         define('CONFIG_LOCATION',SYSTEM_LOCATION.'/config/'); // Read above comment
-      }
-// Components location
-   if(!defined('COMPONENTS_LOCATION'))
-      {
-         define('COMPONENTS_LOCATION',SYSTEM_LOCATION.'/components/'); // Read above comment
-      }
+/**
+ * Location of the system directory
+ */if(!defined('SYSTEM_LOCATION')) { define('SYSTEM_LOCATION','Archetype/'); }
+/**
+ * Location of automator storage
+ */if(!defined('AUTOMATORS_LOCATION')) { define('AUTOMATORS_LOCATION',SYSTEM_LOCATION.'automators/'); }
+/**
+ * Location of injector storage
+ */if(!defined('INJECTORS_LOCATION')) { define('INJECTORS_LOCATION',SYSTEM_LOCATION.'injectors/'); }
+/**
+ * Location of config storage
+ */if(!defined('SETTINGS_LOCATION')) { define('SETTINGS_LOCATION',SYSTEM_LOCATION.'settings/'); }
+/**
+ * Location of model storage
+ */if(!defined('MODELS_LOCATION')) { define('MODELS_LOCATION',SYSTEM_LOCATION.'models/'); }
+/**
+ * Location of view storage
+ */if(!defined('VIEWS_LOCATION')) { define('VIEWS_LOCATION',SYSTEM_LOCATION.'views/'); }
+/**
+ * Location of controller storage
+ */if(!defined('CONTROLLERS_LOCATION')) { define('CONTROLLERS_LOCATION',SYSTEM_LOCATION.'controllers/'); }
+/**
+ * Location of global classes
+ */if(!defined('GLOBAL_LOCATION')) { define('GLOBAL_LOCATION',SYSTEM_LOCATION.'global.inc.php'); }
 
-// Universal variable passed between every object extended from Archetype
+/**
+ * Universal variable passed between every object extended from Archetype
+ * @var array
+ */
    $_=array
       (
-         'lists'=>array // Store lists of stuff
+         'information'=>array // Storage of miscellaneous information
             (
-               'components'=>array(), // All components
-               'automators'=>array // Automators
-                  (
-                     'construct'=>array(), // Construct priority
-                     'destruct'=>array() // Destruct priority
-                  ),
-               'configs'=>array() // Configurations
+               'priority'=>array('construct'=>array(),'destruct'=>array()), // Automator priority
+               'timings'=>array('archetype|start'=>microtime(true)), // Benchmark timings and the system's begin time
+               'lists'=>array('automators'=>array(),'injectors'=>array()) // Lists of component types that require to be opened all at once
             ),
-         'automators'=>array(), // Store automator objects
-         'models'=>array // Store model objects
+         'storage'=>array // Storage of Archetype-derived objects
             (
-               'system'=>false // Default the system model so we have a place to point references before it's instantiated
+               'settings'=>array(),
+               'automators'=>array(),
+               'injectors'=>array(),
+               'models'=>array('system'=>false),
+               'controllers'=>array()
             ),
-         'controllers'=>array(),
-         'marks'=>array('archetype_start'=>microtime(true)) // Shouldn't be here, but we need to be able to take an accurate measurement
       );
 
-// Open up our system class definitions
-   require('global.inc.php');
+// Open up our global class definitions
+   require(GLOBAL_LOCATION);
 
 // Scan the filesystem for component directories
-   $_['lists']['components']=array_slice(scandir(COMPONENTS_LOCATION),2);
+   $_['information']['lists']['automators']=array_slice(scandir(AUTOMATORS_LOCATION),2);
 
 // Execute in a sandbox so we can catch exceptions
-  try
+   try
       {
-      // Loop components and get automator information
-         foreach($_['lists']['components'] as $component)
+      // Open up our automators
+         foreach($_['information']['lists']['automators'] as &$automator)
             {
-               if(is_readable($component_location=COMPONENTS_LOCATION.'/'.$component.'/automator.inc.php')&&!class_exists($class=$component.'_automator'))
-                  {
-                     $construct=$destruct=0;
+               $automator=str_replace('.inc.php','',$automator);
 
-                     require($component_location);
+               if(is_file($location=AUTOMATORS_LOCATION.$automator.'.inc.php')&&is_readable($location)&&$automator{1}!='.')
+                  {
+                     $class=$automator.'_automator';
+
+                     require($location);
 
                      if(class_exists($class))
                         {
-                           $_['lists']['automators']['construct'][$component]=$construct;
-                           $_['lists']['automators']['destruct'][$component]=$destruct;
+                           $_['information']['priority']['construct'][$automator]=eval("return ${class}::\$construct;");
+                           $_['information']['priority']['destruct'][$automator]=eval("return ${class}::\$destruct;");
                         }
                   }
             }
 
       // Sort constructor and destructor orders
-         arsort($_['lists']['automators']['construct'],SORT_NUMERIC);
-         arsort($_['lists']['automators']['destruct'],SORT_NUMERIC);
+         arsort($_['information']['priority']['construct'],SORT_NUMERIC);
+         arsort($_['information']['priority']['destruct'],SORT_NUMERIC);
 
       // Run constructors
-         foreach($_['lists']['automators']['construct'] as $component=>$priority)
+         foreach($_['information']['priority']['construct'] as $automator=>$priority)
             {
-               if(class_exists($class=$component.'_automator'))
+               if(class_exists($class=$automator.'_automator'))
                   {
-                     $_['automators'][$component]=new $class($_);
+                     $_['storage']['automators'][$automator]=new $class($_);
                   }
             }
 
       // Run destructors
-         foreach($_['lists']['automators']['destruct'] as $component=>$priority)
+         foreach($_['information']['priority']['destruct'] as $automator=>$priority)
             {
-               if(!empty($_['automators'][$component]))
+               if(!empty($_['storage']['automators'][$automator]))
                   {
-                     unset($_['automators'][$component]);
+                     unset($_['storage']['automators'][$automator]);
                   }
             }
       }
@@ -113,15 +125,14 @@
    catch(Exception $x)
       {
       // Allow components to set a new exception handler
-         if(!empty($_['config']['system']['exception_handler']))
+         if(!empty($_['information']['settings']['system']['exception_handler']))
             {
-               call_user_func($_['config']['system']['exception_handler'],$x);
+               call_user_func($_['information']['settings']['system']['exception_handler'],$x);
             }
       // But default to trigger_error()
          else
             {
-            // __toString() because PHP5.1 is stupid
-               trigger_error($x->__toString(),E_USER_ERROR);
+               trigger_error($x->__toString(),E_USER_ERROR); // __toString() because PHP5.1 is stupid
             }
       }
 ?>

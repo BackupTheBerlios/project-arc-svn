@@ -29,12 +29,12 @@
        */
          public function construct()
             {
-            // Assign our config to the class so we don't have to fiddle with it a bunch later
-               $this->system->config('routes',$this);
+            // Assign our settings to the class so we don't have to fiddle with it a bunch later
+               $this->system->settings('routes',$this);
             }
 
       /**
-       * Modifies the referenced $input string according to aliases in the routes config
+       * Modifies the referenced $input string according to aliases in the routes settings
        * @param string $input Reference to a string you want to filter
        * @access public
        * @return void
@@ -42,9 +42,9 @@
          public function alias(&$input)
             {
             // If there's aliases to be assigned, do it
-               if(!empty($this->config['routes']['aliases']))
+               if(!empty($this->settings['routes']['aliases']))
                   {
-                     foreach($this->config['routes']['aliases'] as $index=>&$value)
+                     foreach($this->settings['routes']['aliases'] as $index=>&$value)
                         {
                            if(!empty($index)&&!empty($value)&&(!$input=@preg_replace($index,$value,$input)))
                               {

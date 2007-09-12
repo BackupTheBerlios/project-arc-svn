@@ -17,13 +17,13 @@
  * @version 2007.5.8
  */
 
-   $construct=950;
-
 /**
  * Routers - only works for HTTP for now.  Archetype needs some sort of imput abstraction before it can route for anything else.
  */
    class router_automator extends A_automator
       {
+         public static $construct=950;
+
          public function construct()
             {
             // Pop open the router model
@@ -32,7 +32,7 @@
             // Set our default route if none was specified so even it is subject to aliasing
                if(empty($_GET['x']))
                   {
-                     $_GET['x']=$this->router->config['routes']['system']['default'];
+                     $_GET['x']=$this->router->settings['routes']['system']['default'];
                   }
                else
                   {

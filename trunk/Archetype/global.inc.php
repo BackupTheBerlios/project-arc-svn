@@ -80,42 +80,9 @@
                $this->_=&$_;
 
             // Load the system model
-               $this->system=&$this->_['models']['system'];
-
-            // Assign the class so we don't have to use get_class() multiple times
-               $class=get_class($this);
-
-            // Load the system config
-               if(!empty($this->system))
-                  {
-                     $this->system->config('system');
-                  }
-
-            // Trigger callbacks before construction if the event component exists
-               if(!empty($this->_['models']['event']))
-                  {
-                     $this->_['models']['event']->trigger($class.'_pre_construct',array(&$this));
-                  }
-
-            // Mark the time before construction if debug mode is enabled and the benchmark component exists
-               if(!empty($this->_['config']['system']['debug'])&&!empty($this->_['models']['benchmark']))
-                  {
-                     $this->_['models']['benchmark']->mark($class.'_construct_start');
-                  }
+               $this->system=&$this->_['storage']['models']['system'];
 
                $this->construct();
-
-            // Mark the time after construction if debug mode is enabled and the benchmark component exists
-               if(!empty($this->_['config']['system']['debug'])&&!empty($this->_['models']['benchmark']))
-                  {
-                     $this->_['models']['benchmark']->mark($class.'_construct_end');
-                  }
-
-            // Trigger callbacks after construction if the event component exists
-               if(!empty($this->_['models']['event']))
-                  {
-                     $this->_['models']['event']->trigger($class.'_post_construct',array(&$this));
-                  }
             }
 
       /**
@@ -125,34 +92,7 @@
        */
          public function __destruct()
             {
-            // Assign the class so we don't have to use get_class() multiple times
-               $class=get_class($this);
-
-            // Trigger callbacks before destruction if the event component exists
-               if(!empty($this->_['models']['event']))
-                  {
-                     $this->_['models']['event']->trigger($class.'_pre_destruct',array(&$this));
-                  }
-
-            // Mark the time before destruction if debug mode is enabled and the benchmark component exists
-               if(!empty($this->_['config']['system']['debug'])&&!empty($this->_['models']['benchmark']))
-                  {
-                     $this->_['models']['benchmark']->mark($class.'_destruct_start');
-                  }
-
                $this->destruct();
-
-            // Mark the time after destruction if debug mode is enabled and the benchmark component exists
-               if(!empty($this->_['config']['system']['debug'])&&!empty($this->_['models']['benchmark']))
-                  {
-                     $this->_['models']['benchmark']->mark($class.'_destruct_end');
-                  }
-
-            // Trigger callbacks after destruction if the event component exists
-               if(!empty($this->_['models']['event']))
-                  {
-                     $this->_['models']['event']->trigger($class.'_post_destruct',array(&$this));
-                  }
             }
       }
 
@@ -169,5 +109,31 @@
 /**
  * Provide a base class for automators
  */
-   class A_automator extends A {}
+   class A_automator extends A
+      {
+         public static $construct=0;
+         public static $destruct=0;
+      }
+
+/**
+ * Provide a base class for injectors
+ */
+   class A_injector extends A
+      {
+         public function pre_construct()
+            {
+            }
+
+         public function post_construct()
+            {
+            }
+
+         public function pre_destruct()
+            {
+            }
+
+         public function post_destruct()
+            {
+            }
+      }
 ?>

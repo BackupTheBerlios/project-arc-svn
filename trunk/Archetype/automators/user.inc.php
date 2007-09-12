@@ -14,17 +14,15 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/archetype
- * @version 2007.4.1
+ * @version 2007.9.10
  */
-
-   $construct=800;
-   $construct=800;
 
 /**
  * Handles user information automatically
  */
    class user_automator extends A_automator
       {
+         public static $construct=800;
       /**
        * Checks user credentials and loads up an account if they're good
        * @access public

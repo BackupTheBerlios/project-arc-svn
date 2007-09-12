@@ -14,7 +14,7 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/archetype
- * @version 2007.8.20
+ * @version 2007.9.10
  */
 
    define('E_USER_EXISTS',10);
@@ -32,13 +32,13 @@
          public $users=array(0=>false);
 
       /**
-       * Construct - open configs and models
+       * Construct - open settings and models
        * @access public
        * @return void
        */
          public function construct()
             {
-               $this->system->config('user',$this,array('hash_salt'));
+               $this->system->settings('user',$this,array('hash_salt'));
 
                $this->system->model('SeboDB',$this);
                $this->system->model('http',$this);
@@ -292,7 +292,7 @@
        */
          public function hash($string)
             {
-               $s=&$this->config['user']['hash_salt'];
+               $s=&$this->settings['user']['hash_salt'];
                return sha1($s.md5($string.sha1($s)));
             }
 

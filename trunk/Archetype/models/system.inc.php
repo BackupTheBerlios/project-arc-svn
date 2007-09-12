@@ -14,7 +14,7 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/archetype
- * @version 2007.7.16
+ * @version 2007.9.10
  */
 
 /**
@@ -23,20 +23,6 @@
    class system_model extends A_model
       {
       /**
-       * Stores the views configuration
-       * @access public
-       * @var array
-       */
-         public $views_config=array();
-
-      /**
-       * Stores the system configuration
-       * @access public
-       * @var array
-       */
-         public $system_config=array();
-
-      /**
        * Upon construct, assign a few important things to the object
        * @access public
        * @return void
@@ -44,12 +30,12 @@
          public function construct()
             {
             // Assign global view values
-               $this->views_config=&$this->config('views');
-               $this->system_config=&$this->config('system');
+               $this->settings('views',$this);
+               $this->settings('system',$this);
             }
 
       /**
-       * Open libraries and optionally assign them to the object passed
+       * Open models and optionally assign them to the object passed
        * @access public
        * @param string $model String name of the model to open
        * @param mixed $object Optional object for the model to be automatically inserted into
@@ -60,33 +46,33 @@
                $r=false;
 
             // If we don't have an existing instance of the model, try to create one
-               if(empty($this->_['models'][$model]))
+               if(empty($this->_['storage']['models'][$model]))
                   {
-                     if(is_readable($model_location=COMPONENTS_LOCATION."/${model}/model.inc.php"))
+                     if(is_readable($location=MODELS_LOCATION."${model}.inc.php"))
                         {
-                           $class=$model.'_model';
+                           $class="${model}_model";
 
                            if(!class_exists($class))
                               {
-                                 require($model_location);
+                                 require($location);
                               }
 
                            if(class_exists($class))
                               {
-                                 $this->_['models'][$model]=new $class($this->_);
+                                 $this->_['storage']['models'][$model]=new $class($this->_);
                               }
                         }
 
-                     if(empty($this->_['models'][$model]))
+                     if(empty($this->_['storage']['models'][$model]))
                         {
                            throw new ArchetypeSystemException("Attempted to open non-existent model '${model}'");
                         }
                   }
 
             // Existing model found, return a reference to it
-               if(!empty($this->_['models'][$model]))
+               if(!empty($this->_['storage']['models'][$model]))
                   {
-                     $r=&$this->_['models'][$model];
+                     $r=&$this->_['storage']['models'][$model];
 
                   // Assign the model to a parameter inside of the passed object, if one was passed
                      if(is_object($object))
@@ -102,7 +88,7 @@
        * Load and return a view
        * @access public
        * @param string $view String name of the view to open
-       * @param array $input Associative array of variables to provide to the view
+       * @param array $input Reference to an associative array of variables to provide to the view
        * @return mixed Returns a reference to the model on success, false on failure
        */
          public function view($view,&$input=false)
@@ -112,17 +98,17 @@
             // Merge global and local values, local overwriting global
                if(is_array($input))
                   {
-                     $input=array_merge($input,$this->views_config['global']);
+                     $input=array_merge($input,$this->settings['views']['global']);
                   }
             // Just link the two because there was no input array
                elseif(empty($input))
                   {
-                     $input=&$this->views_config['global'];
+                     $input=&$this->settings['views']['global'];
                   }
             // Throw an exception because someone tried feeding it the wrong kind of food
                else
                   {
-                     throw new ArchetypeSystemException("Only accepts input in the form of an associative array");
+                     throw new ArchetypeSystemException("Views only accept input in the form of an associative array");
                   }
 
             // Convert $input into a bunch of variables for the view
@@ -138,14 +124,8 @@
                         }
                   }
 
-            // Makes supporting subdirectories easy
-               $view=explode('/',$view);
-
-            // Get the component from the array
-               $component=array_shift($view);
-
             // If the view exists, load it up and catch the output
-               if(is_readable($view_location=COMPONENTS_LOCATION."/${component}/views/".implode('/',$view).'.inc.php'))
+               if(is_readable($view_location=VIEWS_LOCATION.$view.'.inc.php'))
                   {
                   // Start an output buffer so we can catch all output
                      ob_start();
@@ -176,9 +156,9 @@
             {
                $r=false;
 
-               if(empty($this->_['controllers'][$controller]))
+               if(empty($this->_['storage']['controllers'][$controller]))
                   {
-                     if(is_readable($controller_location=COMPONENTS_LOCATION."/${controller}/controller.inc.php"))
+                     if(is_readable($controller_location=CONTROLLERS_LOCATION.$controller.'.inc.php'))
                         {
                            $class=$controller.'_controller';
       
@@ -187,22 +167,21 @@
                                  require($controller_location);
                               }
       
-                           if(class_exists($class)&&method_exists($class,$method))
+                           if(class_exists($class))
                               {
-                                 $this->_['controllers'][$controller]=new $class($this->_);
+                                 $this->_['storage']['controllers'][$controller]=new $class($this->_);
                               }
                         }
 
-                     if(empty($this->_['controllers'][$controller]))
+                     if(empty($this->_['storage']['controllers'][$controller]))
                         {
                            throw new ArchetypeSystemException("Attempted to open non-existent controller '${controller}'");
                         }
                   }
-
       
-               if(is_callable(array(&$this->_['controllers'][$controller],$method)))
+               if(is_callable($call=array(&$this->_['storage']['controllers'][$controller],$method)))
                   {
-                     call_user_func_array(array(&$this->_['controllers'][$controller],$method),$args);
+                     call_user_func_array($call,$args);
 
                      $r=true;
                   }
@@ -211,71 +190,68 @@
             }
 
       /**
-       * Loads and returns configuration files, optionally providing a requirement check on content
+       * Loads and returns settings, optionally providing a requirement check on content
        * @access public
-       * @param $config The configuration's name to load
-       * @param $require Optionally checks the config for the keys provided in this array
-       * @return mixed A reference to either the config specified or the key specified if true, false otherwise
+       * @param $group The setting group's name to load
+       * @param $require Optionally checks the setting group for the settings provided in this array
+       * @return mixed A reference to either the setting group specified or the key specified if true, false otherwise
        */
-         public function &config($config,&$object=false,$require=false)
+         public function &settings($group,&$object=false,$require=false)
             {
                $r=false;
 
-            // If the config isn't loaded, try to load it
-               if(empty($this->_['config'][$config]))
+            // If the setting group isn't loaded, try to load it
+               if(empty($this->_['storage']['settings'][$group]))
                   {
-                     if(is_readable($config_location=CONFIG_LOCATION."/${config}.inc.php"))
+                     if(is_readable($group_location=SETTINGS_LOCATION."${group}.inc.php"))
                         {
-                        // Create a reference for configs to use
-                           $_=&$this->_;
+                           require($group_location);
 
-                           require($config_location);
-
-                           if(!empty($$config))
+                           if(!empty($$group))
                               {
-                                 $this->_['config'][$config]=&$$config;
+                                 $this->_['storage']['settings'][$group]=&$$group;
                               }
                         }
                      else
                         {
-                           throw new ArchetypeSystemException('Attempted to open non-existent configuration "'.$config.'"');
+                           throw new ArchetypeSystemException('Attempted to open non-existent setting group "'.$group.'"');
                         }
                   }
 
-            // Config is loaded, just return a reference
-               if(!empty($this->_['config'][$config]))
+            // Setting group is loaded, return a reference
+               if(!empty($this->_['storage']['settings'][$group]))
                   {
-                     $r=&$this->_['config'][$config];
+                     $r=&$this->_['storage']['settings'][$group];
 
                   // Assign the model to a parameter inside of the passed object, if one was passed
                      if(is_object($object))
                         {
-                           $object->config[$config]=&$r;
+                           $object->settings[$group]=&$r;
                         }
                   }
 
-            // Check if the config meets the requirements
+            // Check if the setting meets the requirements
                if(is_array($r)&&is_array($require))
                   {
-                     $missing_keys=array();
+                     $missing_settings=array();
 
-                     foreach($require as $key)
+                     foreach($require as $settings)
                         {
-                           if(!isset($r[$key]))
+                           if(!isset($r[$settings]))
                               {
-                                 $missing_keys[]=$key;
+                                 $missing_settings[]=$settings;
                               }
                         }
 
-                     if(!empty($missing_keys))
+                     if(!empty($missing_settings))
                         {
                            $plural='';
-                           if(count($missing_keys)>1)
+                           if(count($missing_settings)>1)
                               {
                                  $plural='s';
                               }
 
-                           throw new ArchetypeSystemException("Configuration for '${config}' is missing required key${plural} '".implode("', '",$missing_keys)."'.");
+                           throw new ArchetypeSystemException("Setting group '${group}' is missing required setting${plural} '".implode("', '",$missing_settings)."'.");
                         }
                   }
 
@@ -301,47 +277,57 @@
             }
 
       /**
-       * Used to test whether or not a component exists
+       * Used to test whether or not a component (and sometimes component method) exists
        * @access public
-       * @param $type Either model, view, controller or automator
-       * @param $component Component name
-       * @param $component Optional method name
+       * @param $type Can be one of: model, view, controller, automator, injector
+       * @param $name Name of component
+       * @param $method Name of method (if checking something class-based)
        * @return bool True if the specified component exists, false if not
        */
-         public function exists($type,$component,$method=false)
+         public function exists($type,$name,$method=false)
             {
                $r=false;
 
-               $types=array('model','view','controller','automator');
-
-               if($type!=='view'&&in_array(strtolower($type),$types,true))
+               if($type==='model')
                   {
-                     $class=$component.'_'.$type;
-
-                  // If the class simply doesn't exist, try to load it
-                     if(!class_exists($class)&&is_readable($component_location=COMPONENTS_LOCATION."/${component}/${type}.inc.php"))
-                        {
-                           require($component_location);
-                        }
-
-                  // Since is_callable() and method_exists() don't care about visibility we'll statically discount methods we KNOW shouldn't be called externally
-                     $hide=array('__construct','construct','__destruct','destruct');
-
-                  // Check if it's here and optionally test for a method
-                     if(class_exists($class)&&(empty($method)||(!in_array($method,$hide)&&method_exists($class,$method))))
+                     $location=MODELS_LOCATION."${name}.inc.php";
+                  }
+               elseif($type==='view')
+                  {
+                     if(is_readable(VIEWS_LOCATION.$view.'.inc.php'))
                         {
                            $r=true;
                         }
                   }
-            // We have to check views in another way since they're not class-based
-               elseif($type==='view')
+               elseif($type==='controller')
                   {
-                  // Support sub directories easily
-                     $view=explode('/',$component);
+                     $location=CONTROLLERS_LOCATION."${name}.inc.php";
+                  }
+               elseif($type==='automator')
+                  {
+                     $location=AUTOMATORS_LOCATION."${name}.inc.php";
+                  }
+               elseif($type==='injector')
+                  {
+                     $location=INJECTORS_LOCATION."${name}.inc.php";
+                  }
 
-                     $component=array_shift($view);
+               if(!empty($location))
+                  {
+                     $class=$name.'_'.$type;
 
-                     if(is_readable(COMPONENTS_LOCATION."/${component}/views/".implode('/',$view).'.inc.php'))
+                  // If the class simply doesn't exist, try to load it
+                     if(!class_exists($class)&&is_readable($location))
+                        {
+                           require($location);
+                        }
+
+                  // Since is_callable() and method_exists() don't care about visibility we'll statically discount methods we KNOW shouldn't be called externally
+                  // UPDATE: When PHP fixes visibility issues, do this properly
+                     $hide=array('__construct','construct','__destruct','destruct');
+
+                  // Check if it's here and optionally test for a method
+                     if(class_exists($class)&&(empty($method)||(!in_array($method,$hide)&&method_exists($class,$method))))
                         {
                            $r=true;
                         }
