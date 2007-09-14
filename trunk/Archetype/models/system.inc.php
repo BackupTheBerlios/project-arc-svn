@@ -45,12 +45,23 @@
             {
                $r=false;
 
+               $location=MODELS_LOCATION."${model}.inc.php";
+
+               $model=str_replace('/','_',trim($model,'/'));
+
             // If we don't have an existing instance of the model, try to create one
-               if(empty($this->_['storage']['models'][$model]))
+               if(empty($this->_['objects']['models'][$model]))
                   {
-                     if(is_readable($location=MODELS_LOCATION."${model}.inc.php"))
+                     if(is_readable($location))
                         {
+                        // Trim off the chunk of the string that we'll use to identify the class if we need to
+                           if(strpos($model,'/'))
+                              {
+                                 $model=array_slice(explode('/',$model),-1,1);
+                              }
+
                            $class="${model}_model";
+
 
                            if(!class_exists($class))
                               {
@@ -59,20 +70,20 @@
 
                            if(class_exists($class))
                               {
-                                 $this->_['storage']['models'][$model]=new $class($this->_);
+                                 $this->_['objects']['models'][$model]=new $class($this->_);
                               }
                         }
 
-                     if(empty($this->_['storage']['models'][$model]))
+                     if(empty($this->_['objects']['models'][$model]))
                         {
-                           throw new ArchetypeSystemException("Attempted to open non-existent model '${model}'");
+                           throw new ArchetypeException("Attempted to open non-existent model '${location}'");
                         }
                   }
 
             // Existing model found, return a reference to it
-               if(!empty($this->_['storage']['models'][$model]))
+               if(!empty($this->_['objects']['models'][$model]))
                   {
-                     $r=&$this->_['storage']['models'][$model];
+                     $r=&$this->_['objects']['models'][$model];
 
                   // Assign the model to a parameter inside of the passed object, if one was passed
                      if(is_object($object))
@@ -108,7 +119,7 @@
             // Throw an exception because someone tried feeding it the wrong kind of food
                else
                   {
-                     throw new ArchetypeSystemException("Views only accept input in the form of an associative array");
+                     throw new ArchetypeException("Views only accept input in the form of an associative array");
                   }
 
             // Convert $input into a bunch of variables for the view
@@ -120,25 +131,25 @@
                         }
                      else
                         {
-                           throw new ArchetypeSystemException("View input tried overwriting '${$index}'");
+                           throw new ArchetypeException("View input tried overwriting '${$index}'");
                         }
                   }
 
             // If the view exists, load it up and catch the output
-               if(is_readable($view_location=VIEWS_LOCATION.$view.'.inc.php'))
+               if(is_readable($location=VIEWS_LOCATION.$view.'.inc.php'))
                   {
                   // Start an output buffer so we can catch all output
                      ob_start();
 
                   // Open the view
-                     require($view_location);
+                     require($location);
 
                   // Clean the output buffer and safe its contents
                      $r=ob_get_clean();
                   }
                else
                   {
-                     throw new ArchetypeSystemException("Attempted to open non-existent view '${view_location}'");
+                     throw new ArchetypeException("Attempted to open non-existent view '${location}'");
                   }
 
                return $r;
@@ -156,30 +167,34 @@
             {
                $r=false;
 
-               if(empty($this->_['storage']['controllers'][$controller]))
+               $location=CONTROLLERS_LOCATION."${controller}.inc.php";
+
+               $controller=str_replace('/','_',trim($controller,'/'));
+
+               if(empty($this->_['objects']['controllers'][$controller]))
                   {
-                     if(is_readable($controller_location=CONTROLLERS_LOCATION.$controller.'.inc.php'))
+                     if(is_readable($location=CONTROLLERS_LOCATION.$controller.'.inc.php'))
                         {
                            $class=$controller.'_controller';
       
                            if(!class_exists($class))
                               {
-                                 require($controller_location);
+                                 require($location);
                               }
       
                            if(class_exists($class))
                               {
-                                 $this->_['storage']['controllers'][$controller]=new $class($this->_);
+                                 $this->_['objects']['controllers'][$controller]=new $class($this->_);
                               }
                         }
 
-                     if(empty($this->_['storage']['controllers'][$controller]))
+                     if(empty($this->_['objects']['controllers'][$controller]))
                         {
-                           throw new ArchetypeSystemException("Attempted to open non-existent controller '${controller}'");
+                           throw new ArchetypeException("Attempted to open non-existent controller '${location}'");
                         }
                   }
       
-               if(is_callable($call=array(&$this->_['storage']['controllers'][$controller],$method)))
+               if(is_callable($call=array(&$this->_['objects']['controllers'][$controller],$method)))
                   {
                      call_user_func_array($call,$args);
 
@@ -201,27 +216,27 @@
                $r=false;
 
             // If the setting group isn't loaded, try to load it
-               if(empty($this->_['storage']['settings'][$group]))
+               if(empty($this->_['information']['settings'][$group]))
                   {
-                     if(is_readable($group_location=SETTINGS_LOCATION."${group}.inc.php"))
+                     if(is_readable($location=SETTINGS_LOCATION."${group}.inc.php"))
                         {
-                           require($group_location);
+                           require($location);
 
                            if(!empty($$group))
                               {
-                                 $this->_['storage']['settings'][$group]=&$$group;
+                                 $this->_['information']['settings'][$group]=&$$group;
                               }
                         }
                      else
                         {
-                           throw new ArchetypeSystemException('Attempted to open non-existent setting group "'.$group.'"');
+                           throw new ArchetypeException('Attempted to open non-existent setting group "'.$group.'"');
                         }
                   }
 
             // Setting group is loaded, return a reference
-               if(!empty($this->_['storage']['settings'][$group]))
+               if(!empty($this->_['information']['settings'][$group]))
                   {
-                     $r=&$this->_['storage']['settings'][$group];
+                     $r=&$this->_['information']['settings'][$group];
 
                   // Assign the model to a parameter inside of the passed object, if one was passed
                      if(is_object($object))
@@ -251,7 +266,7 @@
                                  $plural='s';
                               }
 
-                           throw new ArchetypeSystemException("Setting group '${group}' is missing required setting${plural} '".implode("', '",$missing_settings)."'.");
+                           throw new ArchetypeException("Setting group '${group}' is missing required setting${plural} '".implode("', '",$missing_settings)."'.");
                         }
                   }
 
@@ -323,7 +338,6 @@
                         }
 
                   // Since is_callable() and method_exists() don't care about visibility we'll statically discount methods we KNOW shouldn't be called externally
-                  // UPDATE: When PHP fixes visibility issues, do this properly
                      $hide=array('__construct','construct','__destruct','destruct');
 
                   // Check if it's here and optionally test for a method

@@ -1,38 +1,36 @@
-<?=$this->system->view('system/global/header')?>
+<?=$this->system->view('global/header')?>
 <div id="content">
    <h1>Project Archetype</h1>
    <h2><?=ARCHETYPE_VERSION?></h2>
    <p>
-      Archetype is an advanced, strictly object-oriented MVC framework designed to greatly ease the process of building complex PHP5 applications.
-      &nbsp; While this system is in a usable state right now, this is pre-beta software and as such is likely to contain bugs.&nbsp; You are using this software at your own risk.
-      &nbsp; Documentation is in the code itself, it's extremely well commented for the most part.
+      Congratulations!  It looks like you were able to install the system.  Easy, wasn't it?
    </p>
    <p>
-      Everything on this page is being dynamically generated, which is demonstrated by the following example:
-      <span class="box">
-         Host IP: <?=$server_ip?><br />
-         Remote IP: <?=$_SERVER['REMOTE_ADDR']?><br />
+      Everything on this page is being dynamically generated, which is demonstrated by the following few examples:
+      <span>
+         Server IP: <?=$_SERVER['SERVER_ADDR']?><br />
+         Client IP: <?=$_SERVER['REMOTE_ADDR']?><br />
          Webroot: <a href="<?=$webroot?>"><?=$webroot?></a><br />
-         Time: <?=date('H:i:s F j, Y')?>
+         Server Time: <?=date('H:i:s F j, Y')?>
       </span>
    </p>
    <p>
-      Models primarily serve as libraries to be used by Controllers and Views.  You can find models on the filesystem in the following pattern:
+      While this page itself has no purpose for a model, the system model is the foundation of the system and is helping power everything.  You can find the system model on the filesystem here:
       <span>
-         ./system/components/name/model.inc.php
+         <?=MODELS_LOCATION?>system.inc.php
       </span>
    </p>
    <p>
-      Markup is stored in Views. &nbsp;The View for this page can be found on the filesystem here:
+      You can find the view being used to generate output on the filesystem here:
       <span>
-         ./system/components/system/views/welcome.inc.php
+         <?=VIEWS_LOCATION?>welcome.inc.php
       </span>
    </p>
    <p>
-      Functionality is directed by Controllers.  &nbsp;The Controller for this page can be found on the filesystem here:
+      You can find the controller coordinating this page's output on the filesystem here:
       <span>
-         ./system/components/system/controller.inc.php
+         <?=CONTROLLERS_LOCATION?>system.inc.php
       </span>
    </p>
 </div>
-<?=$this->system->view('system/global/footer')?>
+<?=$this->system->view('global/footer')?>

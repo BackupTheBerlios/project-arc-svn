@@ -14,13 +14,10 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.com/archetype
- * @version 2007.4.13
+ * @version 2007.9.12
  */
 
-   $views['global']['webroot']='http://'.$_SERVER['SERVER_NAME'].substr($_SERVER['PHP_SELF'],0,(strlen($_SERVER['PHP_SELF'])-strlen('index.php')));
-   $views['global']['archetype_version']=ARCHETYPE_VERSION;
-   $views['global']['server_ip']=$_SERVER['SERVER_ADDR'];
-   $views['global']['client_ip']=$_SERVER['REMOTE_ADDR'];
+   $views['global']['webroot']='http://'.$_SERVER['SERVER_NAME'].substr($_SERVER['PHP_SELF'],0,-strlen('index.php'));
 
 // Should probably figure out where the first request for this config is and somehow get it behind the declaration of $_GET['x'] so I can kill the logic
    if(!empty($_GET))

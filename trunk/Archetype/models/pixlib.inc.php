@@ -54,7 +54,7 @@
             {
                if(!function_exists('gd_info'))
                   {
-                     throw new ArchetypeComponentException("GD needs to be installed to use pixlib");
+                     throw new ArchetypeException("GD needs to be installed to use pixlib");
                   }
                else
                   {
@@ -95,7 +95,7 @@
                         }
                      else
                         {
-                           throw new ArchetypeComponentException("No image set as current and no id specified");
+                           throw new ArchetypeException("No image set as current and no id specified");
                         }
                   }
                else
@@ -106,7 +106,7 @@
                         }
                      else
                         {
-                           throw new ArchetypeComponentException("Invalid id: '${id}'");
+                           throw new ArchetypeException("Invalid id: '${id}'");
                         }
                   }
 
@@ -148,7 +148,7 @@
                   // Flip out if we're trying to open over another image
                      if(!empty($this->images[$id]))
                         {
-                           throw new ArchetypeComponentException("You must close '${id}' before trying to open it again");
+                           throw new ArchetypeException("You must close '${id}' before trying to open it again");
                         }
 
                   // Open the image and store stuff on it
@@ -168,7 +168,7 @@
                   }
                else
                   {
-                     throw new ArchetypeComponentException("Could not read file: ${file}");
+                     throw new ArchetypeException("Could not read file: ${file}");
                   }
 
                return $r;
@@ -218,7 +218,7 @@
                         {
                            if(!in_array($key,$possible_dimensions))
                               {
-                                 throw new ArchetypeComponentException("Unknown dimension '${key}'; must be one of the following: '".implode($possible_dimensions,"', '")."'");
+                                 throw new ArchetypeException("Unknown dimension '${key}'; must be one of the following: '".implode($possible_dimensions,"', '")."'");
                               }
                         }
                   }
@@ -288,7 +288,7 @@
                         }
                      else
                         {
-                           throw new ArchetypeComponentException("No image set as current and no id specified");
+                           throw new ArchetypeException("No image set as current and no id specified");
                         }
                   }
 
@@ -303,7 +303,7 @@
                   }
                else
                   {
-                     throw new ArchetypeComponentException("Invalid id: '${id}'");
+                     throw new ArchetypeException("Invalid id: '${id}'");
                   }
 
                return $r;

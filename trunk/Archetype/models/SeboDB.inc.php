@@ -55,6 +55,25 @@
  */
    class SeboDB_model extends A_model
       {
+         public function construct()
+            {
+               if($this->system->settings('database',$this))
+                  {
+                     foreach($this->settings['database'] as $index=>$value)
+                        {
+                           if(!empty($this->settings['database'][$index]['link']))
+                              {
+                                 $link_name=&$this->settings['database'][$index]['link'];
+                                 $this->create($this->settings['database'][$index]['controller'],$this->$link_name->driver,$index);
+                              }
+                           else
+                              {
+                                 $this->create($this->settings['database'][$index]['controller'],$this->settings['database'][$index]['driver'],$index);
+                                 $this->$index->open($this->settings['database'][$index]);
+                              }
+                        }
+                  }
+            }
       /**
        * Create a new Linked Data Object(LDO), store a reference to it locally, then return it.
        * Optionally, should you pass a working instance of a driver as $driver, create a new LDO with that active driver.
@@ -162,6 +181,22 @@
                unset($instance);
 
                return $r;
+            }
+
+         public function destruct()
+            {
+               if(!empty($this->settings['database']))
+                  {
+                     foreach($this->settings['database'] as $index=>$value)
+                        {
+                           if(!empty($this->$index->connection))
+                              {
+                                 $this->$index->close();
+                              }
+
+                           $this->destroy($index);
+                        }
+                  }
             }
       }
 ?>

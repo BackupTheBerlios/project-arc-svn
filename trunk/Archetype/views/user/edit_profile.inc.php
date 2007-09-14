@@ -1,4 +1,4 @@
-<?=$this->system->view('system/global/header')?>
+<?=$this->system->view('global/header')?>
 <div id="content">
    <h1>Edit Profile</h1>
 <?php
@@ -34,4 +34,4 @@
       </ul>
    </form>
 </div>
-<?=$this->system->view('system/global/footer')?>
+<?=$this->system->view('global/footer')?>

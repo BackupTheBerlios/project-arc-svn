@@ -158,7 +158,7 @@
 
                            if(!$r)
                               {
-                                 throw new ArchetypeSystemException('Could not write to file "'.$log_file.'"');
+                                 throw new ArchetypeException('Could not write to file "'.$log_file.'"');
                               }
                         }
 

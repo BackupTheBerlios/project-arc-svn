@@ -30,7 +30,7 @@
        */public static $destruct=1000;
 
       /**
-       * Injects Archetype's system model into storage so other components may take advantage of it and sets up the environment for other components
+       * Injects Archetype's system model object storage so other components may take advantage of it and sets up the environment for other components
        * @access public
        * @return void
        */
@@ -39,22 +39,8 @@
             // Statically require Archetype's system model
                require(MODELS_LOCATION.'system.inc.php');
 
-            // Make a new instance of the system model and put it where it woud normally go in the universal array
-               $this->_['storage']['models']['system']=new system_model($this->_);
-
-            // I can ask gently and they'll go in this case...
-               ini_set('magic_quotes_runtime','0');
-
-            // But in this one it takes a hate-powered flamethrower
-               if(ini_get('magic_quotes_gpc'))
-                  {
-                     $oddlib=&$this->system->model('oddlib');
-
-                     $oddlib->stripslashes($_GET);
-                     $oddlib->stripslashes($_POST);
-                     $oddlib->stripslashes($_COOKIE);
-                     $oddlib->stripslashes($_FILES);
-                  }
+            // Make a new instance of the system model and put it where it would normally go in the universal array
+               $this->_['objects']['models']['system']=new system_model($this->_);
 
             // Put this in a session manager
                session_start();

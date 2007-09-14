@@ -1,4 +1,4 @@
-<?=$this->system->view('system/global/header')?>
+<?=$this->system->view('global/header')?>
 <div id="content">
    <h1>User Home</h1>
    <p>
@@ -7,4 +7,4 @@
       <a href="<?=$webroot?>user/profile/">Edit Profile</a><br />
    </p>
 </div>
-<?=$this->system->view('system/global/footer')?>
+<?=$this->system->view('global/footer')?>

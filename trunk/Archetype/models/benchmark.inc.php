@@ -33,7 +33,7 @@
             {
                if(!empty($this->_['marks'][$name]))
                   {
-                     throw new ArchetypeSystemException("Can not re-declare benchmark point '${name}'");
+                     throw new ArchetypeException("Can not re-declare benchmark point '${name}'");
                   }
 
                $this->_['marks'][$name]=microtime(true);

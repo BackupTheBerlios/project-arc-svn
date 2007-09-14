@@ -97,7 +97,7 @@
                   }
                else
                   {
-                     throw new ArchetypeComponentException("Directory '${directory}' could not be read");
+                     throw new ArchetypeException("Directory '${directory}' could not be read");
                   }
 
                return $r;

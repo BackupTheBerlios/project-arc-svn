@@ -49,7 +49,7 @@
                   }
                else
                   {
-                     throw new ArchetypeSystemException('Handler callback provided was not in array(&$object,"method") format');
+                     throw new ArchetypeException('Handler callback provided was not in array(&$object,"method") format');
                   }
             }
 

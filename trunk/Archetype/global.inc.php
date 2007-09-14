@@ -18,14 +18,9 @@
  */
 
 /**
- * Exception class for generic component exceptions
+ * Archetype's exception class
  */
-   class ArchetypeComponentException extends Exception {}
-
-/**
- * Exception class for generic system exceptions
- */
-   class ArchetypeSystemException extends Exception {}
+   class ArchetypeException extends Exception {}
 
 /**
  * Primary class for Archetype.  It should be extended in some form by every other class in the system.
@@ -38,7 +33,7 @@
        * @var mixed
        * @static
        */
-         public static $info=false;
+         public static $information=array();
 
       /**
        * Assigned a reference to $_ (the universal variable) in the constructor
@@ -59,14 +54,14 @@
        * @access public
        * @return void
        */
-         public function construct(){}
+         public function construct() {}
 
       /**
        * Dummy destructor
        * @access public
        * @return void
        */
-         public function destruct(){}
+         public function destruct() {}
 
       /**
        * Constructor that runs in every descendant
@@ -80,9 +75,28 @@
                $this->_=&$_;
 
             // Load the system model
-               $this->system=&$this->_['storage']['models']['system'];
+               $this->system=&$this->_['objects']['models']['system'];
 
-               $this->construct();
+               if(!empty($this->_['objects']['injectors']))
+                  {
+                  // Loop pre_construct()
+                     foreach($this->_['objects']['injectors'] as &$injector)
+                        {
+                           $injector->pre_construct($this);
+                        }
+
+                     $this->construct();
+
+                  // Loop post_construct()
+                     foreach($this->_['objects']['injectors'] as &$injector)
+                        {
+                           $injector->post_construct($this);
+                        }
+                  }
+               else
+                  {
+                     $this->construct();
+                  }
             }
 
       /**
@@ -92,7 +106,26 @@
        */
          public function __destruct()
             {
-               $this->destruct();
+               if(!empty($this->_['objects']['injectors']))
+                  {
+                  // Loop pre_destruct()
+                     foreach($this->_['objects']['injectors'] as &$injector)
+                        {
+                           $injector->pre_destruct($this);
+                        }
+
+                     $this->destruct();
+
+                  // Loop post_destruct()
+                     foreach($this->_['objects']['injectors'] as &$injector)
+                        {
+                           $injector->post_destruct($this);
+                        }
+                  }
+               else
+                  {
+                     $this->destruct();
+                  }
             }
       }
 
@@ -120,20 +153,49 @@
  */
    class A_injector extends A
       {
-         public function pre_construct()
+      /**
+       * Simplify the constructor from the parent since we don't want to run injectors inside themselves (infinite loop)
+       * @access public
+       * @return void
+       */
+         public function __construct(&$_)
             {
+            // Set the reference to the universal array
+               $this->_=&$_;
+
+            // Load the system model
+               $this->system=&$this->_['objects']['models']['system'];
+
+            // Run our user defined constructor
+               $this->construct();
             }
 
-         public function post_construct()
-            {
-            }
+      /**
+       * Runs before every object's construction
+       * @access public
+       * @return void
+       */
+         public function pre_construct(&$object) {}
 
-         public function pre_destruct()
-            {
-            }
+      /**
+       * Runs after every object's construction
+       * @access public
+       * @return void
+       */
+         public function post_construct(&$object) {}
 
-         public function post_destruct()
-            {
-            }
+      /**
+       * Runs before every object's destruction
+       * @access public
+       * @return void
+       */
+         public function pre_destruct(&$object) {}
+
+      /**
+       * Runs after every object's destruction
+       * @access public
+       * @return void
+       */
+         public function post_destruct(&$object) {}
       }
 ?>

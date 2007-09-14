@@ -48,7 +48,7 @@
                         {
                            if(!empty($index)&&!empty($value)&&(!$input=@preg_replace($index,$value,$input)))
                               {
-                                 throw new ArchetypeSystemException("Route '${index}'=>'${value}' is an invalid regular expression");
+                                 throw new ArchetypeException("Route '${index}'=>'${value}' is an invalid regular expression");
                               }
                         }
                   }

@@ -6,7 +6,7 @@
    >REQUIREMENTS
       PHP5.1+
          Because PHP4's extremely stunted OOP layer can't handle the kind
-         of stuff Archetype does.  Use PHP5.2 if possible.
+         of stuff Archetype does.  Use PHP5.2+ if possible.
 
       mod_rewrite
          To use the .htaccess file that beautifies and helps secure the
@@ -14,8 +14,10 @@
 
    >INSTALLATION
       Upload
-         Somehow get your copy of Archetype on a capable server (requirements)
-         and access http://yoursite.com/path/to/install/ with a browser.
+         Installation is extremely easy.  Make sure your server meets
+         the requirements above, then somehow get your copy of Archetype
+         on a capable server (requirements) and access
+         http://yoursite.com/path/to/install/ with a browser.
 
          If you see a pretty welcome page, installation successful!  If your
          copy of PHP puffed smoke, something about your server hates the

@@ -14,7 +14,7 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.com/archetype
- * @version 2007.9.10
+ * @version 2007.9.14
  */
 
 // Audible errors because we can't have them ignored for development purposes (feel free to silence a production application if you're sure it's safe)
@@ -22,7 +22,7 @@
 
 /**
  * Archetype's version
- */define('ARCHETYPE_VERSION','2007.9.10');
+ */define('ARCHETYPE_VERSION','2007.9.14');
 
 /**
  * Location of the system directory
@@ -57,13 +57,20 @@
       (
          'information'=>array // Storage of miscellaneous information
             (
+               'settings'=>array(),
                'priority'=>array('construct'=>array(),'destruct'=>array()), // Automator priority
                'timings'=>array('archetype|start'=>microtime(true)), // Benchmark timings and the system's begin time
-               'lists'=>array('automators'=>array(),'injectors'=>array()) // Lists of component types that require to be opened all at once
+               'lists'=>array('automators'=>array(),'injectors'=>array()), // Lists of component types that require to be opened all at once
+               'input'=>array
+                  (
+                     'controller'=>'',
+                     'method'=>'',
+                     'parameters'=>array(),
+                     'switches'=>array()
+                  )
             ),
-         'storage'=>array // Storage of Archetype-derived objects
+         'objects'=>array // Storage of live objects
             (
-               'settings'=>array(),
                'automators'=>array(),
                'injectors'=>array(),
                'models'=>array('system'=>false),
@@ -74,22 +81,53 @@
 // Open up our global class definitions
    require(GLOBAL_LOCATION);
 
-// Scan the filesystem for component directories
+// Scan the filesystem for injectors
+   $_['information']['lists']['injectors']=array_slice(scandir(INJECTORS_LOCATION),2);
+
+// Scan the filesystem for automators
    $_['information']['lists']['automators']=array_slice(scandir(AUTOMATORS_LOCATION),2);
 
 // Execute in a sandbox so we can catch exceptions
    try
       {
-      // Open up our automators
+      // Open injectors
+         foreach($_['information']['lists']['injectors'] as &$injector)
+            {
+               if($injector{0}==='.')
+                  {
+                  // Hide files and directories that should be hidden from the system
+                     unset($injector);
+                  }
+               else
+                  {
+                     $injector=str_replace('.inc.php','',$injector);
+
+                     require(INJECTORS_LOCATION.$injector.'.inc.php');
+
+                     $class=$injector.'_injector';
+
+                     if(class_exists($class))
+                        {
+                           $_['objects']['injectors'][$injector]=new $class($_);
+                        }
+                  }
+            }
+
+      // Open automators
          foreach($_['information']['lists']['automators'] as &$automator)
             {
-               $automator=str_replace('.inc.php','',$automator);
-
-               if(is_file($location=AUTOMATORS_LOCATION.$automator.'.inc.php')&&is_readable($location)&&$automator{1}!='.')
+               if($automator{0}==='.')
                   {
-                     $class=$automator.'_automator';
+                  // Hide files and directories that should be hidden from the system
+                     unset($automator);
+                  }
+               else
+                  {
+                     $automator=str_replace('.inc.php','',$automator);
 
-                     require($location);
+                     require(AUTOMATORS_LOCATION.$automator.'.inc.php');
+
+                     $class=$automator.'_automator';
 
                      if(class_exists($class))
                         {

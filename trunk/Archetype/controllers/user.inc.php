@@ -32,7 +32,7 @@
                $this->system->model('SeboDB',$this);
                $this->system->model('user',$this);
 
-               $this->system->config('user',$this);
+               $this->system->settings('user',$this);
             }
 
       /**
@@ -175,7 +175,7 @@
             {
                $view='user/register';$input=array();
 
-               if(!$this->config['user']['registration_enabled'])
+               if(!$this->settings['user']['registration_enabled'])
                   {
                      $view='system/message';
                      $input['title']="Alert!";
@@ -183,7 +183,7 @@
                   }
                else
                   {
-                  // Allows a degree of simple configurability
+                  // Allows a degree of simple settings
                      $require=array('email','password');
                      $accept=array('email','password','first_name','last_name');
       
@@ -283,7 +283,7 @@
             {
                $view='user/login';$input=array();
 
-               if(!$this->config['user']['login_enabled'])
+               if(!$this->settings['user']['login_enabled'])
                   {
                      $view='system/message';
                      $input['title']="Alert!";
