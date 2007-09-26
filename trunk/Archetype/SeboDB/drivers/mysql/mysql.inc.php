@@ -14,7 +14,7 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/sebodb
- * @version 2007.7.29
+ * @version 2007.9.25
  */
 
 /**
@@ -31,7 +31,7 @@
             {
                if(!function_exists('mysql_connect'))
                   {
-                     throw new SeboDBDriverException('MySQL driver requires PHP to have the MySQL extension installed functioning');
+                     throw new SeboDBDriverException('MySQL driver requires PHP to have the MySQL extension installed and functioning');
                   }
             }
 
@@ -65,7 +65,7 @@
                            $config['prefix']='';
                         }
 
-                  // Connect and assign $this->connection
+                  // Open a connection
                      if(empty($config['persistent']))
                         {
                            $r=@mysql_connect($config['host'].':'.$port,$config['user'],$config['pass']);
@@ -73,6 +73,12 @@
                      else
                         {
                            $r=@mysql_pconnect($config['host'].':'.$port,$config['user'],$config['pass']);
+                        }
+
+                  // Connect and assign $this->connection
+                     if(!empty($r))
+                        {
+                           $this->connection=&$r;
                         }
 
                   // Gracefully inform that an error has happened while trying to connect

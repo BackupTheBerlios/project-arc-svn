@@ -1,3 +1,4 @@
+
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
    //                 www.fuzzywoodlandcreature.net                  //
@@ -6,11 +7,11 @@
    >REQUIREMENTS
       PHP5.1+
          Because PHP4's extremely stunted OOP layer can't handle the kind
-         of stuff Archetype does.  Use PHP5.2+ if possible.
+         of stuff Archetype does.
 
       mod_rewrite
-         To use the .htaccess file that beautifies and helps secure the
-         environment you must have mod_rewrite and the ability to use it.
+         You must have mod_rewrite to use the provided .htaccess file
+         that generally cleans up HTTP interaction with the system.
 
    >INSTALLATION
       Upload

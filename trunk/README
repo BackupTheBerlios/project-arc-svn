@@ -1,0 +1,13 @@
+
+   ////////////////////////////////////////////////////////////////////
+   //                P R O J E C T A R C H E T Y P E                 //
+   //                 www.fuzzywoodlandcreature.net                  //
+   ////////////////////////////////////////////////////////////////////
+
+   If you attained this distribution from the project's Subversion repository
+   you will want to modify database config file to suit your needs and
+   run the SQL in ./Archetype/sql to setup the database for certain
+   components that require it.
+
+   Otherwise, you should head straight to INSTALL.  The system should be
+   extremely easy to setup and require ZERO configuration.

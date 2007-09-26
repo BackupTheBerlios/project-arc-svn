@@ -45,7 +45,7 @@
        */
          public function open(&$config)
             {
-               return $this->connection=$this->driver->open($config);
+               return $this->driver->open($config);
             }
 
       /**
@@ -55,12 +55,19 @@
        * @param string $connection Optionally reference a specific connection to use
        * @return mixed Returns a reference to the query resource on success and false on failure
        */
-         public function query($sql,&$connection=false)
+         public function query($sql,$input=false)
             {
-            // Automagically resolve the connection if one wasn't specified
-               if(empty($connection))
+            // Really nifty idea Jacob showed me - it makes writing dynamic SQL a lot cleaner in most cases
+               if(is_array($input))
                   {
-                     $connection=$this->driver->connection;
+                     foreach($input as &$element)
+                        {
+                           $element=$this->escape($element);
+                        }
+
+                     array_unshift($input,$sql);
+
+                     $sql=call_user_func_array('sprintf',$input);
                   }
 
             // Default the table prefix so we still replace the tokens in the query even if one wasn't specified in the configuration for the connection
@@ -74,7 +81,7 @@
                $sql=preg_replace('/\^(\w)/',$this->driver->configuration['prefix'].'$1',$sql);
 
             // Assign the query return to $this->query for autoresolution
-               return $this->query=$this->driver->query($sql,$connection);
+               return $this->query=$this->driver->query($sql,$this->driver->connection);
             }
 
       /**
@@ -83,15 +90,9 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function affected(&$connection=false)
+         public function affected()
             {
-            // Autoresolve the query if one isn't specified
-               if(empty($connection))
-                  {
-                     $connection=$this->driver->connection;
-                  }
-
-               return $this->driver->affected($connection);
+               return $this->driver->affected($this->driver->connection);
             }
 
       /**
@@ -117,15 +118,9 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function insert_id(&$connection=false)
+         public function insert_id()
             {
-            // Autoresolve the connection if one isn't specified
-               if(empty($connection))
-                  {
-                     $connection=$this->connection;
-                  }
-
-               return $this->driver->insert_id($connection);
+               return $this->driver->insert_id($this->driver->connection);
             }
 
       /**
@@ -134,15 +129,9 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function escape(&$input,&$connection=false)
+         public function escape(&$input)
             {
                $r=false;
-
-            // Automagically resolve the connection if one wasn't specified
-               if(empty($connection))
-                  {
-                     $connection=$this->driver->connection;
-                  }
 
             // If it's an array, loop it
                if(is_array($input)&&!empty($input))
@@ -164,7 +153,7 @@
             // If it's a string, trim it
                elseif(is_string($input)&&!empty($input))
                   {
-                     $r=$this->driver->escape($input,$connection);
+                     $r=$this->driver->escape($input,$this->driver->connection);
                   }
 
                return $r;
@@ -251,15 +240,9 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function ping(&$connection=false)
+         public function ping()
             {
-            // Automagically resolve the connection if one wasn't specified
-               if(empty($connection))
-                  {
-                     $connection=$this->driver->connection;
-                  }
-
-               return $this->driver->ping($connection);
+               return $this->driver->ping($this->driver->connection);
             }
 
       /**
@@ -268,15 +251,9 @@
        * @param string $name Database name
        * @return boolean True if success, false otherwise
        */
-         public function error(&$connection=false)
+         public function error()
             {
-            // Automagically resolve the connection if one wasn't specified
-               if(empty($connection))
-                  {
-                     $connection=$this->driver->connection;
-                  }
-
-               return $this->driver->error($connection);
+               return $this->driver->error($this->driver->connection);
             }
 
       /**
@@ -286,17 +263,9 @@
        * @return boolean True if success, false otherwise
        * @todo add sticky commit before shutdown
        */
-         public function close(&$connection=false)
+         public function close()
             {
-            // do sticky stuff
-
-            // Automagically resolve the connection if one wasn't specified
-               if(empty($connection))
-                  {
-                     $connection=$this->driver->connection;
-                  }
-
-               return $this->driver->close($connection);
+               return $this->driver->close($this->driver->connection);
             }
       }
 ?>
