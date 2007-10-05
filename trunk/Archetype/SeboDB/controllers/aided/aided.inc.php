@@ -151,7 +151,7 @@
                         }
                   }
             // If it's a string, trim it
-               elseif(is_string($input)&&!empty($input))
+               elseif(!empty($input))
                   {
                      $r=$this->driver->escape($input,$this->driver->connection);
                   }
