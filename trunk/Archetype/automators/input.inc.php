@@ -17,15 +17,13 @@
  * @version 2007.9.10
  */
 
+   $construct=500;
+
 /**
  * 
  */
    class input_automator extends A_automator
       {
-      /**
-       * Construct priority
-       */public static $construct=950;
-
          public function construct()
             {
             // I can ask gently and they'll go in this case...
@@ -56,6 +54,26 @@
                         {
                            $oddlib->stripslashes($_SESSION);
                         }
+                  }
+
+            // Yank the GET variable a
+               $input=explode('/',trim($_GET['a'],'/'));
+
+            // Shave off necessary components and store them inside the system for reference
+               $this->_['information']['input']['controller']=array_shift($input);
+               $this->_['information']['input']['method']=array_shift($input);
+               $this->_['information']['input']['parameters']=&$input;
+
+            // If the method is null, default to index
+               if(is_null($this->_['information']['input']['method']))
+                  {
+                     $this->_['information']['input']['method']='index';
+                  }
+
+            // If the parameters are null, default to blank array
+               if(is_null($this->_['information']['input']['parameters']))
+                  {
+                     $this->_['information']['input']['parameters']=array();
                   }
             }
       }

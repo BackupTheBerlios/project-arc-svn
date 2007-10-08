@@ -28,14 +28,6 @@
    class A
       {
       /**
-       * Stores information for extended classes
-       * @access public
-       * @var mixed
-       * @static
-       */
-         public static $information=array();
-
-      /**
        * Assigned a reference to $_ (the universal variable) in the constructor
        * @access public
        * @var mixed
@@ -142,11 +134,7 @@
 /**
  * Provide a base class for automators
  */
-   class A_automator extends A
-      {
-         public static $construct=0;
-         public static $destruct=0;
-      }
+   class A_automator extends A {}
 
 /**
  * Provide a base class for injectors

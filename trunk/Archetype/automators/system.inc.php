@@ -17,18 +17,14 @@
  * @version 2007.9.10
  */
 
+   $construct=1000;
+   $destruct=1000;
+
 /**
  * System automator component class.  Without this absolutely nothing would work.
  */
    class system_automator extends A_automator
       {
-      /**
-       * Construct priority
-       */public static $construct=1000;
-      /**
-       * Destruct priority
-       */public static $destruct=1000;
-
       /**
        * Injects Archetype's system model object storage so other components may take advantage of it and sets up the environment for other components
        * @access public
@@ -53,29 +49,15 @@
        */
          public function destruct()
             {
-            // Yank the GET variable x
-               $parameters=explode('/',trim($_GET['x'],'/'));
-
-            // Shave off and store the component and method parameters if possible and link arguments to what's left
-               $controller=array_shift($parameters);
-               $method=array_shift($parameters);
-               $args=&$parameters;
-
-            // If the method is empty, default to index
-               if(empty($method))
-                  {
-                     $method='index';
-                  }
-
             // If the controller exists, run it
-               if($this->system->exists('controller',$controller,$method))
+               if($this->system->exists('controller',$this->_['information']['input']['controller'],$this->_['information']['input']['method']))
                   {
-                     $this->system->controller($controller,$method,$args);
+                     $this->system->controller($this->_['information']['input']['controller'],$this->_['information']['input']['method'],$this->_['information']['input']['parameters']);
                   }
             // Otherwise run system/not_found
                else
                   {
-                     $this->system->controller('system','not_found',array('controller'=>&$controller,'method'=>&$method,'args'=>&$args));
+                     $this->system->controller('system','not_found',array('controller'=>&$this->_['information']['input']['controller'],'method'=>&$this->_['information']['input']['method'],'parameters'=>&$parameters));
                   }
             }
       }

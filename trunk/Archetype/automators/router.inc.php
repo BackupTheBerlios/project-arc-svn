@@ -17,27 +17,27 @@
  * @version 2007.5.8
  */
 
+   $construct=750;
+
 /**
  * Routers - only works for HTTP for now.  Archetype needs some sort of imput abstraction before it can route for anything else.
  */
    class router_automator extends A_automator
       {
-         public static $construct=950;
-
          public function construct()
             {
             // Pop open the router model
                $this->system->model('router',$this);
 
             // Set our default route if none was specified so even it is subject to aliasing
-               if(empty($_GET['x']))
+               if(empty($_GET['a']))
                   {
-                     $_GET['x']=$this->router->settings['routes']['system']['default'];
+                     $_GET['a']=$this->router->settings['routes']['system']['default'];
                   }
                else
                   {
                   // Assign potential aliases
-                     $this->router->alias($_GET['x']);
+                     $this->router->alias($_GET['a']);
                   }
             }
       }

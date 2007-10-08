@@ -65,8 +65,7 @@
                   (
                      'controller'=>'',
                      'method'=>'',
-                     'parameters'=>array(),
-                     'switches'=>array()
+                     'parameters'=>array()
                   )
             ),
          'objects'=>array // Storage of live objects
@@ -125,14 +124,16 @@
                   {
                      $automator=str_replace('.inc.php','',$automator);
 
+                     $construct=$destruct=0;
+
                      require(AUTOMATORS_LOCATION.$automator.'.inc.php');
 
                      $class=$automator.'_automator';
 
                      if(class_exists($class))
                         {
-                           $_['information']['priority']['construct'][$automator]=eval("return ${class}::\$construct;");
-                           $_['information']['priority']['destruct'][$automator]=eval("return ${class}::\$destruct;");
+                           $_['information']['priority']['construct'][$automator]=$construct;
+                           $_['information']['priority']['destruct'][$automator]=$destruct;
                         }
                   }
             }

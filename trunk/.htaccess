@@ -1,18 +1,18 @@
 
 #  ////////////////////////////////////////////////////////////////////
 #  //                P R O J E C T A R C H E T Y P E                 //
-#  //                       www.SeboCorp.com                         //
+#  //                 www.fuzzywoodlandcreature.net                  //
 #  ////////////////////////////////////////////////////////////////////
 
 #  Rewrites Apache's URLs to be search-engine friendly cleaner looking
 #  before they ever reach Archetype and helps secure the filesystem a bit.
 
-#  Copyright © 2007 Sebo Corporation.  All rights reserved.
+#  Copyright © 2007 Justin Krueger.  All rights reserved.
 
 <IfModule mod_rewrite.c>
    RewriteEngine On
 
    RewriteCond %{REQUEST_FILENAME} !-f
    RewriteCond %{REQUEST_FILENAME} !-d
-   RewriteRule ^(.+)$ ./index.php?x=$1 [L]
+   RewriteRule ^(.+)$ ./index.php?a=$1 [L]
 </IfModule>

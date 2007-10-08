@@ -17,13 +17,13 @@
  * @version 2007.4.9
  */
 
+   $construct=800;
+
 /**
  * Security automator
  */
    class security_automator extends A_automator
       {
-         public static $destruct=1100;
-
          public function destruct()
             {
             }

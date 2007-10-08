@@ -17,12 +17,13 @@
  * @version 2007.9.10
  */
 
+   $construct=100;
+
 /**
  * Handles user information automatically
  */
    class user_automator extends A_automator
       {
-         public static $construct=800;
       /**
        * Checks user credentials and loads up an account if they're good
        * @access public
