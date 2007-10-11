@@ -35,7 +35,7 @@
          public $_=false;
 
       /**
-       * Assigned a reference to $_['models']['system'] in the constructor and inherited by every class in the system
+       * Assigned a reference to $_['objects']['models']['system'] in the constructor and inherited by every class in the system
        * @access public
        * @var mixed
        */
@@ -185,5 +185,15 @@
        * @return void
        */
          public function post_destruct(&$object) {}
+
+      /**
+       * Simplify the destructor from the parent since we don't want to run injectors inside themselves (infinite loop)
+       * @access public
+       * @return void
+       */
+         public function __destruct()
+            {
+               $this->destruct();
+            }
       }
 ?>
