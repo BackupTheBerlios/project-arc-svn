@@ -62,7 +62,6 @@
 
                            $class="${model}_model";
 
-
                            if(!class_exists($class))
                               {
                                  require($location);

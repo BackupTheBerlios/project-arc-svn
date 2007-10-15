@@ -57,7 +57,7 @@
                   }
 
             // Yank the GET variable a
-               $input=explode('/',trim($_GET['a'],'/'));
+               $input=explode('/',trim($_GET['a'],'./'));
 
             // Shave off necessary components and store them inside the system for reference
                $this->_['information']['input']['controller']=array_shift($input);
