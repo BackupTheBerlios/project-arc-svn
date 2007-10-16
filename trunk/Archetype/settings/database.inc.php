@@ -18,6 +18,7 @@
  */
 
 // Connection information for the default data source
+/* 
    $settings['default']['host']=      'localhost';
    $settings['default']['port']=      3306;
    $settings['default']['socket']=    '';
@@ -27,4 +28,5 @@
    $settings['default']['driver']=    'mysql';
    $settings['default']['prefix']=    'A_';
    $settings['default']['controller']='aided';
+ */
 ?>
