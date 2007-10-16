@@ -18,3 +18,12 @@
          UNIQUE KEY email (email),
          KEY password_hash (password_hash)
       );
+
+   CREATE TABLE A_user_groups
+      (
+         id int(11) unsigned NOT NULL auto_increment,
+         name varchar(255) collate utf8_unicode_ci NOT NULL,
+         permissions text collate utf8_unicode_ci NOT NULL,
+         PRIMARY KEY (id),
+         UNIQUE KEY name (name)
+      );
