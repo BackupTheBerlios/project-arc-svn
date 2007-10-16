@@ -20,7 +20,7 @@
 /**
  * Makes interaction with HTTP easier and symmetric
  */
-   class http_model extends A_model
+   class A_http_model extends A_model
       {
          public function construct()
             {

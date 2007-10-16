@@ -1,5 +1,5 @@
 <?php
-   class benchmark_injector extends A_injector
+   class A_benchmark_injector extends A_injector
       {
          public function pre_construct(&$object)
             {

@@ -22,7 +22,7 @@
 /**
  * Routers - only works for HTTP for now.  Archetype needs some sort of imput abstraction before it can route for anything else.
  */
-   class router_automator extends A_automator
+   class A_router_automator extends A_automator
       {
          public function construct()
             {

@@ -22,7 +22,7 @@
 /**
  * Security automator
  */
-   class security_automator extends A_automator
+   class A_security_automator extends A_automator
       {
          public function destruct()
             {

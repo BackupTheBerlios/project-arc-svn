@@ -20,7 +20,7 @@
 /**
  * A small, fast OOP event library
  */
-   class event_model extends A_model
+   class A_event_model extends A_model
       {
       /**
        * Store events that haven't been triggered

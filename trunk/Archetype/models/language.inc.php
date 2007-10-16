@@ -20,7 +20,7 @@
 /**
  * Makes language abstraction easier and more organized
  */
-   class language_model extends Archetype_model
+   class A_language_model extends Archetype_model
       {
       }
 ?>

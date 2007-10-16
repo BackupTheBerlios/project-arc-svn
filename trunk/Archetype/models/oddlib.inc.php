@@ -20,7 +20,7 @@
 /**
  * Useful random junk
  */
-   class oddlib_model extends A_model
+   class A_oddlib_model extends A_model
       {
          public static $info=array('version' =>'2007.7.16',
                                    'author'  =>'',);

@@ -17,7 +17,6 @@
  * @version 2007.4.1
  */
 
-   $system['ob_handler']='ob_gzhandler';
-   $system['exception_handler']=false;
-   $system['debug']=true;
+   $settings['ob_handler']='ob_gzhandler';
+   $settings['debug']=true;
 ?>

@@ -30,7 +30,7 @@
 /**
  * Logging mechanism
  */
-   class log_model extends Archetype_model
+   class A_log_model extends Archetype_model
       {
       /**
        * Store the buffered logs until they're ready to be written

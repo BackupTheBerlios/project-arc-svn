@@ -20,7 +20,7 @@
 /**
  * User output class
  */
-   class user_controller extends A_controller
+   class A_user_controller extends A_controller
       {
       /**
        * Load dependencies
@@ -29,6 +29,7 @@
        */
          public function construct()
             {
+               throw new ArchetypeException('Some exception in the user component');
                $this->system->model('SeboDB',$this);
                $this->system->model('user',$this);
 

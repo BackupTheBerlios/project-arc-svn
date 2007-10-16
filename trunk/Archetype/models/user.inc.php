@@ -22,7 +22,7 @@
 /**
  * Simple interaction with the user layer
  */
-   class user_model extends A_model
+   class A_user_model extends A_model
       {
       /**
        * Store opened user accounts
@@ -172,7 +172,7 @@
                      $password_clause='';
                      if(!empty($password_hash))
                         {
-                           $password_clause='AND password_hash="'.$d->escape($password_hash).'"';
+                           $password_clause='AND u.password_hash="'.$d->escape($password_hash).'"';
                         }
 
                      if(is_string($account))
@@ -186,7 +186,14 @@
                            $value=(int)$account;
                         }
 
-                     $d->query('SELECT * FROM ^users WHERE '.$field.'="'.$d->escape($account).'" '.$password_clause.' LIMIT 1');
+                     $d->query(' SELECT
+                                    u.*,
+                                    g.name AS group_name,
+                                    g.permissions AS group_permissions
+                                 FROM ^users AS u
+                                 LEFT JOIN ^user_groups AS g ON u.group_id=g.id
+                                 WHERE u.'.$field.'="'.$d->escape($account).'" '.$password_clause.'
+                                 LIMIT 1');
                      if($d->results())
                         {
                            $r=$d->fetch();
@@ -292,7 +299,8 @@
        */
          public function hash($string)
             {
-               $s=&$this->settings['user']['hash_salt'];
+               $s=$this->settings['user']['hash_salt'];
+
                return sha1($s.md5($string.sha1($s)));
             }
 

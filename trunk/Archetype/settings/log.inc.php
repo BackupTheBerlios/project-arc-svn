@@ -17,5 +17,5 @@
  * @version 2007.4.1
  */
 
-   $log['timestamp_format']='Y.n.j|H:i:s';
+   $settings['timestamp_format']='Y.n.j|H:i:s';
 ?>

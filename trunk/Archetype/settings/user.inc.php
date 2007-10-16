@@ -18,27 +18,27 @@
  */
 
 // Salt by which user passwords will be encrypted - do not change once users exist
-   $user['hash_salt']='3j.^r9%#';
+   $settings['hash_salt']='3j.^r9%#';
 
 // Enable / disable user login
-   $user['login_enabled']=true;
+   $settings['login_enabled']=true;
 
 // In transactions where sensitive information might be passed, only use an ssl connection
 // Not implemented
-   $user['ssl_only']=false;
+   $settings['ssl_only']=false;
 
 // Make it so people can't just link you to the logout page and log you out
 // Not implemented
-   $user['logout_require_session_id']=true;
+   $settings['logout_require_session_id']=true;
 
 // Enable / disable user registration
-   $user['registration_enabled']=true;
+   $settings['registration_enabled']=true;
 
 // Enable or disable user validation after registration
 // Not implemented
-   $user['validation_enabled']=false;
+   $settings['validation_enabled']=false;
 
 // Enable or disable the captcha for user registration (requires captcha component)
 // Not implemented
-   $user['captcha_enabled']=false;
+   $settings['captcha_enabled']=false;
 ?>

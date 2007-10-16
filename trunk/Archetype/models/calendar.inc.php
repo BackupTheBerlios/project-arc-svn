@@ -21,7 +21,7 @@
  * A useful calendar class.  Supports only Gregorian for now, but if
  * someone makes additions and emails them to me I'll add them.
  */
-   class calendar_model extends Archetype_model
+   class A_calendar_model extends Archetype_model
       {
       /**
        * Gets all of the days of a Gregorian year and formats them

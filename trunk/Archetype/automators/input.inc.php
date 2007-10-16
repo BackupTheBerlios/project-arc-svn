@@ -22,7 +22,7 @@
 /**
  * 
  */
-   class input_automator extends A_automator
+   class A_input_automator extends A_automator
       {
          public function construct()
             {

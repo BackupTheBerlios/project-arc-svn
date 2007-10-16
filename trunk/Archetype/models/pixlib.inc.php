@@ -29,7 +29,7 @@
 /**
  * Pixlib is a tool for manipulating images in various ways as supported by GD
  */
-   class pixlib_model extends Archetype_model
+   class A_pixlib_model extends Archetype_model
       {
       /**
        * Assigned GD information in the constructor

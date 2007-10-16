@@ -73,7 +73,7 @@
                'automators'=>array(),
                'injectors'=>array(),
                'models'=>array('system'=>false),
-               'controllers'=>array()
+               'controllers'=>array('system'=>false)
             ),
       );
 
@@ -103,7 +103,7 @@
 
                      require(INJECTORS_LOCATION.$injector.'.inc.php');
 
-                     $class=$injector.'_injector';
+                     $class='A_'.$injector.'_injector';
 
                      if(class_exists($class))
                         {
@@ -128,7 +128,7 @@
 
                      require(AUTOMATORS_LOCATION.$automator.'.inc.php');
 
-                     $class=$automator.'_automator';
+                     $class='A_'.$automator.'_automator';
 
                      if(class_exists($class))
                         {
@@ -145,18 +145,18 @@
       // Run constructors
          foreach($_['information']['priority']['construct'] as $automator=>$priority)
             {
-               if(class_exists($class=$automator.'_automator'))
+               if(class_exists($class='A_'.$automator.'_automator'))
                   {
-                     $_['storage']['automators'][$automator]=new $class($_);
+                     $_['objects']['automators'][$automator]=new $class($_);
                   }
             }
 
       // Run destructors
          foreach($_['information']['priority']['destruct'] as $automator=>$priority)
             {
-               if(!empty($_['storage']['automators'][$automator]))
+               if(!empty($_['objects']['automators'][$automator]))
                   {
-                     unset($_['storage']['automators'][$automator]);
+                     unset($_['objects']['automators'][$automator]);
                   }
             }
       }
@@ -164,9 +164,9 @@
    catch(Exception $x)
       {
       // Allow components to set a new exception handler
-         if(!empty($_['information']['settings']['system']['exception_handler']))
+         if(!empty($_['objects']['models']['system']))
             {
-               call_user_func($_['information']['settings']['system']['exception_handler'],$x);
+               $_['objects']['models']['system']->controller('system','exception',array($x));
             }
       // But default to trigger_error()
          else

@@ -21,7 +21,7 @@
  * Created to separate the router functionality from the actual router so other components can use it
  * @todo Change alias to return a string and create overwrite that overwrites the input reference
  */
-   class router_model extends A_model
+   class A_router_model extends A_model
       {
       /**
        * Construct

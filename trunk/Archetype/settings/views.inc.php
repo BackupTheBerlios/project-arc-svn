@@ -17,15 +17,15 @@
  * @version 2007.9.12
  */
 
-   $views['global']['webroot']='http://'.$_SERVER['SERVER_NAME'].substr($_SERVER['PHP_SELF'],0,-strlen('index.php'));
+   $settings['global']['webroot']='http://'.$_SERVER['SERVER_NAME'].substr($_SERVER['PHP_SELF'],0,-strlen('index.php'));
 
 // Should probably figure out where the first request for this config is and somehow get it behind the declaration of $_GET['a'] so I can kill the logic
    if(!empty($_GET))
       {
-         $views['global']['self']=$views['global']['webroot'].$_GET['a'];
+         $settings['global']['self']=$settings['global']['webroot'].$_GET['a'];
       }
    else
       {
-         $views['global']['self']=&$views['global']['webroot'];
+         $settings['global']['self']=&$settings['global']['webroot'];
       }
 ?>

@@ -20,7 +20,7 @@
 /**
  * Automatically record statistics on each system execution
  */
-   class stats_automator extends A_automator
+   class A_stats_automator extends A_automator
       {
          public function destruct()
             {

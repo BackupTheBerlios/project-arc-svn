@@ -20,7 +20,7 @@
 /**
  * Primary security mechanism
  */
-   class security_model extends A_model
+   class A_security_model extends A_model
       {
       }
 ?>

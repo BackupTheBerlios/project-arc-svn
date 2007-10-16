@@ -18,15 +18,13 @@
  */
 
 // Connection information for the default data source
-/**
-   $database['default']['host']=      'localhost';
-   $database['default']['port']=      3306;
-   $database['default']['socket']=    '';
-   $database['default']['user']=      'justin';
-   $database['default']['pass']=      '';
-   $database['default']['name']=      'Archetype';
-   $database['default']['driver']=    'mysql';
-   $database['default']['prefix']=    'A_';
-   $database['default']['controller']='aided';
-*/
+   $settings['default']['host']=      'localhost';
+   $settings['default']['port']=      3306;
+   $settings['default']['socket']=    '';
+   $settings['default']['user']=      'justin';
+   $settings['default']['pass']=      '';
+   $settings['default']['name']=      'Archetype';
+   $settings['default']['driver']=    'mysql';
+   $settings['default']['prefix']=    'A_';
+   $settings['default']['controller']='aided';
 ?>

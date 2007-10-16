@@ -23,7 +23,7 @@
 /**
  * System automator component class.  Without this absolutely nothing would work.
  */
-   class system_automator extends A_automator
+   class A_system_automator extends A_automator
       {
       /**
        * Injects Archetype's system model object storage so other components may take advantage of it and sets up the environment for other components
@@ -36,7 +36,7 @@
                require(MODELS_LOCATION.'system.inc.php');
 
             // Make a new instance of the system model and put it where it would normally go in the universal array
-               $this->_['objects']['models']['system']=new system_model($this->_);
+               $this->_['objects']['models']['system']=new A_system_model($this->_);
 
             // Put this in a session manager
                session_start();

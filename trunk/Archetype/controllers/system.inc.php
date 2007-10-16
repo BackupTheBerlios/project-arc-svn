@@ -23,16 +23,11 @@
  * .htaccess files enabled users will be able to toy around with these pages ... not that they'll
  * get anywhere.  It just looks less professional.
  */
-   class system_controller extends A_controller
+   class A_system_controller extends A_controller
       {
          public function error($error)
             {
-               echo($this->system->view('system/error',array('error'=>$error)));
-            }
-
-         public function info()
-            {
-               echo($this->system->view('system/info'));
+               echo($this->system->view('system/error',array('message'=>$error)));
             }
 
          public function not_found($controller,$method,$parameters)
@@ -52,6 +47,11 @@
          public function welcome()
             {
                echo($this->system->view('system/welcome'));
+            }
+
+         public function exception(&$exception)
+            {
+               echo($this->system->view('system/exception',$x=array('message'=>$exception->__toString())));
             }
       }
 ?>

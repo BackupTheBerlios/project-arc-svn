@@ -17,10 +17,10 @@
  * @version 2007.4.25
  */
 
-   $cookie['prefix']=     'Archetype_'; // Name prefix
-   $cookie['expire']=     time()+(60*60*24*365); // Expire (1 year default)
-   $cookie['path']=       '/'; // Path for cookies
-   $cookie['domain']=     $_SERVER['HTTP_HOST']; // Domain for cookies
-   $cookie['https_only']= false; // Make cookies only accessible through HTTPS
-   $cookie['header_only']=false; // Make cookies only accessible through server-side
+   $settings['prefix']=     'Archetype_'; // Name prefix
+   $settings['expire']=     time()+(60*60*24*365); // Expire (1 year default)
+   $settings['path']=       '/'; // Path for cookies
+   $settings['domain']=     false; // Domain for cookies
+   $settings['https_only']= false; // Make cookies only accessible through HTTPS
+   $settings['header_only']=false; // Make cookies only accessible through server-side
 ?>

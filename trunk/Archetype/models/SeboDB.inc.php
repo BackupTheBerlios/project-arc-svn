@@ -53,7 +53,7 @@
 /**
  * Originally the stock SeboDB class, but modified to work nicer inside Archetype.
  */
-   class SeboDB_model extends A_model
+   class A_SeboDB_model extends A_model
       {
          public function construct()
             {

@@ -22,7 +22,7 @@
 /**
  * Handles user information automatically
  */
-   class user_automator extends A_automator
+   class A_user_automator extends A_automator
       {
       /**
        * Checks user credentials and loads up an account if they're good

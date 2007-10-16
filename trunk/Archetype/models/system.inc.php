@@ -20,7 +20,7 @@
 /**
  * Archetype's system model for providing support to other components
  */
-   class system_model extends A_model
+   class A_system_model extends A_model
       {
       /**
        * Upon construct, assign a few important things to the object
@@ -45,14 +45,12 @@
             {
                $r=false;
 
-               $location=MODELS_LOCATION."${model}.inc.php";
-
                $model=str_replace('/','_',trim($model,'/'));
 
             // If we don't have an existing instance of the model, try to create one
                if(empty($this->_['objects']['models'][$model]))
                   {
-                     if(is_readable($location))
+                     if(is_readable($location=MODELS_LOCATION.str_replace('.','',trim($model,'/')).'.inc.php'))
                         {
                         // Trim off the chunk of the string that we'll use to identify the class if we need to
                            if(strpos($model,'/'))
@@ -60,7 +58,7 @@
                                  $model=array_slice(explode('/',$model),-1,1);
                               }
 
-                           $class="${model}_model";
+                           $class="A_${model}_model";
 
                            if(!class_exists($class))
                               {
@@ -105,38 +103,38 @@
             {
                $r=false;
 
-            // Merge global and local values, local overwriting global
-               if(is_array($input))
+            // If the view exists, load it up and catch the output
+               if(is_readable($location=VIEWS_LOCATION.str_replace('.','',trim($view,'/')).'.inc.php'))
                   {
-                     $input=array_merge($input,$this->settings['views']['global']);
-                  }
-            // Just link the two because there was no input array
-               elseif(empty($input))
-                  {
-                     $input=&$this->settings['views']['global'];
-                  }
-            // Throw an exception because someone tried feeding it the wrong kind of food
-               else
-                  {
-                     throw new ArchetypeException("Views only accept input in the form of an associative array");
-                  }
-
-            // Convert $input into a bunch of variables for the view
-               foreach($input as $index=>&$value)
-                  {
-                     if(!isset($$index))
+                  // Merge global and local values, local overwriting global
+                     if(is_array($input))
                         {
-                           $$index=&$value;
+                           $input=array_merge($input,$this->settings['views']['global']);
                         }
+                  // Just link the two because there was no input array
+                     elseif(empty($input))
+                        {
+                           $input=&$this->settings['views']['global'];
+                        }
+                  // Throw an exception because someone tried feeding it the wrong kind of food
                      else
                         {
-                           throw new ArchetypeException("View input tried overwriting '${$index}'");
+                           throw new ArchetypeException("Views only accept input in the form of an associative array");
                         }
-                  }
 
-            // If the view exists, load it up and catch the output
-               if(is_readable($location=VIEWS_LOCATION.$view.'.inc.php'))
-                  {
+                  // Convert $input into a bunch of variables for the view
+                     foreach($input as $index=>&$value)
+                        {
+                           if(!isset($$index))
+                              {
+                                 $$index=&$value;
+                              }
+                           else
+                              {
+                                 throw new ArchetypeException("View input tried overwriting '${$index}'");
+                              }
+                        }
+
                   // Start an output buffer so we can catch all output
                      ob_start();
 
@@ -166,15 +164,13 @@
             {
                $r=false;
 
-               $location=CONTROLLERS_LOCATION."${controller}.inc.php";
-
                $controller=str_replace('/','_',trim($controller,'/'));
 
                if(empty($this->_['objects']['controllers'][$controller]))
                   {
-                     if(is_readable($location=CONTROLLERS_LOCATION.$controller.'.inc.php'))
+                     if(is_readable($location=CONTROLLERS_LOCATION.str_replace('.','',trim($controller,'/')).'.inc.php'))
                         {
-                           $class=$controller.'_controller';
+                           $class="A_${controller}_controller";
       
                            if(!class_exists($class))
                               {
@@ -217,13 +213,13 @@
             // If the setting group isn't loaded, try to load it
                if(empty($this->_['information']['settings'][$group]))
                   {
-                     if(is_readable($location=SETTINGS_LOCATION."${group}.inc.php"))
+                     if(is_readable($location=SETTINGS_LOCATION.str_replace('.','',trim($group,'/')).'.inc.php'))
                         {
                            require($location);
 
-                           if(!empty($$group))
+                           if(!empty($settings))
                               {
-                                 $this->_['information']['settings'][$group]=&$$group;
+                                 $this->_['information']['settings'][$group]=$settings;
                               }
                         }
                      else
@@ -284,7 +280,7 @@
        */
          public function depend($type,$component,$key=false,$regex=false)
             {
-               // $out=eval("return ${class}::\$information;");
+               // must figure out a neat and clean information storage mechanism for each component
                // Open the type of component by type
                // Grab module info, parse with preg
                // If false, dump an exception
@@ -297,6 +293,7 @@
        * @param $name Name of component
        * @param $method Name of method (if checking something class-based)
        * @return bool True if the specified component exists, false if not
+       * @todo rewrite to work for sub/directory/components
        */
          public function exists($type,$name,$method=false)
             {
@@ -304,7 +301,7 @@
 
                if($type==='model')
                   {
-                     $location=MODELS_LOCATION."${name}.inc.php";
+                     $location=MODELS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
                   }
                elseif($type==='view')
                   {
@@ -315,20 +312,20 @@
                   }
                elseif($type==='controller')
                   {
-                     $location=CONTROLLERS_LOCATION."${name}.inc.php";
+                     $location=CONTROLLERS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
                   }
                elseif($type==='automator')
                   {
-                     $location=AUTOMATORS_LOCATION."${name}.inc.php";
+                     $location=AUTOMATORS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
                   }
                elseif($type==='injector')
                   {
-                     $location=INJECTORS_LOCATION."${name}.inc.php";
+                     $location=INJECTORS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
                   }
 
                if(!empty($location))
                   {
-                     $class=$name.'_'.$type;
+                     $class="A_${name}_${type}";
 
                   // If the class simply doesn't exist, try to load it
                      if(!class_exists($class)&&is_readable($location))

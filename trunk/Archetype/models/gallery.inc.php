@@ -20,7 +20,7 @@
 /**
  * Tools for generating pixmap galleries from a directory hierarchy
  */
-   class gallery_model extends Archetype_model
+   class A_gallery_model extends Archetype_model
       {
       /**
        * Constructor loads required models and configurations

@@ -15,7 +15,7 @@
          color:#555;
          background:#FFF;
          font-family:arial,verdana,sans-serif;
-         font-size:12px;
+         font-size:10px;
          margin:1.5em;
       }
 
@@ -191,6 +191,17 @@
          width:549px;
          padding:1.2em;
          margin:0 auto 0 auto;
+      }
+
+   #exception
+      {
+         width:549px;
+         background:#FFF;
+         margin:0 auto 0 auto;
+      }
+   #exception>p
+      {
+         color:#444;
       }
 
    #copyright

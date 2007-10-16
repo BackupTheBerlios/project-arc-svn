@@ -20,13 +20,13 @@
 
 
 // System routes
-   $routes['system']['default']=  'system/welcome';
-   $routes['system']['error']=    'system/error';
-   $routes['system']['not_found']='system/not_found';
-   $routes['system']['forbidden']='system/forbidden';
+   $settings['system']['default']=  'system/welcome';
+   $settings['system']['error']=    'system/error';
+   $settings['system']['not_found']='system/not_found';
+   $settings['system']['forbidden']='system/forbidden';
 
 // Aliases / overwrites
-   $routes['aliases']['/^router.*$/']=&$routes['system']['forbidden']; // We don't want people directly accessing the router controller
-   $routes['aliases']['/^benchmark.*$/']=&$routes['system']['forbidden']; // Nor the benchmark controller
-   $routes['aliases']['/^system.*$/']=&$routes['system']['forbidden']; // Nor the system controller
+   $settings['aliases']['/^router.*$/']=&$settings['system']['forbidden']; // We don't want people directly accessing the router controller
+   $settings['aliases']['/^benchmark.*$/']=&$settings['system']['forbidden']; // Nor the benchmark controller
+   $settings['aliases']['/^system.*$/']=&$settings['system']['forbidden']; // Nor the system controller
 ?>
