@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -28,21 +28,21 @@
  */
    if(!defined('SEBODB_CONTROLLERS_LOCATION'))
       {
-         define('SEBODB_CONTROLLERS_LOCATION',SYSTEM_LOCATION.'SeboDB/controllers/');
+         define('SEBODB_CONTROLLERS_LOCATION',A_SYSTEM_LOCATION.'SeboDB/controllers/');
       }
 /**
  * Driver location
  */
    if(!defined('SEBODB_DRIVERS_LOCATION'))
       {
-         define('SEBODB_DRIVERS_LOCATION',SYSTEM_LOCATION.'SeboDB/drivers/');
+         define('SEBODB_DRIVERS_LOCATION',A_SYSTEM_LOCATION.'SeboDB/drivers/');
       }
 /**
  * Global file location
  */
    if(!defined('SEBODB_GLOBAL_LOCATION'))
       {
-         define('SEBODB_GLOBAL_LOCATION',SYSTEM_LOCATION.'SeboDB/SeboDB.global.inc.php');
+         define('SEBODB_GLOBAL_LOCATION',A_SYSTEM_LOCATION.'SeboDB/SeboDB.global.inc.php');
       }
 
 /**

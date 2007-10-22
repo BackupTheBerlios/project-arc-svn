@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -17,14 +17,14 @@
  * @version 2007.7.16
  */
 
+   $information=array('version'=>A_VERSION,
+                      'author' =>'Justin Krueger <fuzzywoodlandcreature@gmail.com>');
+
 /**
  * Useful random junk
  */
    class A_oddlib_model extends A_model
       {
-         public static $info=array('version' =>'2007.7.16',
-                                   'author'  =>'',);
-
       /**
        * Created specifically for wiping out magic_quotes but probably has uses for other things too
        * @access public
@@ -37,7 +37,7 @@
                   {
                      foreach($input as &$element)
                         {
-                           $this->stripslashes($element);
+                           self::stripslashes($element);
                         }
                   }
                elseif(is_string($input)&&!empty($input))

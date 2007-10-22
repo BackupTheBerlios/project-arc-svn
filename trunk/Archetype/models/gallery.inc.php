@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -97,7 +97,7 @@
                   }
                else
                   {
-                     throw new ArchetypeException("Directory '${directory}' could not be read");
+                     throw new A_Exception("Directory '${directory}' could not be read");
                   }
 
                return $r;

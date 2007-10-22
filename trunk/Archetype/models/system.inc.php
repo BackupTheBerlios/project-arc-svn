@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -50,7 +50,7 @@
             // If we don't have an existing instance of the model, try to create one
                if(empty($this->_['objects']['models'][$model]))
                   {
-                     if(is_readable($location=MODELS_LOCATION.str_replace('.','',trim($model,'/')).'.inc.php'))
+                     if(is_readable($location=A_MODELS_LOCATION.str_replace('.','',trim($model,'/')).'.inc.php'))
                         {
                         // Trim off the chunk of the string that we'll use to identify the class if we need to
                            if(strpos($model,'/'))
@@ -73,7 +73,7 @@
 
                      if(empty($this->_['objects']['models'][$model]))
                         {
-                           throw new ArchetypeException("Attempted to open non-existent model '${location}'");
+                           throw new A_Exception("Attempted to open non-existent model '${location}'");
                         }
                   }
 
@@ -104,7 +104,7 @@
                $r=false;
 
             // If the view exists, load it up and catch the output
-               if(is_readable($location=VIEWS_LOCATION.str_replace('.','',trim($view,'/')).'.inc.php'))
+               if(is_readable($location=A_VIEWS_LOCATION.str_replace('.','',trim($view,'/')).'.inc.php'))
                   {
                   // Merge global and local values, local overwriting global
                      if(is_array($input))
@@ -119,7 +119,7 @@
                   // Throw an exception because someone tried feeding it the wrong kind of food
                      else
                         {
-                           throw new ArchetypeException("Views only accept input in the form of an associative array");
+                           throw new A_Exception("Views only accept input in the form of an associative array");
                         }
 
                   // Convert $input into a bunch of variables for the view
@@ -131,7 +131,7 @@
                               }
                            else
                               {
-                                 throw new ArchetypeException("View input tried overwriting '${$index}'");
+                                 throw new A_Exception("View input tried overwriting '${$index}'");
                               }
                         }
 
@@ -146,7 +146,7 @@
                   }
                else
                   {
-                     throw new ArchetypeException("Attempted to open non-existent view '${location}'");
+                     throw new A_Exception("Attempted to open non-existent view '${location}'");
                   }
 
                return $r;
@@ -159,6 +159,7 @@
        * @param $method The method inside of the controller class to run
        * @param $args The parameters to feed to the method's call
        * @return mixed String on success, false on failure
+       * @todo Make it controller($input) and input something like user/open/34
        */
          public function controller($controller,$method='index',$args=array())
             {
@@ -168,7 +169,7 @@
 
                if(empty($this->_['objects']['controllers'][$controller]))
                   {
-                     if(is_readable($location=CONTROLLERS_LOCATION.str_replace('.','',trim($controller,'/')).'.inc.php'))
+                     if(is_readable($location=A_CONTROLLERS_LOCATION.str_replace('.','',trim($controller,'/')).'.inc.php'))
                         {
                            $class="A_${controller}_controller";
       
@@ -185,7 +186,7 @@
 
                      if(empty($this->_['objects']['controllers'][$controller]))
                         {
-                           throw new ArchetypeException("Attempted to open non-existent controller '${location}'");
+                           throw new A_Exception("Attempted to open non-existent controller '${location}'");
                         }
                   }
       
@@ -206,14 +207,14 @@
        * @param $require Optionally checks the setting group for the settings provided in this array
        * @return mixed A reference to either the setting group specified or the key specified if true, false otherwise
        */
-         public function &settings($group,&$object=false,$require=false)
+         public function &settings($group,&$object=false,$overwrite=array())
             {
                $r=false;
 
             // If the setting group isn't loaded, try to load it
                if(empty($this->_['information']['settings'][$group]))
                   {
-                     if(is_readable($location=SETTINGS_LOCATION.str_replace('.','',trim($group,'/')).'.inc.php'))
+                     if(is_readable($location=A_SETTINGS_LOCATION.str_replace('.','',trim($group,'/')).'.inc.php'))
                         {
                            require($location);
 
@@ -224,7 +225,7 @@
                         }
                      else
                         {
-                           throw new ArchetypeException('Attempted to open non-existent setting group "'.$group.'"');
+                           throw new A_Exception('Attempted to open non-existent setting group "'.$group.'"');
                         }
                   }
 
@@ -233,35 +234,18 @@
                   {
                      $r=&$this->_['information']['settings'][$group];
 
+                  // Allow you to inject custom settings, but localize it first
+                     if(!empty($overwrite)&&is_array($overwrite))
+                        {
+                           self::array_overwrite($overwrite,$r);
+
+                           $r=&$overwrite;
+                        }
+
                   // Assign the model to a parameter inside of the passed object, if one was passed
                      if(is_object($object))
                         {
                            $object->settings[$group]=&$r;
-                        }
-                  }
-
-            // Check if the setting meets the requirements
-               if(is_array($r)&&is_array($require))
-                  {
-                     $missing_settings=array();
-
-                     foreach($require as $settings)
-                        {
-                           if(!isset($r[$settings]))
-                              {
-                                 $missing_settings[]=$settings;
-                              }
-                        }
-
-                     if(!empty($missing_settings))
-                        {
-                           $plural='';
-                           if(count($missing_settings)>1)
-                              {
-                                 $plural='s';
-                              }
-
-                           throw new ArchetypeException("Setting group '${group}' is missing required setting${plural} '".implode("', '",$missing_settings)."'.");
                         }
                   }
 
@@ -301,26 +285,26 @@
 
                if($type==='model')
                   {
-                     $location=MODELS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
+                     $location=A_MODELS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
                   }
                elseif($type==='view')
                   {
-                     if(is_readable(VIEWS_LOCATION.$view.'.inc.php'))
+                     if(is_readable(A_VIEWS_LOCATION.$view.'.inc.php'))
                         {
                            $r=true;
                         }
                   }
                elseif($type==='controller')
                   {
-                     $location=CONTROLLERS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
+                     $location=A_CONTROLLERS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
                   }
                elseif($type==='automator')
                   {
-                     $location=AUTOMATORS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
+                     $location=A_AUTOMATORS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
                   }
                elseif($type==='injector')
                   {
-                     $location=INJECTORS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
+                     $location=A_INJECTORS_LOCATION.str_replace('.','',trim($name,'/')).'.inc.php';
                   }
 
                if(!empty($location))
@@ -344,6 +328,31 @@
                   }
 
                return $r;
+            }
+
+      /**
+       * Creates a new associative array based on $original but with the specified keys in $overwrite written with their respective data
+       * @access public
+       * @param mixed $original
+       * @param mixed $overwrite
+       * @return mixed
+       */
+         static private function array_overwrite(&$overwrite,&$original)
+            {
+               if(is_array($overwrite)&&is_array($original))
+                  {
+                     foreach($original as $key=>&$value)
+                        {
+                           if(empty($overwrite[$key]))
+                              {
+                                 $overwrite[$key]=$value;
+                              }
+                           else
+                              {
+                                 self::array_overwrite($overwrite[$key],$original[$key]);
+                              }
+                        }
+                  }
             }
       }
 ?>

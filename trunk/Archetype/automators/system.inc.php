@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -33,7 +33,7 @@
          public function construct()
             {
             // Statically require Archetype's system model
-               require(MODELS_LOCATION.'system.inc.php');
+               require(A_MODELS_LOCATION.'system.inc.php');
 
             // Make a new instance of the system model and put it where it would normally go in the universal array
                $this->_['objects']['models']['system']=new A_system_model($this->_);

@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -17,6 +17,6 @@
  * @version 2007.4.1
  */
 
-   $settings['ob_handler']='ob_gzhandler';
-   $settings['debug']=true;
+   $settings['ob_handler']='ob_gzhandler'; // unused
+   $settings['debug']=true; // unused
 ?>

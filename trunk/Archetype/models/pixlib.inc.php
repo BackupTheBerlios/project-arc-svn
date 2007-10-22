@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -19,12 +19,12 @@
  * @todo Finish...
  */
 
-   define('PIXLIB_QUALITY_LOW',35);
-   define('PIXLIB_QUALITY_MEDIUM',55);
-   define('PIXLIB_QUALITY_HIGH',100);
+   define('A_PIXLIB_QUALITY_LOW',35);
+   define('A_PIXLIB_QUALITY_MEDIUM',55);
+   define('A_PIXLIB_QUALITY_HIGH',100);
 
-   define('PIXLIB_SCALE_PROPORTION',0);
-   define('PIXLIB_SCALE_DIMENSION',1);
+   define('A_PIXLIB_SCALE_PROPORTION',0);
+   define('A_PIXLIB_SCALE_DIMENSION',1);
 
 /**
  * Pixlib is a tool for manipulating images in various ways as supported by GD
@@ -54,7 +54,7 @@
             {
                if(!function_exists('gd_info'))
                   {
-                     throw new ArchetypeException("GD needs to be installed to use pixlib");
+                     throw new A_Exception("GD needs to be installed to use pixlib");
                   }
                else
                   {
@@ -95,7 +95,7 @@
                         }
                      else
                         {
-                           throw new ArchetypeException("No image set as current and no id specified");
+                           throw new A_Exception("No image set as current and no id specified");
                         }
                   }
                else
@@ -106,7 +106,7 @@
                         }
                      else
                         {
-                           throw new ArchetypeException("Invalid id: '${id}'");
+                           throw new A_Exception("Invalid id: '${id}'");
                         }
                   }
 
@@ -148,7 +148,7 @@
                   // Flip out if we're trying to open over another image
                      if(!empty($this->images[$id]))
                         {
-                           throw new ArchetypeException("You must close '${id}' before trying to open it again");
+                           throw new A_Exception("You must close '${id}' before trying to open it again");
                         }
 
                   // Open the image and store stuff on it
@@ -168,7 +168,7 @@
                   }
                else
                   {
-                     throw new ArchetypeException("Could not read file: ${file}");
+                     throw new A_Exception("Could not read file: ${file}");
                   }
 
                return $r;
@@ -190,8 +190,8 @@
        * Scales an image opened in pixlib
        * @access public
        * @param array $dimensions Associative array specifying two of the following: max-width, max-height, width, height
-       * @param integer $quality Either false, PIXLIB_QUALITY_LOW, PIXLIB_QUALITY_MEDIUM or PIXLIB_QUALITY_HIGH
-       * @param integer $type Either false, PIXLIB_SCALE_PROPORTION or PIXLIB_SCALE_DIMENSION
+       * @param integer $quality Either false, A_PIXLIB_QUALITY_LOW, A_PIXLIB_QUALITY_MEDIUM or A_PIXLIB_QUALITY_HIGH
+       * @param integer $type Either false, A_PIXLIB_SCALE_PROPORTION or A_PIXLIB_SCALE_DIMENSION
        * @param string $id Optional identifier used for the image inside pixlib (you only need to use it if you're editing multiple images in a non-linear order)
        * @return void
        */
@@ -203,11 +203,11 @@
 
                if(empty($quality))
                   {
-                     $quality=PIXLIB_QUALITY_MEDIUM;
+                     $quality=A_PIXLIB_QUALITY_MEDIUM;
                   }
                if(empty($type))
                   {
-                     $type=PIXLIB_SCALE_PROPORTION;
+                     $type=A_PIXLIB_SCALE_PROPORTION;
                   }
 
                $possible_dimensions=array('width','height','max-width','max-height');
@@ -218,7 +218,7 @@
                         {
                            if(!in_array($key,$possible_dimensions))
                               {
-                                 throw new ArchetypeException("Unknown dimension '${key}'; must be one of the following: '".implode($possible_dimensions,"', '")."'");
+                                 throw new A_Exception("Unknown dimension '${key}'; must be one of the following: '".implode($possible_dimensions,"', '")."'");
                               }
                         }
                   }
@@ -264,7 +264,7 @@
        * @access public
        * @return void
        */
-         public function save($file,$quality=PIXLIB_QUALITY_HIGH)
+         public function save($file,$quality=A_PIXLIB_QUALITY_HIGH)
             {
                $r=false;
                return $r;
@@ -288,7 +288,7 @@
                         }
                      else
                         {
-                           throw new ArchetypeException("No image set as current and no id specified");
+                           throw new A_Exception("No image set as current and no id specified");
                         }
                   }
 
@@ -303,7 +303,7 @@
                   }
                else
                   {
-                     throw new ArchetypeException("Invalid id: '${id}'");
+                     throw new A_Exception("Invalid id: '${id}'");
                   }
 
                return $r;

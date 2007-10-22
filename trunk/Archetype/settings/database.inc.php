@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -18,7 +18,6 @@
  */
 
 // Connection information for the default data source
-/* 
    $settings['default']['host']=      'localhost';
    $settings['default']['port']=      3306;
    $settings['default']['socket']=    '';
@@ -28,5 +27,4 @@
    $settings['default']['driver']=    'mysql';
    $settings['default']['prefix']=    'A_';
    $settings['default']['controller']='aided';
- */
 ?>

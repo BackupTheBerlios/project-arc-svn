@@ -1,4 +1,4 @@
-<?=$this->system->view('global/header')?>
+<?=$this->system->view('common/header')?>
 <div id="content">
    <h1>Login</h1>
 <?php
@@ -25,4 +25,4 @@
       </ul>
    </form>
 </div>
-<?=$this->system->view('global/footer')?>
+<?=$this->system->view('common/footer')?>

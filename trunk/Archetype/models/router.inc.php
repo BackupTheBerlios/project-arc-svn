@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -49,7 +49,7 @@
                         {
                            if(!empty($index)&&!empty($value)&&(!$input=@preg_replace($index,$value,$input)))
                               {
-                                 throw new ArchetypeException("Route '${index}'=>'${value}' is an invalid regular expression");
+                                 throw new A_Exception("Route '${index}'=>'${value}' is an invalid regular expression");
                               }
                         }
                   }

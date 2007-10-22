@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -24,7 +24,7 @@
 
    if(!defined('LOG_LOCATION'))
       {
-         define('LOG_LOCATION',SYSTEM_LOCATION.'/logs/');
+         define('LOG_LOCATION',A_SYSTEM_LOCATION.'/logs/');
       }
 
 /**
@@ -158,7 +158,7 @@
 
                            if(!$r)
                               {
-                                 throw new ArchetypeException('Could not write to file "'.$log_file.'"');
+                                 throw new A_Exception('Could not write to file "'.$log_file.'"');
                               }
                         }
 

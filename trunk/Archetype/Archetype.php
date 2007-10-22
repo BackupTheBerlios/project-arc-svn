@@ -22,32 +22,37 @@
 
 /**
  * Archetype's version
- */define('ARCHETYPE_VERSION','2007.9.14');
+ */define('A_VERSION','2007.9.14');
+
+/**
+ * How should Archetype run?  0 for http, 1 for interactive
+ */
+   if(!defined('A_MODE')) { define('A_MODE',0); }
 
 /**
  * Location of the system directory
- */if(!defined('SYSTEM_LOCATION')) { define('SYSTEM_LOCATION','Archetype/'); }
+ */if(!defined('A_SYSTEM_LOCATION')) { define('A_SYSTEM_LOCATION','Archetype/'); }
 /**
  * Location of automator storage
- */if(!defined('AUTOMATORS_LOCATION')) { define('AUTOMATORS_LOCATION',SYSTEM_LOCATION.'automators/'); }
+ */if(!defined('A_AUTOMATORS_LOCATION')) { define('A_AUTOMATORS_LOCATION',A_SYSTEM_LOCATION.'automators/'); }
 /**
  * Location of injector storage
- */if(!defined('INJECTORS_LOCATION')) { define('INJECTORS_LOCATION',SYSTEM_LOCATION.'injectors/'); }
+ */if(!defined('A_INJECTORS_LOCATION')) { define('A_INJECTORS_LOCATION',A_SYSTEM_LOCATION.'injectors/'); }
 /**
  * Location of config storage
- */if(!defined('SETTINGS_LOCATION')) { define('SETTINGS_LOCATION',SYSTEM_LOCATION.'settings/'); }
+ */if(!defined('A_SETTINGS_LOCATION')) { define('A_SETTINGS_LOCATION',A_SYSTEM_LOCATION.'settings/'); }
 /**
  * Location of model storage
- */if(!defined('MODELS_LOCATION')) { define('MODELS_LOCATION',SYSTEM_LOCATION.'models/'); }
+ */if(!defined('A_MODELS_LOCATION')) { define('A_MODELS_LOCATION',A_SYSTEM_LOCATION.'models/'); }
 /**
  * Location of view storage
- */if(!defined('VIEWS_LOCATION')) { define('VIEWS_LOCATION',SYSTEM_LOCATION.'views/'); }
+ */if(!defined('A_VIEWS_LOCATION')) { define('A_VIEWS_LOCATION',A_SYSTEM_LOCATION.'views/'); }
 /**
  * Location of controller storage
- */if(!defined('CONTROLLERS_LOCATION')) { define('CONTROLLERS_LOCATION',SYSTEM_LOCATION.'controllers/'); }
+ */if(!defined('A_CONTROLLERS_LOCATION')) { define('A_CONTROLLERS_LOCATION',A_SYSTEM_LOCATION.'controllers/'); }
 /**
  * Location of global classes
- */if(!defined('GLOBAL_LOCATION')) { define('GLOBAL_LOCATION',SYSTEM_LOCATION.'global.inc.php'); }
+ */if(!defined('A_GLOBAL_LOCATION')) { define('A_GLOBAL_LOCATION',A_SYSTEM_LOCATION.'global.inc.php'); }
 
 /**
  * Universal variable passed between every object extended from Archetype
@@ -78,13 +83,13 @@
       );
 
 // Open up our global class definitions
-   require(GLOBAL_LOCATION);
+   require(A_GLOBAL_LOCATION);
 
 // Scan the filesystem for injectors
-   $_['information']['lists']['injectors']=array_slice(scandir(INJECTORS_LOCATION),2);
+   $_['information']['lists']['injectors']=array_slice(scandir(A_INJECTORS_LOCATION),2);
 
 // Scan the filesystem for automators
-   $_['information']['lists']['automators']=array_slice(scandir(AUTOMATORS_LOCATION),2);
+   $_['information']['lists']['automators']=array_slice(scandir(A_AUTOMATORS_LOCATION),2);
 
 // Execute in a sandbox so we can catch exceptions
    try
@@ -101,7 +106,7 @@
                   {
                      $injector=str_replace('.inc.php','',$injector);
 
-                     require(INJECTORS_LOCATION.$injector.'.inc.php');
+                     require(A_INJECTORS_LOCATION.$injector.'.inc.php');
 
                      $class='A_'.$injector.'_injector';
 
@@ -126,7 +131,7 @@
 
                      $construct=$destruct=0;
 
-                     require(AUTOMATORS_LOCATION.$automator.'.inc.php');
+                     require(A_AUTOMATORS_LOCATION.$automator.'.inc.php');
 
                      $class='A_'.$automator.'_automator';
 
@@ -171,7 +176,7 @@
       // But default to trigger_error()
          else
             {
-               trigger_error($x->__toString(),E_USER_ERROR); // __toString() because PHP5.1 is stupid
+               trigger_error($x->__toString(),E_USER_ERROR); // __toString() because PHP5.1 is stupid and because magic methods are sluggish
             }
       }
 ?>

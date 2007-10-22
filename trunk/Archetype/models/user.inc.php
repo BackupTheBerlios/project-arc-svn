@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -17,7 +17,7 @@
  * @version 2007.9.10
  */
 
-   define('E_USER_EXISTS',10);
+   define('A_E_USER_EXISTS',10);
 
 /**
  * Simple interaction with the user layer
@@ -38,7 +38,7 @@
        */
          public function construct()
             {
-               $this->system->settings('user',$this,array('hash_salt'));
+               $this->system->settings('user',$this);
 
                $this->system->model('SeboDB',$this);
                $this->system->model('http',$this);
@@ -50,7 +50,7 @@
        * @param string $email User email to be associated with the created account
        * @param string $password Password to be associated with created account
        * @param array $profile Optionally describe profile contents while creating account
-       * @return mixed True on success, on failure it can return E_USER_EXISTS if the specified email is in use or false if failure
+       * @return mixed True on success, on failure it can return A_E_USER_EXISTS if the specified email is in use or false if failure
        * @todo make it use $this->open() instead of its own SQL to figure out if the user exists or not
        */
          public function create($email,$password,$profile=array())
@@ -80,7 +80,7 @@
                   }
                else
                   {
-                     $r=E_USER_EXISTS;
+                     $r=A_E_USER_EXISTS;
                   }
 
                return $r;

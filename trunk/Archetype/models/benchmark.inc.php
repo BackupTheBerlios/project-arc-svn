@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -33,7 +33,7 @@
             {
                if(!empty($this->_['marks'][$name]))
                   {
-                     throw new ArchetypeException("Can not re-declare benchmark point '${name}'");
+                     throw new A_Exception("Can not re-declare benchmark point '${name}'");
                   }
 
                $this->_['marks'][$name]=microtime(true);

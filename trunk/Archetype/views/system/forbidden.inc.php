@@ -1,6 +1,6 @@
-<?=$this->system->view('global/header')?>
+<?=$this->system->view('common/header')?>
 <div id="content">
    <h1 class="error">Forbidden</h1>
    <h2>You do not nave adequate credentials to proceed further</h2>
 </div>
-<?=$this->system->view('global/footer')?>
+<?=$this->system->view('common/footer')?>

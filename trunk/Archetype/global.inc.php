@@ -1,4 +1,4 @@
-<?php if(!defined('ARCHETYPE_VERSION')){die();}
+<?php if(!defined('A_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -20,7 +20,7 @@
 /**
  * Archetype's exception class
  */
-   class ArchetypeException extends Exception {}
+   class A_Exception extends Exception {}
 
 /**
  * Primary class for Archetype.  It should be extended in some form by every other class in the system.
