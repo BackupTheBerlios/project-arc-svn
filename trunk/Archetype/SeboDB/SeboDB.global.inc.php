@@ -174,7 +174,10 @@
        */
          final public function __destruct()
             {
-               $this->close($this->connection);
+               if(!empty($this->connection))
+                  {
+                     $this->close($this->connection);
+                  }
             }
 
       /**
@@ -184,7 +187,10 @@
        */
          final public function __sleep()
             {
-               $this->close($this->connection);
+               if(!empty($this->connection))
+                  {
+                     $this->close($this->connection);
+                  }
             }
 
       /**
@@ -194,7 +200,10 @@
        */
          final public function __wakeup()
             {
-               $this->open($this->configuration);
+               if(!empty($this->configuration))
+                  {
+                     $this->open($this->configuration);
+                  }
             }
       }
 
@@ -206,7 +215,7 @@
       /**
        * Stores a reference to the driver
        * @access public
-       * @var resource
+       * @var object
        */
          public $driver=false;
 

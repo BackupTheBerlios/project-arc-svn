@@ -40,8 +40,8 @@
    >TUNING
       mod_rewrite
          Archetype's installation uses mod_rewrite to simplify
-         URLs and to mask off system directories for slightly added
-         security.  The .htaccess file is ready to go and in the root
+         URLs which is both cleaner and more search-engine friendly.
+         The .htaccess file is ready to go and in the root
          directory, you'll need mod_rewrite installed and usable.
 
       magic_quotes

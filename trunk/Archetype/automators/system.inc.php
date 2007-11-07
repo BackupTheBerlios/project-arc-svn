@@ -21,7 +21,7 @@
    $destruct=1000;
 
 /**
- * System automator component class.  Without this absolutely nothing would work.
+ * System automator component class.  Without this, absolutely nothing would work.
  */
    class A_system_automator extends A_automator
       {

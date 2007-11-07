@@ -22,16 +22,5 @@
  */
    class A_security_model extends A_model
       {
-         public function construct()
-            {
-               $this->system->settings('security',$this);
-            }
-
-         private function plugin_rights()
-            {
-               $r=false;
-
-               return $r;
-            }
       }
 ?>

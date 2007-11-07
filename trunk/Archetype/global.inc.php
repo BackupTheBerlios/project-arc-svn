@@ -124,7 +124,22 @@
 /**
  * Provide a base class for models
  */
-   class A_model extends A {}
+   class A_model extends A
+      {
+      /**
+       * Switch to toggle system::model()'s use of self::cleanup() each time the model is requested
+       * @access public
+       * @var boolean
+       */
+         public $cleanup=false;
+
+      /**
+       * Dummy method, extend and overload to make use of it (and read above comment)
+       * @access public
+       * @return void
+       */
+         public function cleanup() {}
+      }
 
 /**
  * Provide a base class for controllers

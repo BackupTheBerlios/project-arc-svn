@@ -38,7 +38,7 @@
       /**
        * User home page
        * @access public
-       * @param integer $id Optioanlly if an id is specified, go into view mode and view that id
+       * @param integer $id Optionally if an id is specified, go into view mode and view that id
        * @return void
        */
          public function index()
@@ -258,7 +258,7 @@
                                        $input['title']='Congratulations';
                                        $input['message']='Successfully created new account';
                                     }
-                                 elseif($status===E_USER_EXISTS)
+                                 elseif($status===A_E_USER_EXISTS)
                                     {
                                        $input['message']='Please pick another E-mail, this one is in use';
                                     }

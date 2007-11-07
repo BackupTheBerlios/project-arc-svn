@@ -15,13 +15,13 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/sebodb
- * @version 2007.9.10
+ * @version 2007.11.7
  */
 
 /**
  * Define SeboDB's version
  */
-   define('SEBODB_VERSION','2007.9.10');
+   define('SEBODB_VERSION','2007.11.7');
 
 /**
  * Controller location
@@ -52,24 +52,48 @@
 
 /**
  * Originally the stock SeboDB class, but modified to work nicer inside Archetype.
+ * @todo Move the linking logic into create() and prepare a separation of construct() when it's not inside Archetype
  */
    class A_SeboDB_model extends A_model
       {
+      /**
+       * Storage for all data objects we open
+       * @access public
+       * @var array
+       */
+         public $data_objects=array();
+
+      /**
+       * Constructor tries to automagically open up the associated settings and coordinate DB setup
+       * @access public
+       * @return void
+       */
          public function construct()
             {
                if($this->system->settings('database',$this))
                   {
+                  // Loop database configurations
                      foreach($this->settings['database'] as $index=>$value)
                         {
+                        // This logic is specifically for creating links from one driver to multiple controllers
                            if(!empty($this->settings['database'][$index]['link']))
                               {
-                                 $link_name=&$this->settings['database'][$index]['link'];
-                                 $this->create($this->settings['database'][$index]['controller'],$this->$link_name->driver,$index);
+                              // Figure out what we're linking to
+                                 $link=&$this->settings['database'][$index]['link'];
+
+                              // Create a new LDO but use the link's driver if it exists
+                                 if(!empty($this->$link->driver))
+                                    {
+                                       $this->create($this->settings['database'][$index]['controller'],$this->$link->driver,$index);
+                                    }
                               }
                            else
                               {
+                              // Create a new LDO
                                  $this->create($this->settings['database'][$index]['controller'],$this->settings['database'][$index]['driver'],$index);
-                                 $this->$index->open($this->settings['database'][$index]);
+
+                              // Open the connection
+                                 $this->data_objects[$index]->open($this->settings['database'][$index]);
                               }
                         }
                   }
@@ -80,7 +104,7 @@
        * @access public
        * @param string $controller String name of controller
        * @param mixed $driver Pass either a string name of driver or already-active driver
-       * @param string $id Used to store LDOs as $this->$id
+       * @param string $id Used to store LDOs as $this->data_objects->$id
        * @return mixed Returns an LDO on success, false on failure
        */
          public function create($controller,$driver,$id)
@@ -90,9 +114,9 @@
             // Make sure our controller class exists
                if(is_readable($controller_file=SEBODB_CONTROLLERS_LOCATION.$controller.'/'.$controller.'.inc.php'))
                   {
-                     $controller_name='SeboDB_controller_'.$controller;
+                     $controller_class='SeboDB_controller_'.$controller;
 
-                     if(!class_exists($controller_name))
+                     if(!class_exists($controller_class))
                         {
                            require($controller_file);
                         }
@@ -101,62 +125,30 @@
             // Make sure our driver class exists then create an instance of it
                if(is_string($driver)&&is_readable($driver_file=SEBODB_DRIVERS_LOCATION.$driver.'/'.$driver.'.inc.php'))
                   {
-                     $driver_name='SeboDB_driver_'.$driver;
+                     $driver_class='SeboDB_driver_'.$driver;
 
-                     if(!class_exists($driver_name))
+                     if(!class_exists($driver_class))
                         {
                            require($driver_file);
                         }
 
-                     if(class_exists($driver_name))
+                     if(class_exists($driver_class))
                         {
-                           $driver_object=new $driver_name;
+                           $driver_object=new $driver_class;
                         }
                   }
+            // Insert an existing driver object instead
                elseif(is_object($driver))
                   {
                      $driver_object=&$driver;
                   }
 
             // Check if our controller class exists and if our driver is working then link them
-               if(empty($this->$id)&&class_exists($controller_name)&&($driver_object instanceof SeboDB_driver))
+               if(empty($this->data_objects[$id])&&class_exists($controller_class)&&($driver_object instanceof SeboDB_driver))
                   {
-                     $r=new $controller_name($driver_object);
+                     $r=new $controller_class($driver_object);
 
-                     $this->$id=&$r;
-                  }
-
-               return $r;
-            }
-
-      /**
-       * Alters the controller of an existing LDO.
-       * @access public
-       * @param mixed $instance A reference to an existing LDO
-       * @param string $controller String name of controller
-       * @return bool Returns true on success, false on failure
-       */
-         public function alter(&$instance,$controller)
-            {
-               $r=false;
-
-            // Make sure our controller class exists
-               if(is_readable($controller_file=SEBODB_CONTROLLERS_LOCATION.$controller.'/'.$controller.'.inc.php'))
-                  {
-                     if(!class_exists($controller))
-                        {
-                           require($controller_file);
-                        }
-                  }
-
-            // Make sure $instance isn't being altered to its current controller then check if our controller class exists and if our driver is working then link them
-               if(!($instance instanceof $controller)&&class_exists($controller)&&($instance->driver instanceof SeboDB_driver))
-                  {
-                     $controller_name='SeboDB_'.$controller.'_controller';
-
-                     $instance=new $controller_name($instance->driver);
-
-                     $r=true;
+                     $this->data_objects[$id]=&$r;
                   }
 
                return $r;
@@ -183,17 +175,17 @@
                return $r;
             }
 
+      /**
+       * Destructor tries to close any open connections which is purely for cleanliness, since it will happen regardless of our encouragement
+       * @access public
+       * @return void
+       */
          public function destruct()
             {
                if(!empty($this->settings['database']))
                   {
                      foreach($this->settings['database'] as $index=>$value)
                         {
-                           if(!empty($this->$index->connection))
-                              {
-                                 $this->$index->close();
-                              }
-
                            $this->destroy($index);
                         }
                   }

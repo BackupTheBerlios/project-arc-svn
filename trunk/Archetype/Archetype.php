@@ -14,7 +14,7 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.com/archetype
- * @version 2007.9.14
+ * @version 2007.10.22
  */
 
 // Audible errors because we can't have them ignored for development purposes (feel free to silence a production application if you're sure it's safe)
@@ -22,7 +22,7 @@
 
 /**
  * Archetype's version
- */define('A_VERSION','2007.9.14');
+ */define('A_VERSION','2007.10.22');
 
 /**
  * How should Archetype run?  0 for http, 1 for interactive
@@ -95,12 +95,12 @@
    try
       {
       // Open injectors
-         foreach($_['information']['lists']['injectors'] as &$injector)
+         foreach($_['information']['lists']['injectors'] as $key=>$injector)
             {
                if($injector{0}==='.')
                   {
                   // Hide files and directories that should be hidden from the system
-                     unset($injector);
+                     unset($_['information']['lists']['automators'][$key]);
                   }
                else
                   {
@@ -118,12 +118,12 @@
             }
 
       // Open automators
-         foreach($_['information']['lists']['automators'] as &$automator)
+         foreach($_['information']['lists']['automators'] as $key=>$automator)
             {
                if($automator{0}==='.')
                   {
                   // Hide files and directories that should be hidden from the system
-                     unset($automator);
+                     unset($_['information']['lists']['automators'][$key]);
                   }
                else
                   {
@@ -168,7 +168,7 @@
 // If an exception was caught, finish up with a professional, helpful error
    catch(Exception $x)
       {
-      // Allow components to set a new exception handler
+      // Try to throw a pretty error if we can
          if(!empty($_['objects']['models']['system']))
             {
                $_['objects']['models']['system']->controller('system','exception',array($x));

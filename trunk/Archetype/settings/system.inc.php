@@ -17,6 +17,6 @@
  * @version 2007.4.1
  */
 
-   $settings['ob_handler']='ob_gzhandler'; // unused
-   $settings['debug']=true; // unused
+   $settings['ob_handler']='ob_gzhandler';
+   $settings['debug']=true;
 ?>

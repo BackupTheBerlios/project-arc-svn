@@ -18,6 +18,6 @@
  */
 
 // Connection information for the default data source
-   $english['system']['error']=      'Error';
-   $english['system']['warning']=    'Warning';
+   $language['system']['error']=      'Error';
+   $language['system']['warning']=    'Warning';
 ?>

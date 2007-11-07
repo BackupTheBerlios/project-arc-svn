@@ -51,7 +51,7 @@
 
          public function exception(&$exception)
             {
-               echo($this->system->view('system/exception',$x=array('message'=>$exception->__toString())));
+               echo($this->system->view('system/exception',$input=array('message'=>$exception->__toString())));
             }
       }
 ?>
