@@ -16,5 +16,5 @@
    RewriteCond %{REQUEST_FILENAME} !-d
 
 #  Rewrite, but only for alphanumeric (and _) controllers and methods
-   RewriteRule ^([A-Za-z0-9_]+(/?[A-Za-z0-9_]+)?.*)$ ./index.php?a=$1 [L]
+   RewriteRule ^(\w*(/\w*(/.*)?)?)$ ./index.php?a=$1 [L]
 </IfModule>
