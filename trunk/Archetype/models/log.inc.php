@@ -48,7 +48,7 @@
        * Checks if the log exists and is ready to be used
        * @access public
        * @param string $log String name of the log to check
-       * @return bool True on success false otherwise
+       * @return boolean True on success false otherwise
        */
          public function exists($log)
             {
@@ -68,7 +68,7 @@
        * Creates a log to be used by the rest of the class
        * @access public
        * @param string $log String name of the log to create
-       * @return bool True on success false otherwise
+       * @return boolean True on success false otherwise
        */
          public function create($log)
             {
@@ -90,7 +90,7 @@
        * @param string $message String that you want to append to a log buffer
        * @param string $log array Log name
        * @param int $level Optional, one of the following three: LOG_LEVEL_NOTICE, LOG_LEVEL_WARNING, LOG_LEVEL_ERROR
-       * @return bool True if log is ready to be written to and the message was buffered, false otherwise
+       * @return boolean True if log is ready to be written to and the message was buffered, false otherwise
        */
          public function buffer($message,$log,$level=LOG_LEVEL_NOTICE)
             {

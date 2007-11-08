@@ -49,7 +49,7 @@
       /**
        * Can be extremely useful for the occasional easter egg
        * @access public
-       * @return bool True if today is the first of April, false if it's not
+       * @return boolean True if today is the first of April, false if it's not
        */
          public function is_april_fools()
             {

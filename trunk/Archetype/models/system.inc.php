@@ -45,32 +45,27 @@
             {
                $r=false;
 
-               $model=str_replace('/','_',trim($model,'/'));
+               $class='A_'.str_replace('/','_',trim($model,'/')).'_model';
 
             // If we don't have an existing instance of the model, try to create one
                if(empty($this->_['objects']['models'][$model]))
                   {
                      if(is_readable($location=A_MODELS_LOCATION.str_replace('.','',trim($model,'/')).'.inc.php'))
                         {
-                        // Trim off the chunk of the string that we'll use to identify the class if we need to
-                           if(strpos($model,'/'))
-                              {
-                                 $model=array_slice(explode('/',$model),-1,1);
-                              }
-
-                           $class="A_${model}_model";
-
+                        // No class found, try to open the file that should contain it
                            if(!class_exists($class))
                               {
                                  require($location);
                               }
 
+                        // Class found, instantiate an object
                            if(class_exists($class))
                               {
                                  $this->_['objects']['models'][$model]=new $class($this->_);
                               }
                         }
 
+                  // Bad request, throw exception
                      if(empty($this->_['objects']['models'][$model]))
                         {
                            throw new A_Exception("Attempted to open non-existent model '${location}'");
@@ -164,8 +159,6 @@
          public function controller($controller,$method='index',$args=array())
             {
                $r=false;
-
-               $controller=str_replace('/','_',trim($controller,'/'));
 
                if(empty($this->_['objects']['controllers'][$controller]))
                   {
@@ -276,7 +269,7 @@
        * @param $type Can be one of: model, view, controller, automator, injector
        * @param $name Name of component
        * @param $method Name of method (if checking something class-based)
-       * @return bool True if the specified component exists, false if not
+       * @return boolean True if the specified component exists, false if not
        * @todo rewrite to work for sub/directory/components
        */
          public function exists($type,$name,$method=false)

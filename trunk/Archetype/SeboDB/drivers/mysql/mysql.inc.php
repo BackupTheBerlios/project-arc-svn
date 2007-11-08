@@ -107,7 +107,7 @@
        * @access public
        * @param string $sql SQL string to run
        * @param resource $connection Connection resource
-       * @return bool True if successful false otherwise
+       * @return boolean True if successful false otherwise
        */
          public function query($sql,&$connection)
             {
@@ -134,7 +134,7 @@
        * Retrieves the amount of affected rows by the last query
        * @access public
        * @param resource $connection Connection resource
-       * @return bool Numeric value representing affected rows if successful, false otherwise
+       * @return boolean Numeric value representing affected rows if successful, false otherwise
        */
          public function affected(&$connection)
             {
@@ -152,7 +152,7 @@
        * Retrieves the amount of results returned by the last query
        * @access public
        * @param resource $query Query resource
-       * @return bool Numeric value representing the amount of rows returned if successful, false otherwise
+       * @return boolean Numeric value representing the amount of rows returned if successful, false otherwise
        */
          public function results(&$query)
             {
@@ -170,7 +170,7 @@
        * Retrieves the last insert id
        * @access public
        * @param resource $connection Connection resource
-       * @return bool Numeric value of last insert id if successful, false otherwise
+       * @return boolean Numeric value of last insert id if successful, false otherwise
        */
          public function insert_id(&$connection)
             {
@@ -247,7 +247,7 @@
        * Frees the memory associated with a result
        * @access public
        * @param resource $query Query resource
-       * @return bool True on success false otherwise
+       * @return boolean True on success false otherwise
        */
          public function free(&$query)
             {
@@ -265,7 +265,7 @@
        * Ping a server connection or reconnect if there is no connection
        * @access public
        * @param resource $connection Connection resource
-       * @return bool True if success false otherwise
+       * @return boolean True if success false otherwise
        */
          public function ping(&$connection)
             {
@@ -301,7 +301,7 @@
        * Close the connection to the database
        * @access public
        * @param resource $connection Connection resource
-       * @return bool True on success false otherwise
+       * @return boolean True on success false otherwise
        */
          public function close(&$connection)
             {
@@ -319,7 +319,7 @@
        * Check the config and act accordingly
        * @access private
        * @param array $info Array of information required to connect
-       * @return bool True if the config has the correct information in it false otherwise
+       * @return boolean True if the config has the correct information in it false otherwise
        */
          private function check_config(&$config)
             {

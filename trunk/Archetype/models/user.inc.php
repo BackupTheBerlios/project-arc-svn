@@ -91,7 +91,7 @@
        * @access public
        * @param mixed $account String email or int id
        * @param string $fields Associative array (column=>value) of fields to modify in the user table
-       * @return bool True on success false on failure
+       * @return boolean True on success false on failure
        */
          public function modify($account,$fields=array())
             {
@@ -131,7 +131,7 @@
        * Deletes user accounts
        * @access public
        * @param string $email Email associated with the account to delete
-       * @return bool True on success false on failure
+       * @return boolean True on success false on failure
        */
          public function delete($account)
             {
@@ -154,7 +154,7 @@
        * @access public
        * @param mixed $account String email or int user id
        * @param string $password_hash Optional password hash stored in the account
-       * @param bool $current Whether or not to link the user account to $this->users[0], which sets it as the current user
+       * @param boolean $current Whether or not to link the user account to $this->users[0], which sets it as the current user
        * @return mixed An array containing the user account on success false on failure
        */
          public function &open($account,$password_hash=false,$current=false)
@@ -214,7 +214,7 @@
       /**
        * Stamps cookies with user information
        * @access public
-       * @return bool True on success false on failure
+       * @return boolean True on success false on failure
        */
          public function stamp()
             {
@@ -234,7 +234,7 @@
       /**
        * Stamps session with user information
        * @access public
-       * @return bool True on success false on failure
+       * @return boolean True on success false on failure
        */
          public function halfstamp()
             {
@@ -254,7 +254,7 @@
       /**
        * Re-Stamps the session or cookie information storage, depending on which is being used
        * @access public
-       * @return bool True on success false on failure
+       * @return boolean True on success false on failure
        */
          public function restamp()
             {
@@ -275,7 +275,7 @@
       /**
        * Unstamps session and cookies that are storing user information
        * @access public
-       * @return bool Always returns true
+       * @return boolean Always returns true
        */
          public function unstamp()
             {

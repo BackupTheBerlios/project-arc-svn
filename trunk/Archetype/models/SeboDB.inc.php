@@ -57,13 +57,6 @@
    class A_SeboDB_model extends A_model
       {
       /**
-       * Storage for all data objects we open
-       * @access public
-       * @var array
-       */
-         public $data_objects=array();
-
-      /**
        * Constructor tries to automagically open up the associated settings and coordinate DB setup
        * @access public
        * @return void
@@ -93,7 +86,7 @@
                                  $this->create($this->settings['database'][$index]['controller'],$this->settings['database'][$index]['driver'],$index);
 
                               // Open the connection
-                                 $this->data_objects[$index]->open($this->settings['database'][$index]);
+                                 $this->$index->open($this->settings['database'][$index]);
                               }
                         }
                   }
@@ -104,7 +97,7 @@
        * @access public
        * @param string $controller String name of controller
        * @param mixed $driver Pass either a string name of driver or already-active driver
-       * @param string $id Used to store LDOs as $this->data_objects->$id
+       * @param string $id Used to store LDOs as $this->$id
        * @return mixed Returns an LDO on success, false on failure
        */
          public function create($controller,$driver,$id)
@@ -144,11 +137,11 @@
                   }
 
             // Check if our controller class exists and if our driver is working then link them
-               if(empty($this->data_objects[$id])&&class_exists($controller_class)&&($driver_object instanceof SeboDB_driver))
+               if(empty($this->$id)&&class_exists($controller_class)&&($driver_object instanceof SeboDB_driver))
                   {
                      $r=new $controller_class($driver_object);
 
-                     $this->data_objects[$id]=&$r;
+                     $this->$id=&$r;
                   }
 
                return $r;

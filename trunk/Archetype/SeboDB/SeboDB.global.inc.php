@@ -48,7 +48,6 @@
  * @abstract
  * @todo Better document the driver specification - more specifically, what drivers are required to do and how they are required to act
  * @todo Finish phpDoc tags
- * @todo Add reference operators to all method declarations for driver / resource parameters
  */
    abstract class SeboDB_driver
       {
