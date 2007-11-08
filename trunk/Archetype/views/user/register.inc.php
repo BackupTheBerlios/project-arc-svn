@@ -7,7 +7,7 @@
          echo("<h2>".$message."</h2>");
       }
 ?>
-   <p class="center">If you already have an account on this system, please <a href="<?=$webroot?>user/login/">login here</a>.</p>
+   <p class="center">If you already have an account on this system, please <a href="<?=$root?>user/login/">login here</a>.</p>
    <form action="<?=$self?>" method="post">
       <ul class="form">
          <li>

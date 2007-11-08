@@ -7,8 +7,8 @@
          echo("<h2>".$message."</h2>");
       }
 ?>
-   <p class="center">If you have an account on this system, please login below.  If you need one, <a href="<?=$webroot?>user/register/">try registering</a>.</p>
-   <form action="<?=$webroot?>user/login/" method="post">
+   <p class="center">If you have an account on this system, please login below.  If you need one, <a href="<?=$root?>user/register/">try registering</a>.</p>
+   <form action="<?=$root?>user/login/" method="post">
       <ul class="form">
          <li>
             <span>E-mail</span>

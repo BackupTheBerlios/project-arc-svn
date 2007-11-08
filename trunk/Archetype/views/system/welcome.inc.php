@@ -10,7 +10,7 @@
       <span>
          Server IP: <?=$_SERVER['SERVER_ADDR']?><br />
          Client IP: <?=$_SERVER['REMOTE_ADDR']?><br />
-         Webroot: <a href="<?=$webroot?>"><?=$webroot?></a><br />
+         Webroot: <a href="<?=$root?>"><?=$root?></a><br />
          Server Time: <?=date('H:i:s F j, Y')?>
       </span>
    </p>

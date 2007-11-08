@@ -3,9 +3,9 @@
 <html>
    <head>
       <title>Project Archetype</title>
-      <link rel="stylesheet" type="text/css" href="<?=$webroot?>css/default.css" />
+      <link rel="stylesheet" type="text/css" href="<?=$root?>css/default.css" />
    </head>
    <body>
       <div id="master">
          <div id="slave">
-            <a id="logo" href="<?=$webroot?>"></a>
+            <a id="logo" href="<?=$root?>"></a>
