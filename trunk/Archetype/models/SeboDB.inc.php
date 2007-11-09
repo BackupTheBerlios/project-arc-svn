@@ -15,13 +15,13 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.net/sebodb
- * @version 2007.11.7
+ * @version 2007.11.9
  */
 
 /**
  * Define SeboDB's version
  */
-   define('SEBODB_VERSION','2007.11.7');
+   define('SEBODB_VERSION','2007.11.9');
 
 /**
  * Controller location
@@ -57,6 +57,10 @@
    class A_SeboDB_model extends A_model
       {
       /**
+       * Stores the objects, ready-to-go
+       */
+         private $linked_data_objects=array();
+      /**
        * Constructor tries to automagically open up the associated settings and coordinate DB setup
        * @access public
        * @return void
@@ -86,13 +90,25 @@
                                  $this->create($this->settings['database'][$index]['controller'],$this->settings['database'][$index]['driver'],$index);
 
                               // Open the connection
-                                 $this->$index->open($this->settings['database'][$index]);
+                                 $this->linked_data_objects[$index]->open($this->settings['database'][$index]);
                               }
                         }
                   }
 
-               if()
+            // If the class was opened but we have no connections open at this point or if we failed to open a connection, throw an exception
+               if(empty($this->linked_data_objects))
                   {
+                     throw new SeboDBSystemException('Could not find any connections to open');
+                  }
+               else
+                  {
+                     foreach($this->linked_data_objects as $key=>&$value)
+                        {
+                           if(empty($value->driver->connection))
+                              {
+                                 throw new SeboDBSystemException("Could not open connection for configuration '%{key}'");
+                              }
+                        }
                   }
             }
       /**
@@ -145,7 +161,25 @@
                   {
                      $r=new $controller_class($driver_object);
 
-                     $this->$id=&$r;
+                     $this->linked_data_objects[$id]=&$r;
+                  }
+
+               return $r;
+            }
+
+      /**
+       * Returns a linked data object
+       * @access public
+       * @param string $linked_data_object Name of data object to return (as known by unique identifier)
+       * @return boolean False on failure, working linked data object on success
+       */
+         public function &get($linked_data_object)
+            {
+               $r=false;
+
+               if(!empty($this->linked_data_objects[$linked_data_object]))
+                  {
+                     $r=&$this->linked_data_objects[$linked_data_object];
                   }
 
                return $r;
@@ -164,7 +198,7 @@
             // Check if our instance is a string, in which case assume it's coming from $this->$instance
                if(is_string($instance))
                   {
-                     $instance=&$this->$instance;
+                     $instance=&$this->linked_data_objects[$instance];
                   }
 
                unset($instance);

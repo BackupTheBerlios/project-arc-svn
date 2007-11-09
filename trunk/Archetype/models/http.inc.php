@@ -24,7 +24,7 @@
       {
          public function construct()
             {
-               $this->system->settings('cookie',$this,array('prefix','expire','path','domain','https_only','header_only'));
+               $this->system->settings('cookie',$this);
             }
 
          public function location()
