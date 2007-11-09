@@ -14,7 +14,7 @@
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://sebocorp.com/archetype
- * @version 2007.4.1
+ * @version 2007.11.8
  */
 
 /**
@@ -32,11 +32,11 @@
       /**
        * Register a callback to be run when an event is triggered
        * @access public
-       * @param $handler array Numeric array in array(&$object,'method') format
        * @param $event string Event name to trigger handler
+       * @param $handler array Numeric array in array(&$object,'method') format
        * @return void
        */
-         public function register($handler,$event)
+         public function register($event,$handler)
             {
                if(is_array($handler)&&(is_object($handler[0])&&is_string($handler[1])))
                   {

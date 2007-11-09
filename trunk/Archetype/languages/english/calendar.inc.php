@@ -17,25 +17,24 @@
  * @version 2007.4.13
  */
 
-// Connection information for the default data source
-   $english['calendar']['days'][]='Sunday';
-   $english['calendar']['days'][]='Monday';
-   $english['calendar']['days'][]='Tuesday';
-   $english['calendar']['days'][]='Wednesday';
-   $english['calendar']['days'][]='Thursday';
-   $english['calendar']['days'][]='Friday';
-   $english['calendar']['days'][]='Saturday';
+   $language['days'][]='Sunday';
+   $language['days'][]='Monday';
+   $language['days'][]='Tuesday';
+   $language['days'][]='Wednesday';
+   $language['days'][]='Thursday';
+   $language['days'][]='Friday';
+   $language['days'][]='Saturday';
 
-   $english['calendar']['months'][]='January';
-   $english['calendar']['months'][]='February';
-   $english['calendar']['months'][]='March';
-   $english['calendar']['months'][]='April';
-   $english['calendar']['months'][]='May';
-   $english['calendar']['months'][]='June';
-   $english['calendar']['months'][]='July';
-   $english['calendar']['months'][]='August';
-   $english['calendar']['months'][]='September';
-   $english['calendar']['months'][]='October';
-   $english['calendar']['months'][]='November';
-   $english['calendar']['months'][]='December';
+   $language['months'][]='January';
+   $language['months'][]='February';
+   $language['months'][]='March';
+   $language['months'][]='April';
+   $language['months'][]='May';
+   $language['months'][]='June';
+   $language['months'][]='July';
+   $language['months'][]='August';
+   $language['months'][]='September';
+   $language['months'][]='October';
+   $language['months'][]='November';
+   $language['months'][]='December';
 ?>

@@ -324,13 +324,13 @@
             }
 
       /**
-       * Creates a new associative array based on $original but with the specified keys in $overwrite written with their respective data
+       * Recursively fills $overwrite with stuff from $original when it doesn't already exist in $overwrite
        * @access public
        * @param mixed $original
        * @param mixed $overwrite
        * @return mixed
        */
-         static private function array_overwrite(&$overwrite,&$original)
+         static private function array_overwrite(&$original,&$overwrite)
             {
                if(is_array($overwrite)&&is_array($original))
                   {

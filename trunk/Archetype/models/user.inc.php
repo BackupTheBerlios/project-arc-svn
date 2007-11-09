@@ -7,6 +7,22 @@
 
 /**
  * User model
+
+   todo!
+   create_user
+   modify_user
+   delete_user
+   open_user
+   create_group
+   modify_group
+   delete_group
+   open_group
+   cookie_stamp
+   session_stamp
+   restamp
+   unstamp
+   hash
+   active
  *
  * @package Archetype
  * @subpackage user
@@ -53,7 +69,7 @@
        * @return mixed True on success, on failure it can return A_E_USER_EXISTS if the specified email is in use or false if failure
        * @todo make it use $this->open() instead of its own SQL to figure out if the user exists or not
        */
-         public function create($email,$password,$profile=array())
+         public function create_user($email,$password,$profile=array())
             {
                $r=false;
 
@@ -93,7 +109,7 @@
        * @param string $fields Associative array (column=>value) of fields to modify in the user table
        * @return boolean True on success false on failure
        */
-         public function modify($account,$fields=array())
+         public function modify_user($account,$fields=array())
             {
                $r=false;
 
@@ -133,7 +149,7 @@
        * @param string $email Email associated with the account to delete
        * @return boolean True on success false on failure
        */
-         public function delete($account)
+         public function delete_user($account)
             {
                $r=false;
 
@@ -157,7 +173,7 @@
        * @param boolean $current Whether or not to link the user account to $this->users[0], which sets it as the current user
        * @return mixed An array containing the user account on success false on failure
        */
-         public function &open($account,$password_hash=false,$current=false)
+         public function &open_user($account,$password_hash=false,$current=false)
             {
                $r=false;
 
@@ -192,7 +208,7 @@
                                     g.permissions AS group_permissions
                                  FROM ^users AS u
                                  LEFT JOIN ^user_groups AS g ON u.group_id=g.id
-                                 WHERE u.'.$field.'="'.$d->escape($account).'" '.$password_clause.'
+                                 WHERE u.'.$field.'="'.$d->escape($account).'" '.$password_clause.' AND u.status="active"
                                  LIMIT 1');
                      if($d->results())
                         {
@@ -209,6 +225,22 @@
                   }
 
                return $r;
+            }
+
+         public function create_group()
+            {
+            }
+
+         public function modify_group()
+            {
+            }
+
+         public function delete_group()
+            {
+            }
+
+         public function open_group()
+            {
             }
 
       /**

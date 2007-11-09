@@ -5,13 +5,14 @@
 
 #  Creates a simple table to store users for the user component
    
-   CREATE TABLE A_users
+   CREATE TABLE ^users
       (
          id int(11) unsigned NOT NULL auto_increment,
          email varchar(255) collate utf8_unicode_ci NOT NULL,
          password_hash varchar(48) collate utf8_unicode_ci NOT NULL,
          permissions text collate utf8_unicode_ci NOT NULL,
-         active enum('true','false') collate utf8_unicode_ci NOT NULL default 'false',
+         group_id int(11) unsigned NOT NULL default '0',
+         status enum('active','inactive','banned') collate utf8_unicode_ci NOT NULL default 'false',
          first_name varchar(255) collate utf8_unicode_ci NOT NULL,
          last_name varchar(255) collate utf8_unicode_ci NOT NULL,
          PRIMARY KEY (id),
@@ -19,7 +20,7 @@
          KEY password_hash (password_hash)
       );
 
-   CREATE TABLE A_user_groups
+   CREATE TABLE ^user_groups
       (
          id int(11) unsigned NOT NULL auto_increment,
          name varchar(255) collate utf8_unicode_ci NOT NULL,

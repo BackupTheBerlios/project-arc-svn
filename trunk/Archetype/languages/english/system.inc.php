@@ -17,7 +17,6 @@
  * @version 2007.4.13
  */
 
-// Connection information for the default data source
-   $language['system']['error']=      'Error';
-   $language['system']['warning']=    'Warning';
+   $language['error']=      'Error';
+   $language['warning']=    'Warning';
 ?>

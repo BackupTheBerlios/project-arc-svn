@@ -71,7 +71,32 @@
        */
          public function alphanumeric($input,$exceptions='')
             {
-               return preg_replace('/[^A-Za-z0-9'.preg_quote($exceptions).']/','',$input);
+               return preg_replace('/[^\w'.preg_quote($exceptions).']/','',$input);
+            }
+
+      /**
+       * Creates a new associative array based on $original but with the specified keys in $overwrite written with their respective data
+       * @access public
+       * @param mixed $original
+       * @param mixed $overwrite
+       * @return mixed
+       */
+         public function array_overwrite(&$overwrite,&$original)
+            {
+               if(is_array($overwrite)&&is_array($original))
+                  {
+                     foreach($original as $key=>&$value)
+                        {
+                           if(empty($overwrite[$key]))
+                              {
+                                 $overwrite[$key]=$value;
+                              }
+                           else
+                              {
+                                 $this->array_overwrite($overwrite[$key],$original[$key]);
+                              }
+                        }
+                  }
             }
       }
 ?>
