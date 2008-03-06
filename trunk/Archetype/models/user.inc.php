@@ -23,6 +23,10 @@
    unstamp
    hash
    active
+
+   Change stamping stuff to have a parameter to stamp session rather than cookie, rather than separated bits
+
+   Add a fingerprint mechanism to the authentication system.  salt(user_agent)
  *
  * @package Archetype
  * @subpackage user
@@ -58,6 +62,7 @@
 
                $this->system->model('SeboDB',$this);
                $this->system->model('http',$this);
+               $this->system->model('session',$this);
             }
 
       /**
@@ -246,18 +251,27 @@
       /**
        * Stamps cookies with user information
        * @access public
+       * @param boolean $session True if you want to stamp a session with PHP's session mechanism, false  (default) if you want to stamp with cookies
        * @return boolean True on success false on failure
        */
-         public function stamp()
+         public function stamp($session=false)
             {
                $r=false;
 
                if(!empty($this->users[0]))
                   {
-                     $this->http->cookie('email',$this->users[0]['email']);
-                     $this->http->cookie('password_hash',$this->users[0]['password_hash']);
+                     if($session)
+                        {
+                           $this->session->email=$this->users[0]['email'];
+                           $this->session->password_hash=$this->users[0]['password_hash'];
+                        }
+                     else
+                        {
+                           $this->http->cookie('email',$this->users[0]['email']);
+                           $this->http->cookie('password_hash',$this->users[0]['password_hash']);
 
-                     $r=true;
+                           $r=true;
+                        }
                   }
 
                return $r;

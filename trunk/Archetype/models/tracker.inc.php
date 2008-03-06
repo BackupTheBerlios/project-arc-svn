@@ -6,25 +6,26 @@
    ////////////////////////////////////////////////////////////////////
 
 /**
- * Router controller
+ * 
  *
  * @package Archetype
- * @subpackage system
+ * @subpackage tracker
  * @author Justin Krueger <fuzzywoodlandcreature@gmail.com>
  * @copyright © 2007 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
- * @link http://fuzzywoodlandcreature.net/archetype
- * @version 2007.4.1
+ * @link http://fuzzywoodlandcreature.net/sebodb
+ * @version 2007.11.9
  */
 
-/**
- * Shouldn't be externally available (blocked by default in the routes config)
- */
-   class A_system_controller extends A_controller
+   class A_tracker_model extends A_model
       {
-         public function redirect($url)
+         public function construct()
             {
-            // We need a http model or something to handle redirects and http headers and blahb lah
+            }
+
+         public function record()
+            {
             }
       }
+
 ?>

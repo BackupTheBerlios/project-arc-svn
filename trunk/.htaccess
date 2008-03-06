@@ -4,7 +4,7 @@
 #  //                 www.fuzzywoodlandcreature.net                  //
 #  ////////////////////////////////////////////////////////////////////
 
-#  Rewrites Apache's URLs to be search-engine friendly cleaner looking
+#  Rewrites Apache's URLs to be search-engine friendly and cleaner
 #  Copyright © 2007 Justin Krueger.  All rights reserved.
 
 <IfModule mod_rewrite.c>

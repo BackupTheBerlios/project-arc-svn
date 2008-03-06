@@ -37,9 +37,6 @@
 
             // Make a new instance of the system model and put it where it would normally go in the universal array
                $this->_['objects']['models']['system']=new A_system_model($this->_);
-
-            // Put this in a session manager
-               session_start();
             }
 
       /**

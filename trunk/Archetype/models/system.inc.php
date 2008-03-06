@@ -104,7 +104,7 @@
                   // Merge global and local values, local overwriting global
                      if(is_array($input))
                         {
-                           $input=array_merge($input,$this->settings['views']['global']);
+                           $input=array_merge($this->settings['views']['global'],$input);
                         }
                   // Just link the two because there was no input array
                      elseif(empty($input))

@@ -55,19 +55,19 @@
        * @param string $connection Optionally reference a specific connection to use
        * @return mixed Returns a reference to the query resource on success and false on failure
        */
-         public function query($sql,$input=false)
+         public function query($sql,$inject=false)
             {
             // Really nifty idea Jacob showed me - it makes writing dynamic SQL a lot cleaner in most cases
-               if(is_array($input))
+               if(!empty($inject)&&is_array($inject))
                   {
-                     foreach($input as &$element)
+                     foreach($inject as &$element)
                         {
                            $element=$this->escape($element);
                         }
 
-                     array_unshift($input,$sql);
+                     array_unshift($inject,$sql);
 
-                     $sql=call_user_func_array('sprintf',$input);
+                     $sql=call_user_func_array('sprintf',$inject);
                   }
 
             // Default the table prefix so we still replace the tokens in the query even if one wasn't specified in the configuration for the connection

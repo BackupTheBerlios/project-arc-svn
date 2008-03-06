@@ -33,12 +33,13 @@
             {
                $this->system->model('user',$this);
                $this->system->model('http',$this);
+               $this->system->model('session',$this);
 
             // Session > cookies in this case
-               if(!empty($_SESSION['email'])&&!empty($_SESSION['password_hash']))
+               if(!empty($this->session->email)&&!empty($this->session->password_hash))
                   {
-                     $email=$_SESSION['email'];
-                     $password_hash=$_SESSION['password_hash'];
+                     $email=$this->session->email;
+                     $password_hash=$this->session->password_hash;
                   }
                else
                   {
