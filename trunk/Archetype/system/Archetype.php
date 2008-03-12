@@ -25,11 +25,6 @@
  */define('A_VERSION','2007.10.22');
 
 /**
- * How should Archetype run?  0 for http, 1 for interactive
- */
-   if(!defined('A_MODE')) { define('A_MODE',0); }
-
-/**
  * Location of the system directory
  */if(!defined('A_SYSTEM_LOCATION')) { define('A_SYSTEM_LOCATION','Archetype/'); }
 /**
