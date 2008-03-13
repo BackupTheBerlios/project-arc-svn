@@ -21,10 +21,10 @@
    $settings['default']['host']=      'localhost';
    $settings['default']['port']=      3306;
    $settings['default']['socket']=    '';
-   $settings['default']['user']=      'justin';
+   $settings['default']['user']=      'Archetype';
    $settings['default']['pass']=      '';
    $settings['default']['name']=      'Archetype';
-   $settings['default']['driver']=    'mysql';
    $settings['default']['prefix']=    'A_';
+   $settings['default']['driver']=    'mysql';
    $settings['default']['controller']='aided';
 ?>
