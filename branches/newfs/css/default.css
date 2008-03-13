@@ -1,0 +1,221 @@
+/*
+   Copyright © 2007 Justin Krueger.  All rights reserved.
+
+   Author:     Justin Krueger <fuzzywoodlandcreature@gmail.com>
+   Date:       Friday, April 06, 2007 
+
+   TODO:Separate things into extension classes when you get a chance
+   TODO:Figure out what's up with the extra few px on the bottom of the paragraph/#content intersect (margin/padding)
+*/
+
+/* N A M E L E S S  C L A S S E S */
+
+   body
+      {
+         color:#555;
+         background:#FFF;
+         font-family:arial,verdana,sans-serif;
+         font-size:10px;
+         margin:1.5em;
+      }
+
+   h1
+      {
+         color:#FCFCFC;
+         text-align:center;
+         font-size:20px;
+         font-weight:bold;
+         margin:0;
+      }
+
+   h2
+      {
+         color:#FCFCFC;
+         text-align:center;
+         font-size:10px;
+         font-weight:normal;
+         margin:0;
+      }
+
+   p
+      {
+         color:#FCFCFC;
+         line-height:1.5em;
+         margin:1.5em 0 1.5em 0;
+      }
+
+   p span
+      {
+         display:block;
+         margin:.2em .8em .2em .8em;
+         background:#FFF url('../pixmaps/tile.png') top left repeat;
+         border:1px solid #444;
+         padding:.5em;
+         color:#CACACA;
+      }
+
+   a
+      {
+         font-weight:bold;
+         text-decoration:none;
+         color:#b0d51f;
+      }
+   a:hover,
+   a:focus
+      {
+         font-weight:bold;
+         color:#dbe9a1;
+      }
+
+/* N A M E L E S S  E X T E N S I O N  C L A S S E S */
+   
+/* N A M E D  C L A S S E S */
+
+   ul.form,
+   ul.form>li
+      {
+         display:block;
+         padding:0;
+      }
+   ul.form
+      {
+         width:50%;
+         margin:auto;
+      }
+   ul.form>li
+      {
+         margin:1em 0 1em 0;
+      }
+   ul.form>li.space
+      {
+         margin:50px 0 50px 0;
+      }
+   ul.form textarea
+      {
+         width:100%;
+         height:120px;
+      }
+   ul.form span
+      {
+         color:#FFF;
+         font-weight:bold;
+         display:block;
+         text-transform:capitalize;
+      }
+   ul.form input[type='text'],
+   ul.form input[type='password'],
+   ul.form textarea
+      {
+         background:#FFF url('../pixmaps/tile.png') top left repeat;
+         border:1px solid #444;
+         letter-spacing:.1em;
+         line-height:1.5em;
+         width:100%;
+         color:#CACACA;
+         font-size:10px;
+         padding:.3em;
+      }
+   ul.form input[type='submit'],
+   ul.form input[type='reset'],
+   ul.form input[type='button']
+      {
+         color:#FFF;
+         font-size:10px;
+         border:1px solid #444;
+         background:#333;
+         padding:.6em;
+      }
+   ul.form input[disabled='disabled']
+      {
+         color:#CACACA;
+         background-color:#FAFAFA;
+      }
+   ul.form input:focus,
+   ul.form textarea:focus
+      {
+         border:1px solid #dbe9a1;
+         color:#FFF;
+      }
+
+/* N A M E D  E X T E N S I O N  C L A S S E S */
+
+/* G E N E R I C  C L A S S E S */
+
+   .left
+      { text-align:left; }
+   .center
+      { text-align:center; }
+   .right
+      { text-align:right; }
+
+   .top
+      { vertical-align:top; }
+   .middle
+      { vertical-align:middle; }
+   .bottom
+      { vertical-align:bottom; }
+
+   .capitalize
+      { text-transform:capitalize; }
+   .uppercase
+      { text-transform:uppercase; }
+   .lowercase
+      { text-transform:lowercase; }
+
+   .hide
+      { display:none; }
+
+   .error
+      { color:#F00; }
+
+/* S P E C I F I C  C L A S S E S */
+
+   #master
+      {
+         width:100%;height:100%;
+         margin:0;
+         padding:0;
+      }
+
+   #slave
+      {
+         width:100%;height:100%;
+         margin:0;
+         padding:0;
+      }
+
+   #content
+      {
+         background:#0b0b0b url('../pixmaps/gradient.png') top left repeat-x;
+         border:0;
+         width:549px;
+         padding:1.2em;
+         margin:0 auto 0 auto;
+      }
+
+   #exception
+      {
+         width:549px;
+         background:#FFF;
+         margin:0 auto 0 auto;
+      }
+   #exception>p
+      {
+         color:#444;
+      }
+
+   #copyright
+      {
+         display:block;
+         margin:2em 0 0 0;
+         color:#444;
+      }
+
+   #logo
+      {
+         display:block;
+         background:#FFF url('../pixmaps/logo.gif') top left repeat-x;
+         margin:10px auto 20px auto;
+         width:120px;
+         height:120px;
+      }

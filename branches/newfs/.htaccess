@@ -1,0 +1,20 @@
+
+#  ////////////////////////////////////////////////////////////////////
+#  //                P R O J E C T A R C H E T Y P E                 //
+#  //                 www.fuzzywoodlandcreature.net                  //
+#  ////////////////////////////////////////////////////////////////////
+
+#  Rewrites Apache's URLs to be search-engine friendly and cleaner
+#  Copyright © 2007 Justin Krueger.  All rights reserved.
+
+<IfModule mod_rewrite.c>
+#  Enable that rewrite engine, baby
+   RewriteEngine On
+
+#  Make sure it doesn't physically exist on the filesystem
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteCond %{REQUEST_FILENAME} !-d
+
+#  Rewrite, but only for alphanumeric (and _) controllers and methods
+   RewriteRule ^(\w*(/\w*(/.*)?)?)$ ./index.php?a=$1 [L]
+</IfModule>

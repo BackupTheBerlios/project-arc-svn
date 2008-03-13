@@ -1,0 +1,51 @@
+
+   ////////////////////////////////////////////////////////////////////
+   //                P R O J E C T A R C H E T Y P E                 //
+   //                 www.fuzzywoodlandcreature.net                  //
+   ////////////////////////////////////////////////////////////////////
+
+   >REQUIREMENTS
+      PHP5.1+
+         Because PHP4's extremely stunted OOP layer can't handle the kind
+         of stuff Archetype does.
+
+      mod_rewrite
+         You must have mod_rewrite to use the provided .htaccess file
+         that generally cleans up HTTP interaction with the system.
+
+   >INSTALLATION
+      Upload
+         Installation is extremely easy.  Make sure your server meets
+         the requirements above, then somehow get your copy of Archetype
+         on a capable server (requirements) and access
+         http://yoursite.com/path/to/install/ with a browser.
+
+         If you see a pretty welcome page, installation successful!  If your
+         copy of PHP puffed smoke, something about your server hates the
+         software which means your server probably isn't configured well
+         or your permissions aren't right.  Archetype should run on any
+         working default Apache/PHP5 installation out there.
+
+      Permissions
+         Any directory or file that needs to be written to needs to be owned
+         by the user running the httpd and both writable and readable by
+         that user.  It's suggested you just change the group of the directory
+         recursively to whatever Apache is (usually www-data) and permissions
+         to 775 so there's no question about Apache writing to the filesystem.
+
+         example:
+         chown :www-data ./Archetype/installation -R
+         chmod 775 ./Archetype/installation -R
+
+   >TUNING
+      mod_rewrite
+         Archetype's installation uses mod_rewrite to simplify
+         URLs which is both cleaner and more search-engine friendly.
+         The .htaccess file is ready to go and in the root
+         directory, you'll need mod_rewrite installed and usable.
+
+      magic_quotes
+         While Archetype handles magic quotes whether or not you have
+         them enabled, it doesn't have to parse through them to fix
+         them if you have them disabled.  So if you can, turn off
+         magic_quotes_gpc and magic_quotes_runtime in php.ini.
