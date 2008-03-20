@@ -17,7 +17,6 @@
  * @version 2007.9.10
  */
 
-   $construct=1000;
    $destruct=1000;
 
 /**
@@ -25,20 +24,6 @@
  */
    class A_system_automator extends A_automator
       {
-      /**
-       * Injects Archetype's system model object storage so other components may take advantage of it and sets up the environment for other components
-       * @access public
-       * @return void
-       */
-         public function construct()
-            {
-            // Statically require Archetype's system model
-               require(A_MODELS_LOCATION.'system.inc.php');
-
-            // Make a new instance of the system model and put it where it would normally go in the universal array
-               $this->_['objects']['models']['system']=new A_system_model($this->_);
-            }
-
       /**
        * Runs controllers based on arguments provided to the system
        * @access public

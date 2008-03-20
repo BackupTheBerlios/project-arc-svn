@@ -1,5 +1,4 @@
 <?php
-// TODO Remove injectors, merge global and Archetype files, make Archetype class and put root program in it TODO
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -21,144 +20,174 @@
 // Audible errors because we can't have them ignored for development purposes (feel free to silence a production application if you're sure it's safe)
    error_reporting(E_ALL);
 
-/**
- * Archetype's version
- */define('A_VERSION','2008.3.13');
+// The version of the current distribution
+   define('A_VERSION','2008.3.13');
 
+// By default, our resources should be relative to the location of this particular file
    if(!defined('A_ARCHETYPE_LOCATION'))   { define('A_ARCHETYPE_LOCATION',   dirname(__FILE__).'/'); }
 
+// The paths of the system and application directories
    if(!defined('A_SYSTEM_LOCATION'))      { define('A_SYSTEM_LOCATION',      A_ARCHETYPE_LOCATION.'system/'); }
    if(!defined('A_APPLICATION_LOCATION')) { define('A_APPLICATION_LOCATION', A_ARCHETYPE_LOCATION.'application/'); }
 
-   if(!defined('A_AUTOMATORS_ID'))  { define('A_AUTOMATORS_ID',  A_ARCHETYPE_ID.''); }
-   if(!defined('A_SETTINGS_ID'))    { define('A_SETTINGS_ID',    A_ARCHETYPE_ID.''); }
-   if(!defined('A_GLOBAL_ID'))      { define('A_GLOBAL_ID',      A_ARCHETYPE_ID.''); }
-   if(!defined('A_MODELS_ID'))      { define('A_MODELS_ID',      A_ARCHETYPE_ID.''); }
-   if(!defined('A_VIEWS_ID'))       { define('A_VIEWS_ID',       A_ARCHETYPE_ID.''); }
-   if(!defined('A_CONTROLLERS_ID')) { define('A_CONTROLLERS_ID', A_ARCHETYPE_ID.''); }
-
-   die(A_GLOBAL_LOCATION);
+// String identification of resource types as they'll appear on the filesystem
+   if(!defined('A_AUTOMATORS_ID'))        { define('A_AUTOMATORS_ID',        'automators/'); }
+   if(!defined('A_SETTINGS_ID'))          { define('A_SETTINGS_ID',          'settings/'); }
+   if(!defined('A_MODELS_ID'))            { define('A_MODELS_ID',            'models/'); }
+   if(!defined('A_VIEWS_ID'))             { define('A_VIEWS_ID',             'views/'); }
+   if(!defined('A_CONTROLLERS_ID'))       { define('A_CONTROLLERS_ID',       'controllers/'); }
 
 /**
- * Universal variable passed between every object extended from Archetype
- * @var array
+ * Blueprints for the absolute root/parent of the entire system
  */
-   $_=array
-      (
-         'information'=>array // Storage of miscellaneous information
+   class Archetype
+      {
+      /**
+       * Universal variable passed between every object extended from Archetype
+       * @var array
+       * @access public
+       */
+         public $_=array
             (
-               'settings'=>array(),
-               'priority'=>array('construct'=>array(),'destruct'=>array()), // Automator priority
-               'timings'=>array('archetype|start'=>microtime(true)), // Benchmark timings and the system's begin time
-               'lists'=>array('automators'=>array(),'injectors'=>array()), // Lists of component types that require to be opened all at once
-               'input'=>array
+               'information'=>array // Storage of miscellaneous information
                   (
-                     'controller'=>'',
-                     'method'=>'',
-                     'parameters'=>array()
-                  )
-            ),
-         'objects'=>array // Storage of live objects
-            (
-               'automators'=>array(),
-               'injectors'=>array(),
-               'models'=>array('system'=>false),
-               'controllers'=>array('system'=>false)
-            ),
-      );
+                     'settings'=>array(),
+                     'priority'=>array('construct'=>array(),'destruct'=>array()), // Automator priority
+                     'timings'=>array(), // Benchmark timings and the system's begin time
+                     'automators'=>array(), // Load a list of the automators we're going to try to run
+                     'extensions'=>array(), // List of files that, according to their arrangement on the filesystem, will extend each other
+                     'input'=>array
+                        (
+                           'controller'=>'',
+                           'method'=>'',
+                           'parameters'=>array(),
+                           'switches'=>array()
+                        )
+                  ),
+               'objects'=>array // Object storage for various parts of the system
+                  (
+                     'automators'=>array(),
+                     'injectors'=>array(),
+                     'models'=>array('system'=>false),
+                     'controllers'=>array('system'=>false)
+                  ),
+            );
 
-// Scan the filesystem for injectors
-   $_['information']['lists']['injectors']=array_slice(scandir(A_INJECTORS_LOCATION),2);
+      /**
+       * When self::run() executes, it'll change this to true
+       * @var boolean
+       */
+         private $executed=false;
 
-// Scan the filesystem for automators
-   $_['information']['lists']['automators']=array_slice(scandir(A_AUTOMATORS_LOCATION),2);
-
-// Execute in a sandbox so we can catch exceptions
-   try
-      {
-      // Open injectors
-         foreach($_['information']['lists']['injectors'] as $key=>$injector)
+      /**
+       * Constructor does some preliminary work before the rest of the system loads
+       * @access public
+       * @return void
+       */
+         public function __construct()
             {
-               if($injector{0}==='.')
+            // Record the beginning time of the build
+               $this->_['information']['timings']['archetype|start']=microtime(true);
+
+            // Scan the filesystem for our automators and record the result
+               $this->_['information']['automators']=array_slice(scandir(A_AUTOMATORS_ID),2);
+
+            // Statically require Archetype's system model
+               require(A_MODELS_LOCATION.'system.inc.php');
+
+            // Make a new instance of the system model and put it where it would normally go in the universal array
+               $this->_['objects']['models']['system']=new A_system_model($this->_);
+            }
+
+      /**
+       * Run through the automators, run them, destroy them
+       * @access public
+       * @return void
+       */
+         public function run()
+            {
+            // Record that this method ran so the destructor doesn't try to run it again
+               $this->executed=true;
+
+            // Execute in a sandbox so we can catch exceptions
+               try
                   {
-                  // Hide files and directories that should be hidden from the system
-                     unset($_['information']['lists']['automators'][$key]);
-                  }
-               else
-                  {
-                     $injector=str_replace('.inc.php','',$injector);
-
-                     require(A_INJECTORS_LOCATION.$injector.'.inc.php');
-
-                     $class='A_'.$injector.'_injector';
-
-                     if(class_exists($class))
+                  // Open automators
+                     foreach($_['information']['lists']['automators'] as $key=>$automator)
                         {
-                           $_['objects']['injectors'][$injector]=new $class($_);
+                           if($automator{0}==='.')
+                              {
+                              // Hide files and directories that should be hidden from the system
+                                 unset($_['information']['lists']['automators'][$key]);
+                              }
+                           else
+                              {
+                                 $automator=str_replace('.inc.php','',$automator);
+
+                                 $construct=$destruct=0;
+
+                                 require(A_AUTOMATORS_LOCATION.$automator.'.inc.php');
+
+                                 $class='A_'.$automator.'_automator';
+
+                              // If the class was found, record the construct and destruct orders
+                                 if(class_exists($class))
+                                    {
+                                       $_['information']['priority']['construct'][$automator]=$construct;
+                                       $_['information']['priority']['destruct'][$automator]=$destruct;
+                                    }
+                              }
+                        }
+
+                  // Sort constructor and destructor orders
+                     arsort($_['information']['priority']['construct'],SORT_NUMERIC);
+                     arsort($_['information']['priority']['destruct'],SORT_NUMERIC);
+
+                  // Run constructors
+                     foreach($_['information']['priority']['construct'] as $automator=>$priority)
+                        {
+                           if(class_exists($class='A_'.$automator.'_automator'))
+                              {
+                                 $_['objects']['automators'][$automator]=new $class($_);
+                              }
+                        }
+
+                  // Run destructors
+                     foreach($_['information']['priority']['destruct'] as $automator=>$priority)
+                        {
+                           if(!empty($_['objects']['automators'][$automator]))
+                              {
+                                 unset($_['objects']['automators'][$automator]);
+                              }
+                        }
+                  }
+            // If an exception was caught, finish up with a professional, helpful error
+               catch(Exception $x)
+                  {
+                  // Try to throw a pretty error if we can
+                     if(!empty($_['objects']['models']['system']))
+                        {
+                           $_['objects']['models']['system']->controller('system','exception',array($x));
+                        }
+                  // But default to trigger_error()
+                     else
+                        {
+                           trigger_error($x->__toString(),E_USER_ERROR); // __toString() because PHP5.1 is stupid and because magic methods are sluggish
                         }
                   }
             }
 
-      // Open automators
-         foreach($_['information']['lists']['automators'] as $key=>$automator)
+      /**
+       * Destructor will run the system if it hasn't already been done
+       * @access public
+       * @return void
+       */
+         public function __destruct()
             {
-               if($automator{0}==='.')
+               if(!$this->executed)
                   {
-                  // Hide files and directories that should be hidden from the system
-                     unset($_['information']['lists']['automators'][$key]);
+                     $this->execute();
                   }
-               else
-                  {
-                     $automator=str_replace('.inc.php','',$automator);
-
-                     $construct=$destruct=0;
-
-                     require(A_AUTOMATORS_LOCATION.$automator.'.inc.php');
-
-                     $class='A_'.$automator.'_automator';
-
-                     if(class_exists($class))
-                        {
-                           $_['information']['priority']['construct'][$automator]=$construct;
-                           $_['information']['priority']['destruct'][$automator]=$destruct;
-                        }
-                  }
-            }
-
-      // Sort constructor and destructor orders
-         arsort($_['information']['priority']['construct'],SORT_NUMERIC);
-         arsort($_['information']['priority']['destruct'],SORT_NUMERIC);
-
-      // Run constructors
-         foreach($_['information']['priority']['construct'] as $automator=>$priority)
-            {
-               if(class_exists($class='A_'.$automator.'_automator'))
-                  {
-                     $_['objects']['automators'][$automator]=new $class($_);
-                  }
-            }
-
-      // Run destructors
-         foreach($_['information']['priority']['destruct'] as $automator=>$priority)
-            {
-               if(!empty($_['objects']['automators'][$automator]))
-                  {
-                     unset($_['objects']['automators'][$automator]);
-                  }
-            }
-      }
-// If an exception was caught, finish up with a professional, helpful error
-   catch(Exception $x)
-      {
-      // Try to throw a pretty error if we can
-         if(!empty($_['objects']['models']['system']))
-            {
-               $_['objects']['models']['system']->controller('system','exception',array($x));
-            }
-      // But default to trigger_error()
-         else
-            {
-               trigger_error($x->__toString(),E_USER_ERROR); // __toString() because PHP5.1 is stupid and because magic methods are sluggish
             }
       }
 
@@ -170,7 +199,7 @@
 /**
  * Primary class for Archetype.  It should be extended in some form by every other class in the system.
  */
-   class A
+   class A_base
       {
       /**
        * Assigned a reference to $_ (the universal variable) in the constructor
@@ -269,7 +298,7 @@
 /**
  * Provide a base class for models
  */
-   class A_model extends A
+   class A_model extends A_base
       {
       /**
        * Switch to toggle system::model()'s use of self::cleanup() each time the model is requested
@@ -289,71 +318,10 @@
 /**
  * Provide a base class for controllers
  */
-   class A_controller extends A {}
+   class A_controller extends A_base {}
 
 /**
  * Provide a base class for automators
  */
-   class A_automator extends A {}
-
-/**
- * Provide a base class for injectors
- */
-   class A_injector extends A
-      {
-      /**
-       * Simplify the constructor from the parent since we don't want to run injectors inside themselves (infinite loop)
-       * @access public
-       * @return void
-       */
-         public function __construct(&$_)
-            {
-            // Set the reference to the universal array
-               $this->_=&$_;
-
-            // Load the system model
-               $this->system=&$this->_['objects']['models']['system'];
-
-            // Run our user defined constructor
-               $this->construct();
-            }
-
-      /**
-       * Runs before every object's construction
-       * @access public
-       * @return void
-       */
-         public function pre_construct(&$object) {}
-
-      /**
-       * Runs after every object's construction
-       * @access public
-       * @return void
-       */
-         public function post_construct(&$object) {}
-
-      /**
-       * Runs before every object's destruction
-       * @access public
-       * @return void
-       */
-         public function pre_destruct(&$object) {}
-
-      /**
-       * Runs after every object's destruction
-       * @access public
-       * @return void
-       */
-         public function post_destruct(&$object) {}
-
-      /**
-       * Simplify the destructor from the parent since we don't want to run injectors inside themselves (infinite loop)
-       * @access public
-       * @return void
-       */
-         public function __destruct()
-            {
-               $this->destruct();
-            }
-      }
+   class A_automator extends A_base {}
 ?>

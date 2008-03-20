@@ -32,6 +32,33 @@
             // Assign global view values
                $this->settings('views',$this);
                $this->settings('system',$this);
+
+            // TODO run self::list(), self::find() and self::retrieve() on automators so we've got all the classes properly extended
+            }
+
+      /**
+       * Gets a list of all resources by type
+       * @access private
+       * @param TODO
+       * @return mixed Associative array on success, false on failure
+       */
+         private function list($resource_type)
+            {
+            }
+
+      /**
+       * Gets a list of all files related to a resource by type and name in the order they should be loaded to be properly used
+       * @access private
+       */
+         private function find($id)
+            {
+            }
+
+      /**
+       * Takes a list from self::find() and loads resources listed, then updates $_['information']['extensions']
+       */
+         private function retrieve()
+            {
             }
 
       /**
