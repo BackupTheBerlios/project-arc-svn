@@ -18,7 +18,7 @@
  */
 
 // Audible errors because we can't have them ignored for development purposes (feel free to silence a production application if you're sure it's safe)
-   error_reporting(E_ALL);
+   error_reporting(E_ALL); // TODO change this to 0 and enable E_ALL in the debug component (before almost everything) if asked
 
 // The version of the current distribution
    define('A_VERSION','2008.3.13');
@@ -32,6 +32,7 @@
 
 // String identification of resource types as they'll appear on the filesystem
    if(!defined('A_AUTOMATORS_ID'))        { define('A_AUTOMATORS_ID',        'automators/'); }
+   if(!defined('A_LIBRARIES_ID'))         { define('A_LIBRARIES_ID',         'libraries/'); }
    if(!defined('A_SETTINGS_ID'))          { define('A_SETTINGS_ID',          'settings/'); }
    if(!defined('A_MODELS_ID'))            { define('A_MODELS_ID',            'models/'); }
    if(!defined('A_VIEWS_ID'))             { define('A_VIEWS_ID',             'views/'); }
@@ -70,7 +71,7 @@
                      'injectors'=>array(),
                      'models'=>array('system'=>false),
                      'controllers'=>array('system'=>false)
-                  ),
+                  )
             );
 
       /**
@@ -197,7 +198,7 @@
    class A_Exception extends Exception {}
 
 /**
- * Primary class for Archetype.  It should be extended in some form by every other class in the system.
+ * Base class for Archetype.  It should be extended in some form by every other class in the system.
  */
    class A_base
       {

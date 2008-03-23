@@ -20,7 +20,7 @@
 /**
  * Archetype's system model for providing support to other components
  */
-   class A_system_model extends A_model
+   class Archetype_system_library extends A_library
       {
       /**
        * Upon construct, assign a few important things to the object
