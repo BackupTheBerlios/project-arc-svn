@@ -33,6 +33,9 @@
                $this->settings('views',$this);
                $this->settings('system',$this);
 
+            // Scan the filesystem for our automators and record the result
+               $this->_['information']['automators']=array_slice(scandir(),2); // implemented after the system can figure out where files are on it sown
+
             // TODO run self::list(), self::find() and self::retrieve() on automators so we've got all the classes properly extended
             }
 
@@ -42,7 +45,7 @@
        * @param TODO
        * @return mixed Associative array on success, false on failure
        */
-         private function list($resource_type)
+         private function list($type)
             {
             }
 
@@ -50,7 +53,7 @@
        * Gets a list of all files related to a resource by type and name in the order they should be loaded to be properly used
        * @access private
        */
-         private function find($id)
+         private function find($type,$name)
             {
             }
 
