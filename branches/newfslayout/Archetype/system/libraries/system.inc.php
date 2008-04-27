@@ -1,4 +1,4 @@
-<?php if(!defined('A_VERSION')){die();}
+<?php if(!defined('ARCHETYPE_VERSION')){die();}
 
    ////////////////////////////////////////////////////////////////////
    //                P R O J E C T A R C H E T Y P E                 //
@@ -7,6 +7,7 @@
 
 /**
  * System model
+ * @todo reverse conditions so exceptions are at the top of the methods
  *
  * @package Archetype
  * @subpackage system
@@ -23,45 +24,107 @@
    class Archetype_system_library extends A_library
       {
       /**
-       * Upon construct, assign a few important things to the object
+       * The types of resources the system can handle
+       * @access private
+       * @type array
+       */
+         private $resource_types=array
+            (
+               'automators'=>  'automator',
+               'models'=>      'model',
+               'views'=>       'view',
+               'controllers'=> 'controller',
+               'libraries'=>   'library',
+               'settings'=>    'setting'
+            );
+
+      /**
+       * @todo where's the view super-object?
        * @access public
        * @return void
        */
-         public function construct()
+         public function construct__()
             {
-            // Assign global view values
-               $this->settings('views',$this);
-               $this->settings('system',$this);
-
-            // Scan the filesystem for our automators and record the result
-               $this->_['information']['automators']=array_slice(scandir(),2); // implemented after the system can figure out where files are on it sown
-
-            // TODO run self::list(), self::find() and self::retrieve() on automators so we've got all the classes properly extended
+               $this->import('automators'); // debug junk :!
             }
 
       /**
-       * Gets a list of all resources by type
+       * A way to open components that automatically resolves files and classes based on path location
+       * @todo add settings after we figure out what to do with them storage wise
+       * @todo add support for $only so this can be used for stuff other than just automators :)
+       * @access public
+       * @param string $type The type of components to import
+       * @param string|array $only Specifically only import these components
+       * @return boolean|array An associative array in the form of $name=>$class if successful, false otherwise
+       */
+// on extending: libraries should extend the core like so: class A_ExtensionName_LibraryName_library extends Archetype_LibraryName_library
+// application classes can extend extensions or core.  extending extension: A_SomeName_library extends A_ExtensionName_LibraryName_library | to extend core, same but ExtensionName_LibraryName_library is Archetype_library
+// maybe something to figure out dependencies?
+// in addition to line-based scanner when there's a conflict and we're trying to figure out which direction to try to extend, also look for redefinitions of system classnames.  if found, open it before the system version and disregard the system's.
+// classes should be able to inject themselves over a local copy already loaded.  maybe $object->overwrite=true?  or $overwrite=true in the style you do automator priority?
+// don't do settings for now, but do them later when you figure out if you want array settings or an object
+
+         // $system->import('model','account'); RETURNS array('account'=>'A_account_model')
+         // $system->import('libraries',array('SeboDB','string','feeds')); RETURNS array('SeboDB'=>'A_SeboDB_SeboDB_library','string'=>'Archetype_string_library','feeds'=>'A_feeds_library')
+         // $system->import('automators');
+
+         // SITUATION!
+         // application/libraries/example.inc.php - class A_example_library extends A_library
+
+         private function import($type,$components=array())
+            {
+               $r=false;
+
+            // If the type doesn't match anything in $accept_types, throw an exception
+               if(empty($this->resource_types[$type])&&)
+                  {
+                     if(!array_search($type,$this->resource_types))
+                        {
+                           throw new A_Exception("Can not import component of type '{$this->resource_types[$type]}'");
+                        }
+                     else
+                        {
+                        }
+                  }
+
+            // Allows opening one component at a time
+               if(is_string($components)) { $components=array($components); }
+
+            // If input isn't an array at this point, throw an exception
+               if(!is_array($components)) { throw new A_Exception("Components must be specified either as an array or string"); }
+
+               if(!empty($components))
+                  {
+                     $classes=array();
+
+                     foreach($components as $component)
+                        {
+                           $component=$this->alphanumeric($component,'_');
+
+                           if(is_readable($file="{$this->_['Archetype']->SYSTEM_PATH}{$type}/{$component}.inc.php"))
+                              {
+                                 $classes[$component][]="Archetype_{$component}_{$type}";
+                              }
+
+                           if(is_readable($file="{$this->_['Archetype']->APPLICATION_PATH}{$type}/{$component}.inc.php"))
+                              {
+                                 $classes[$component][]="A_{$component}_{$type}";
+                              }
+                        }
+                  }
+
+               return $r;
+            }
+
+      /**
+       * Useful for stripping all characters from a string except those that are alphanumeric or specified as parameters
        * @access private
-       * @param TODO
-       * @return mixed Associative array on success, false on failure
+       * @param $input string String you want to strip
+       * @return string Stripped version of $input
        */
-         private function list($type)
+         private function alphanumeric($input,$exceptions='')
             {
-            }
-
-      /**
-       * Gets a list of all files related to a resource by type and name in the order they should be loaded to be properly used
-       * @access private
-       */
-         private function find($type,$name)
-            {
-            }
-
-      /**
-       * Takes a list from self::find() and loads resources listed, then updates $_['information']['extensions']
-       */
-         private function retrieve()
-            {
+               return preg_replace('/[^\w'.preg_quote($exceptions).']/','',$input);
             }
 
       /**
@@ -120,6 +183,7 @@
       /**
        * Load and return a view
        * @access public
+       * @todo Maybe run views inside of an object that can be stored somewhere?  like a view sandbox?  that way all the stuff the view opens remains in that, instead of this
        * @param string $view String name of the view to open
        * @param array $input Reference to an associative array of variables to provide to the view
        * @return mixed Returns a reference to the model on success, false on failure

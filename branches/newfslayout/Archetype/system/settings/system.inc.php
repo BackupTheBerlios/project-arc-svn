@@ -19,4 +19,6 @@
 
    $settings['ob_handler']='ob_gzhandler';
    $settings['debug']=true;
+
+// Something to allow disabling of component loading should be here!
 ?>

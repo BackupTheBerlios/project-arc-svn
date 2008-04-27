@@ -6,79 +6,85 @@
    ////////////////////////////////////////////////////////////////////
 
 /**
- * Archetype's primary file
+ * Welcome to Archetype.  The water fountain is around the corner.
  *
+ * @todo Change all mixed return types to something|something, I didn't know you could do that :(
+ * @todo change all instances of "${variable}" to "{$variable}" because it's more flexible
  * @package Archetype
  * @subpackage system
  * @author Justin Krueger <fuzzywoodlandcreature@gmail.com>
- * @copyright © 2007 Justin Krueger.  All rights reserved.
+ * @copyright © 2005-2008 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
  * @link http://fuzzywoodlandcreature.com/archetype
- * @version 2008.3.13
+ * @version 2008.3.23
  */
 
-// Audible errors because we can't have them ignored for development purposes (feel free to silence a production application if you're sure it's safe)
-   error_reporting(E_ALL); // TODO change this to 0 and enable E_ALL in the debug component (before almost everything) if asked
+// By default, show no errors.  If and when the debug component is activated, it will bring error reporting its most verbose level.
+   error_reporting(E_ALL); // set to 0 once development of core and debug component is done TODO TODO
 
-// The version of the current distribution
-   define('A_VERSION','2008.3.13');
-
-// By default, our resources should be relative to the location of this particular file
-   if(!defined('A_ARCHETYPE_LOCATION'))   { define('A_ARCHETYPE_LOCATION',   dirname(__FILE__).'/'); }
-
-// The paths of the system and application directories
-   if(!defined('A_SYSTEM_LOCATION'))      { define('A_SYSTEM_LOCATION',      A_ARCHETYPE_LOCATION.'system/'); }
-   if(!defined('A_APPLICATION_LOCATION')) { define('A_APPLICATION_LOCATION', A_ARCHETYPE_LOCATION.'application/'); }
-
-// String identification of resource types as they'll appear on the filesystem
-   if(!defined('A_AUTOMATORS_ID'))        { define('A_AUTOMATORS_ID',        'automators/'); }
-   if(!defined('A_LIBRARIES_ID'))         { define('A_LIBRARIES_ID',         'libraries/'); }
-   if(!defined('A_SETTINGS_ID'))          { define('A_SETTINGS_ID',          'settings/'); }
-   if(!defined('A_MODELS_ID'))            { define('A_MODELS_ID',            'models/'); }
-   if(!defined('A_VIEWS_ID'))             { define('A_VIEWS_ID',             'views/'); }
-   if(!defined('A_CONTROLLERS_ID'))       { define('A_CONTROLLERS_ID',       'controllers/'); }
+// The version of the current distribution.
+   define('ARCHETYPE_VERSION','2008.3.23');
 
 /**
- * Blueprints for the absolute root/parent of the entire system
+ * This class describes the absolute root / parent of the entire system.
  */
    class Archetype
       {
       /**
-       * Universal variable passed between every object extended from Archetype
+       * Universal variable passed between every object extended from and inside Archetype
+       * @todo Come back here and describe where each of these are initialized
        * @var array
        * @access public
        */
          public $_=array
             (
-               'information'=>array // Storage of miscellaneous information
+               'Archetype'=>true, // Gets set in the constructor and sets a reference to this object
+               'timings'=>array(), // Benchmark timings and the system's begin time
+               'input'=>array
                   (
-                     'settings'=>array(),
-                     'priority'=>array('construct'=>array(),'destruct'=>array()), // Automator priority
-                     'timings'=>array(), // Benchmark timings and the system's begin time
-                     'automators'=>array(), // Load a list of the automators we're going to try to run
-                     'extensions'=>array(), // List of files that, according to their arrangement on the filesystem, will extend each other
-                     'input'=>array
-                        (
-                           'controller'=>'',
-                           'method'=>'',
-                           'parameters'=>array(),
-                           'switches'=>array()
-                        )
+                     'controller'=>  '',
+                     'method'=>      '',
+                     'parameters'=>  array(),
+                     'switches'=>    array()
                   ),
-               'objects'=>array // Object storage for various parts of the system
+               'components'=>array // The index to all of the components open in the system at any given time, stored as $name=>$object unless noted otherwise
                   (
-                     'automators'=>array(),
-                     'injectors'=>array(),
-                     'models'=>array('system'=>false),
-                     'controllers'=>array('system'=>false)
+                     'automators'=>  array(), // Priority in $object->construct_order and $object->destruct_order
+                     'libraries'=>   array(),
+                     'models'=>      array(),
+                     'views'=>       array(), // Names of views branched as they were opened
+                     'controllers'=> array(),
+                     'settings'=>    array()
                   )
             );
 
       /**
-       * When self::run() executes, it'll change this to true
-       * @var boolean
+       * The path we should consider ourselves at on the filesystem
+       * @access public
+       * @var string
        */
-         private $executed=false;
+         public $PATH;
+
+      /**
+       * The path where you should be able to find system components
+       * @access public
+       * @var string
+       */
+         public $SYSTEM_PATH;
+
+      /**
+       * The path where you should be able to find application components
+       * @access public
+       * @var string
+       */
+         public $APPLICATION_PATH;
+
+      /**
+       * The path where you should be able to find extension components
+       * @access public
+       * @var string
+       */
+         public $EXTENSION_PATH;
 
       /**
        * Constructor does some preliminary work before the rest of the system loads
@@ -88,33 +94,49 @@
          public function __construct()
             {
             // Record the beginning time of the build
-               $this->_['information']['timings']['archetype|start']=microtime(true);
+               $this->_['timings']['archetype|start']=microtime(true);
 
-            // Scan the filesystem for our automators and record the result
-               $this->_['information']['automators']=array_slice(scandir(A_AUTOMATORS_ID),2);
+            // Drop a reference to this object in the universal variable so any component can access the absolute root of the system
+               $this->_['Archetype']=&$this;
 
-            // Statically require Archetype's system model
-               require(A_MODELS_LOCATION.'system.inc.php');
+            // By default, our resources should be relative to the location of this particular file
+               $this->PATH=dirname(__FILE__).'/';
 
-            // Make a new instance of the system model and put it where it would normally go in the universal array
-               $this->_['objects']['models']['system']=new A_system_model($this->_);
+            // Storage of system files that shouldn't need to be modified for most purposes and can often be shared between projects
+               $this->SYSTEM_PATH=$this->PATH.'system/';
+
+            // Extensions are essentially applications, but intended to extend or add to the core system and can often be shared as well
+               $this->EXTENSION_PATH=$this->SYSTEM_PATH.'extensions/';
+
+            // Storage of all files custom to an application
+               $this->APPLICATION_PATH=$this->PATH.'application/';
             }
 
       /**
-       * Run through the automators, run them, destroy them
+       * Loop through the automators, run them, destroy them
        * @access public
        * @return void
        */
          public function run()
             {
-            // Record that this method ran so the destructor doesn't try to run it again
-               $this->executed=true;
+            // Statically require Archetype's system library
+               require($this->SYSTEM_PATH.'libraries/system.inc.php');
 
-            // Execute in a sandbox so we can catch exceptions
+            // Make a new instance of the system library and put it where it would normally go in the universal array
+               try
+                  {
+                     $this->_['components']['system']=new Archetype_system_library($this->_);
+                  }
+               catch(Exception $e) // TODO remove this once you're done testing the system library and you're ready to finish the automator runner
+                  {
+                     echo $e;
+                  }
+
+            /* // Execute in a sandbox so we can catch exceptions
                try
                   {
                   // Open automators
-                     foreach($_['information']['lists']['automators'] as $key=>$automator)
+                     foreach($this->_['information']['automators'] as $key=>$automator)
                         {
                            if($automator{0}==='.')
                               {
@@ -175,7 +197,7 @@
                         {
                            trigger_error($x->__toString(),E_USER_ERROR); // __toString() because PHP5.1 is stupid and because magic methods are sluggish
                         }
-                  }
+                  } */
             }
 
       /**
@@ -185,9 +207,9 @@
        */
          public function __destruct()
             {
-               if(!$this->executed)
+               if(empty($this->_['objects']['automators']))
                   {
-                     $this->execute();
+                     $this->run();
                   }
             }
       }
@@ -195,7 +217,7 @@
 /**
  * Archetype's exception class
  */
-   class A_Exception extends Exception {}
+   class A_Exception extends Exception {} // Add something in here to log any exception thrown
 
 /**
  * Base class for Archetype.  It should be extended in some form by every other class in the system.
@@ -210,7 +232,7 @@
          public $_=false;
 
       /**
-       * Assigned a reference to $_['objects']['models']['system'] in the constructor and inherited by every class in the system
+       * Assigned a reference to $_['objects']['libraries']['system'] in the constructor and inherited by every class in the system
        * @access public
        * @var mixed
        */
@@ -221,14 +243,14 @@
        * @access public
        * @return void
        */
-         public function construct() {}
+         public function construct__() {}
 
       /**
        * Dummy destructor
        * @access public
        * @return void
        */
-         public function destruct() {}
+         public function destruct__() {}
 
       /**
        * Constructor that runs in every descendant
@@ -252,7 +274,7 @@
                            $injector->pre_construct($this);
                         }
 
-                     $this->construct();
+                     $this->construct__();
 
                   // Loop post_construct()
                      foreach($this->_['objects']['injectors'] as &$injector)
@@ -262,7 +284,7 @@
                   }
                else
                   {
-                     $this->construct();
+                     $this->construct__();
                   }
             }
 
@@ -281,7 +303,7 @@
                            $injector->pre_destruct($this);
                         }
 
-                     $this->destruct();
+                     $this->destruct__();
 
                   // Loop post_destruct()
                      foreach($this->_['objects']['injectors'] as &$injector)
@@ -291,7 +313,7 @@
                   }
                else
                   {
-                     $this->destruct();
+                     $this->destruct__();
                   }
             }
       }
@@ -301,20 +323,10 @@
  */
    class A_model extends A_base
       {
-      /**
-       * Switch to toggle system::model()'s use of self::cleanup() each time the model is requested
-       * @access public
-       * @var boolean
-       */
-         public $cleanup=false;
-
-      /**
-       * Dummy method, extend and overload to make use of it (and read above comment)
-       * @access public
-       * @return void
-       */
-         public function cleanup() {}
+      // Figure out a better way to do a voluntary cleanup when the model's object is passed to a new supervisor
       }
+
+   class A_library extends A_base {} // Read the above comment in the Model class and figure it out here as well TODO <- so I remember this later.
 
 /**
  * Provide a base class for controllers
