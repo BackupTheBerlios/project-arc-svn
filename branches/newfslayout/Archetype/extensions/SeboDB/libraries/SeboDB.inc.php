@@ -206,6 +206,50 @@
                return $r;
             }
 
+         public function is_driver($driver)
+            {
+               $r=false;
+
+               if(is_string($driver)&&is_readable($driver_file=SEBODB_DRIVERS_LOCATION.$driver.'/'.$driver.'.inc.php'))
+                  {
+                     $driver_class='SeboDB_driver_'.$driver;
+
+                     if(!class_exists($driver_class))
+                        {
+                           require($driver_file);
+                        }
+
+                     if(class_exists($driver_class))
+                        {
+                           $r=true;
+                        }
+                  }
+
+               return $r;
+            }
+
+         public function is_controller($controller)
+            {
+               $r=false;
+
+               if(is_string($controller)&&is_readable($controller_file=SEBODB_DRIVERS_LOCATION.$controller.'/'.$controller.'.inc.php'))
+                  {
+                     $controller_class='SeboDB_controller_'.$controller;
+
+                     if(!class_exists($controller_class))
+                        {
+                           require($controller_file);
+                        }
+
+                     if(class_exists($controller_class))
+                        {
+                           $r=true;
+                        }
+                  }
+
+               return $r;
+            }
+
       /**
        * Destroys an LDO.
        * @access public
@@ -222,7 +266,7 @@
                      $instance=&$this->linked_data_objects[$instance];
                   }
 
-               unset($instance);
+               unset($instance); // TODO: unset(&$instance) ?
 
                return $r;
             }

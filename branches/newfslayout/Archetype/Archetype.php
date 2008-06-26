@@ -11,105 +11,59 @@
  * @todo Change all mixed return types to something|something, I didn't know you could do that :(
  * @todo change all instances of "${variable}" to "{$variable}" because it's more flexible
  * @package Archetype
- * @subpackage system
+ * @subpackage Core
  * @author Justin Krueger <fuzzywoodlandcreature@gmail.com>
  * @copyright © 2005-2008 Justin Krueger.  All rights reserved.
  * @license http://www.opensource.org/licenses/mit-license.html MIT
- * @link http://fuzzywoodlandcreature.com/archetype
- * @version 2008.3.23
+ * @link http://kroogs.com/Archetype
+ * @version 2008.6.26
  */
 
-// By default, show no errors.  If and when the debug component is activated, it will bring error reporting its most verbose level.
+// By default, be very quiet
    error_reporting(E_ALL); // set to 0 once development of core and debug component is done TODO TODO
 
-// The version of the current distribution.
-   define('ARCHETYPE_VERSION','2008.3.23');
-
 /**
- * This class describes the absolute root / parent of the entire system.
+ * Archetype's primary class.  It initializes a storage space and loads the system library.
  */
    class Archetype
       {
       /**
-       * Universal variable passed between every object extended from and inside Archetype
-       * @todo Come back here and describe where each of these are initialized
+       * For any random data not stored in a namespace or one of its children
        * @var array
        * @access public
        */
-         public $_=array
-            (
-               'Archetype'=>true, // Gets set in the constructor and sets a reference to this object
-               'timings'=>array(), // Benchmark timings and the system's begin time
-               'input'=>array
-                  (
-                     'controller'=>  '',
-                     'method'=>      '',
-                     'parameters'=>  array(),
-                     'switches'=>    array()
-                  ),
-               'components'=>array // The index to all of the components open in the system at any given time, stored as $name=>$object unless noted otherwise
-                  (
-                     'automators'=>  array(), // Priority in $object->construct_order and $object->destruct_order
-                     'libraries'=>   array(),
-                     'models'=>      array(),
-                     'views'=>       array(), // Names of views branched as they were opened
-                     'controllers'=> array(),
-                     'settings'=>    array()
-                  )
-            );
+         public $registry=array('system.version'=>'2007.6.26');
 
       /**
-       * The path we should consider ourselves at on the filesystem
+       * 
+       * @var array
        * @access public
-       * @var string
        */
-         public $PATH;
-
-      /**
-       * The path where you should be able to find system components
-       * @access public
-       * @var string
-       */
-         public $SYSTEM_PATH;
-
-      /**
-       * The path where you should be able to find application components
-       * @access public
-       * @var string
-       */
-         public $APPLICATION_PATH;
-
-      /**
-       * The path where you should be able to find extension components
-       * @access public
-       * @var string
-       */
-         public $EXTENSION_PATH;
+         public $namespaces=array();
 
       /**
        * Constructor does some preliminary work before the rest of the system loads
+       * @param
        * @access public
        * @return void
        */
-         public function __construct()
+         public function __construct($namespaces=array())
             {
-            // Record the beginning time of the build
-               $this->_['timings']['archetype|start']=microtime(true);
+            // Open up a few spaces we expect we'll find
+               foreach(array_merge(array(dirname(__FILE__).'/system/'),glob(dirname(__FILE__).'/extensions/*/'),$namespaces) as $space)
+                  {
+                     $this->namespace($space);
+                  }
+            }
 
-            // Drop a reference to this object in the universal variable so any component can access the absolute root of the system
-               $this->_['Archetype']=&$this;
-
-            // By default, our resources should be relative to the location of this particular file
-               $this->PATH=dirname(__FILE__).'/';
-
-            // Storage of system files that shouldn't need to be modified for most purposes and can often be shared between projects
-               $this->SYSTEM_PATH=$this->PATH.'system/';
-
-            // Extensions are essentially applications, but intended to extend or add to the core system and can often be shared as well
-               $this->EXTENSION_PATH=$this->SYSTEM_PATH.'extensions/';
-
-            // Storage of all files custom to an application
-               $this->APPLICATION_PATH=$this->PATH.'application/';
+      /**
+       * A straight forward way to add namespaces to the system as it runs
+       * @access public
+       * @return void
+       */
+         public function namespace($path,$extensions='.inc.php')
+            {
+               $this->namespaces[basename($path)]=new ANamespace($this->namespaces,$path,$extensions);
             }
 
       /**
@@ -119,8 +73,16 @@
        */
          public function run()
             {
-            // Statically require Archetype's system library
-               require($this->SYSTEM_PATH.'libraries/system.inc.php');
+            // Record the beginning time of the build
+               $this->registry['timings']['system.start']=microtime(true);
+
+               $observer=$this->namespaces['system']->import('library.observer','system');
+
+               echo 'Archetype.run()';
+
+               return;
+
+               $this->system=$this->_A->namespaces['system']->import('library.system',$this);
 
             // Make a new instance of the system library and put it where it would normally go in the universal array
                try
@@ -207,7 +169,7 @@
        */
          public function __destruct()
             {
-               if(empty($this->_['objects']['automators']))
+               if(empty($this->registry['timings']['system.start']))
                   {
                      $this->run();
                   }
@@ -217,124 +179,200 @@
 /**
  * Archetype's exception class
  */
-   class A_Exception extends Exception {} // Add something in here to log any exception thrown
+   class AException extends Exception {} // Add something in here to log any exception thrown TODO
 
 /**
- * Base class for Archetype.  It should be extended in some form by every other class in the system.
+ * A basic container that opens files/classes, indexes them, then provides tools to access them from each other.
  */
-   class A_base
+   class ANamespace
       {
       /**
-       * Assigned a reference to $_ (the universal variable) in the constructor
+       * Gets a reference to the array that contains all opened namespace objects
        * @access public
-       * @var mixed
+       * @var
        */
-         public $_=false;
+         public $top;
 
       /**
-       * Assigned a reference to $_['objects']['libraries']['system'] in the constructor and inherited by every class in the system
+       * The root path of this namespace
        * @access public
-       * @var mixed
+       * @var string
        */
-         public $system=false;
+         public $path;
 
       /**
-       * Dummy constructor
+       * File extensions for this namespace
        * @access public
-       * @return void
+       * @var string
        */
-         public function construct__() {}
+         public $extensions;
 
       /**
-       * Dummy destructor
+       * An index of class names (key) and instantiated objects (reference)
        * @access public
-       * @return void
+       * @var array
        */
-         public function destruct__() {}
+         public $contents=array();
 
       /**
-       * Constructor that runs in every descendant
+       * Constructor, store the path and pattern internally and run our parent's constructor
        * @access public
-       * @param array $_ Reference to Archetype's universal variable
-       * @return void
+       * @param
+       * @param
+       * @param
+       * @return
        */
-         public function __construct(&$_)
+         public function __construct(&$top,$path,$extensions='.inc.php')
             {
-            // Set the reference to the universal array
-               $this->_=&$_;
+               $this->top=&$top;
 
-            // Load the system model
-               $this->system=&$this->_['objects']['models']['system'];
+               $this->extensions=$extensions;
 
-               if(!empty($this->_['objects']['injectors']))
+            // Do what we can to prevent namespace collisions
+               if(!empty($top[($name=dirname($path))]))
                   {
-                  // Loop pre_construct()
-                     foreach($this->_['objects']['injectors'] as &$injector)
-                        {
-                           $injector->pre_construct($this);
-                        }
+                     throw new AException("Can not reconstruct namespace '{$name}'");
+                  }
 
-                     $this->construct__();
+            // Only open valid paths
+               if(is_dir($path)&&!is_readable($path))
+                  {
+                     throw new AException("Could not open '{$path}' as namespace");
+                  }
 
-                  // Loop post_construct()
-                     foreach($this->_['objects']['injectors'] as &$injector)
+               $this->path=$path;
+            }
+
+      /**
+       * 
+       * @access public
+       * @param
+       * @param
+       * @todo make it show you the keys too so you can figure out WHY something was unmet if it is actually there
+       * @return void
+       */
+         public function depend($lookup,$keys=array())
+            {
+               if($obj=$this->import($lookup))
+                  {
+                     $r=true;
+
+                     if(!empty($keys))
                         {
-                           $injector->post_construct($this);
+                           foreach($keys as $label=>$value)
+                              {
+                                 if(!preg_match($value,$obj->info[$label]))
+                                    {
+                                       $r=false;
+                                    }
+                              }
                         }
                   }
-               else
+
+               if(!$r)
                   {
-                     $this->construct__();
+                     throw new AException("Encountered an unmet dependency: '{$lookup}'");
                   }
             }
 
       /**
-       * Destructor that runs in every descendant
+       * 
        * @access public
-       * @return void
+       * @param
+       * @param
+       * @return
        */
-         public function __destruct()
+         public function &import($lookup,$from=false)
             {
-               if(!empty($this->_['objects']['injectors']))
-                  {
-                  // Loop pre_destruct()
-                     foreach($this->_['objects']['injectors'] as &$injector)
-                        {
-                           $injector->pre_destruct($this);
-                        }
+               $r=false;
 
-                     $this->destruct__();
+               $this->import->view();
 
-                  // Loop post_destruct()
-                     foreach($this->_['objects']['injectors'] as &$injector)
-                        {
-                           $injector->post_destruct($this);
-                        }
-                  }
-               else
-                  {
-                     $this->destruct__();
-                  }
+            // Map the namespace off $from if it's an object previously imported
+               if(is_a($from,'ACore')) { $from=$from->__namespace; }
+
+            // Make sure we start with a clean buffer
+               if(ob_get_length()) { ob_clean(); }
+
+               // if no $from and no space in $lookup and only one match found for $lookup, return it
+               // but if multiples found, throw exception
+
+               // $relative can be either an object, in which case it operates on that object's namespace
+               // or it can be a string to a namespace for it to pull from
+               // but if it's an object, the resulting imported object will be inserted into it forcefully
+
+            // If the buffer size changed, write it to the object
+               if(ob_get_length()) { $r->__output_buffer=ob_get_clean(); }
+
+               return $r;
             }
       }
 
 /**
- * Provide a base class for models
+ * Almost everything in the system at any given point will be a descendant of this class
  */
-   class A_model extends A_base
+   class ACore
       {
-      // Figure out a better way to do a voluntary cleanup when the model's object is passed to a new supervisor
+      /**
+       * 
+       * @access private
+       * @var
+       */
+         private $_A;
+
+      /**
+       * 
+       * @access public
+       * @var
+       */
+         public $import;
+
+      /**
+       * 
+       * @access public
+       * @param
+       * @return void
+       */
+         public function __construct(&$_A)
+            {
+            // Set the reference to the root object
+               $this->_A=&$_A;
+
+            // Sets a reference to the system's import library
+               $this->import=&$this->_A->namespaces['system']->import('library.import',$this);
+            }
       }
 
-   class A_library extends A_base {} // Read the above comment in the Model class and figure it out here as well TODO <- so I remember this later.
+/**
+ * 
+ */
+   class ALibrary extends ACore {} 
 
 /**
- * Provide a base class for controllers
+ * 
  */
-   class A_controller extends A_base {}
+   class AModel extends ALibrary {}
 
 /**
- * Provide a base class for automators
+ * 
  */
-   class A_automator extends A_base {}
+   class AView extends ACore
+      {
+         public $__buffer='';
+
+         public function __toString()
+            {
+               return $this->__buffer;
+            }
+      }
+
+/**
+ * 
+ */
+   class AController extends ACore {}
+
+/**
+ * 
+ */
+   class ASetting extends ACore {}
 ?>

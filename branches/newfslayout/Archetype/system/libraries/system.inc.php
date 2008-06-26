@@ -6,7 +6,7 @@
    ////////////////////////////////////////////////////////////////////
 
 /**
- * System model
+ * 
  * @todo reverse conditions so exceptions are at the top of the methods
  *
  * @package Archetype
@@ -19,101 +19,18 @@
  */
 
 /**
- * Archetype's system model for providing support to other components
+ * 
  */
-   class Archetype_system_library extends A_library
+   class systemLibrary_system extends ALibrary
       {
-      /**
-       * The types of resources the system can handle
-       * @access private
-       * @type array
-       */
-         private $resource_types=array
-            (
-               'automators'=>  'automator',
-               'models'=>      'model',
-               'views'=>       'view',
-               'controllers'=> 'controller',
-               'libraries'=>   'library',
-               'settings'=>    'setting'
-            );
-
       /**
        * @todo where's the view super-object?
        * @access public
        * @return void
        */
-         public function construct__()
+         public function __construct()
             {
-               $this->import('automators'); // debug junk :!
-            }
-
-      /**
-       * A way to open components that automatically resolves files and classes based on path location
-       * @todo add settings after we figure out what to do with them storage wise
-       * @todo add support for $only so this can be used for stuff other than just automators :)
-       * @access public
-       * @param string $type The type of components to import
-       * @param string|array $only Specifically only import these components
-       * @return boolean|array An associative array in the form of $name=>$class if successful, false otherwise
-       */
-// on extending: libraries should extend the core like so: class A_ExtensionName_LibraryName_library extends Archetype_LibraryName_library
-// application classes can extend extensions or core.  extending extension: A_SomeName_library extends A_ExtensionName_LibraryName_library | to extend core, same but ExtensionName_LibraryName_library is Archetype_library
-// maybe something to figure out dependencies?
-// in addition to line-based scanner when there's a conflict and we're trying to figure out which direction to try to extend, also look for redefinitions of system classnames.  if found, open it before the system version and disregard the system's.
-// classes should be able to inject themselves over a local copy already loaded.  maybe $object->overwrite=true?  or $overwrite=true in the style you do automator priority?
-// don't do settings for now, but do them later when you figure out if you want array settings or an object
-
-         // $system->import('model','account'); RETURNS array('account'=>'A_account_model')
-         // $system->import('libraries',array('SeboDB','string','feeds')); RETURNS array('SeboDB'=>'A_SeboDB_SeboDB_library','string'=>'Archetype_string_library','feeds'=>'A_feeds_library')
-         // $system->import('automators');
-
-         // SITUATION!
-         // application/libraries/example.inc.php - class A_example_library extends A_library
-
-         private function import($type,$components=array())
-            {
-               $r=false;
-
-            // If the type doesn't match anything in $accept_types, throw an exception
-               if(empty($this->resource_types[$type])&&)
-                  {
-                     if(!array_search($type,$this->resource_types))
-                        {
-                           throw new A_Exception("Can not import component of type '{$this->resource_types[$type]}'");
-                        }
-                     else
-                        {
-                        }
-                  }
-
-            // Allows opening one component at a time
-               if(is_string($components)) { $components=array($components); }
-
-            // If input isn't an array at this point, throw an exception
-               if(!is_array($components)) { throw new A_Exception("Components must be specified either as an array or string"); }
-
-               if(!empty($components))
-                  {
-                     $classes=array();
-
-                     foreach($components as $component)
-                        {
-                           $component=$this->alphanumeric($component,'_');
-
-                           if(is_readable($file="{$this->_['Archetype']->SYSTEM_PATH}{$type}/{$component}.inc.php"))
-                              {
-                                 $classes[$component][]="Archetype_{$component}_{$type}";
-                              }
-
-                           if(is_readable($file="{$this->_['Archetype']->APPLICATION_PATH}{$type}/{$component}.inc.php"))
-                              {
-                                 $classes[$component][]="A_{$component}_{$type}";
-                              }
-                        }
-                  }
-
-               return $r;
+               parent.__construct();
             }
 
       /**
